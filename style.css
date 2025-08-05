@@ -2418,6 +2418,10 @@ footer img:hover {
         font-size: 1rem;
     }
     
+
+    
+
+    
     .contact-form-container,
     .contact-info-card {
         margin-bottom: 2rem;
@@ -2479,6 +2483,7 @@ footer img:hover {
     }
 }
 
+/* Mobile Responsive */
 @media (max-width: 576px) {
     body {
         padding-top: 75px;
@@ -3097,48 +3102,22 @@ footer img:hover {
 }
 
 .management-card {
-    height: 600px;
-    perspective: 1000px;
+    height: auto;
     margin-bottom: 2rem;
-}
-
-.management-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-    cursor: pointer;
-}
-
-.management-card:hover .management-card-inner {
-    transform: rotateY(180deg);
-}
-
-.management-card-front,
-.management-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
     border-radius: 15px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     background: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.management-card-back {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-    color: white;
-    transform: rotateY(180deg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.management-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
 }
 
 .management-image {
-    height: 450px;
+    height: 350px;
     overflow: hidden;
     position: relative;
     border-radius: 15px 15px 0 0;
@@ -3149,6 +3128,7 @@ footer img:hover {
     height: 100%;
     object-fit: cover;
     object-position: center top;
+    background: none;
     transition: transform 0.3s ease;
     border-radius: 15px 15px 0 0;
     display: block;
@@ -3159,14 +3139,10 @@ footer img:hover {
 }
 
 .management-content {
-    padding: 20px;
+    padding: 25px;
     background: white;
     position: relative;
     z-index: 2;
-    height: 150px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     text-align: center;
 }
 
@@ -3182,45 +3158,31 @@ footer img:hover {
     font-size: 1rem;
     color: var(--text-light);
     font-weight: 500;
-    margin: 0;
-}
-
-.management-details {
-    padding: 30px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.management-details .management-name {
-    color: white;
-    margin-bottom: 30px;
-    font-size: 1.4rem;
+    margin-bottom: 20px;
 }
 
 .management-info {
-    width: 100%;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .info-item {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
-    font-size: 0.95rem;
-    opacity: 0.95;
+    justify-content: center;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: var(--text-color);
 }
 
 .info-item i {
-    width: 20px;
-    margin-right: 12px;
-    color: rgba(255, 255, 255, 0.8);
+    width: 18px;
+    margin-right: 10px;
+    color: var(--primary-color);
+    font-size: 0.85rem;
 }
 
 .info-item span {
-    color: white;
+    color: var(--text-color);
     word-break: break-word;
 }
 
@@ -3231,22 +3193,21 @@ footer img:hover {
 }
 
 .management-actions .btn {
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--primary-color);
+    background: var(--primary-color);
     color: white;
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
 }
 
 .management-actions .btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: var(--secondary-color);
+    border-color: var(--secondary-color);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
@@ -3258,22 +3219,21 @@ footer img:hover {
     }
     
     .management-card {
-        height: 550px;
         margin-bottom: 1.5rem;
     }
     
     .management-image {
-        height: 400px;
+        height: 350px;
     }
     
     .management-image img {
-        object-position: center top;
         object-fit: cover;
+        object-position: center top;
+        background: none;
     }
     
     .management-content {
-        padding: 15px;
-        height: 150px;
+        padding: 20px;
     }
     
     .management-name {
@@ -3283,41 +3243,58 @@ footer img:hover {
     
     .management-designation {
         font-size: 0.9rem;
-    }
-    
-    .management-details {
-        padding: 20px;
-    }
-    
-    .management-details .management-name {
-        font-size: 1.2rem;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
     }
     
     .info-item {
-        font-size: 0.9rem;
-        margin-bottom: 12px;
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+    }
+    
+    .info-item i {
+        width: 16px;
+        margin-right: 8px;
+        font-size: 0.8rem;
     }
     
     .management-actions .btn {
-        width: 40px;
-        height: 40px;
+        width: 38px;
+        height: 38px;
     }
 }
 
 @media (max-width: 576px) {
-    .management-card {
-        height: 520px;
-    }
-    
     .management-image {
-        height: 370px;
+        height: 320px;
     }
     
     .management-image img {
-        object-position: center top;
         object-fit: cover;
+        object-position: center top;
+        background: none;
     }
+    
+    .management-content {
+        padding: 18px;
+    }
+    
+    .management-name {
+        font-size: 1.05rem;
+    }
+    
+    .management-designation {
+        font-size: 0.85rem;
+    }
+    
+    .info-item {
+        font-size: 0.8rem;
+    }
+    
+    .management-actions .btn {
+        width: 36px;
+        height: 36px;
+    }
+}
     
     .management-content {
         padding: 12px;
@@ -3335,5 +3312,25 @@ footer img:hover {
     
     .info-item span {
         font-size: 0.85rem;
+    }
+}
+
+/* Service Buttons Container */
+.service-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 576px) {
+    .service-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    .service-buttons .btn {
+        width: 100%;
+        margin-bottom: 0 !important;
     }
 }
