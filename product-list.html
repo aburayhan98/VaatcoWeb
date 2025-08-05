@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Our product list of VAATCO Bangladesh Ltd - Premium quality pharmaceutical raw materials, fine chemicals, and industrial chemicals.">
+    <meta name="keywords" content="VAATCO, pharmaceutical chemicals, fine chemicals, industrial chemicals, Bangladesh, product list">
+    <meta name="author" content="VAATCO Bangladesh Ltd">
+    
+    <title>Our Product List - VAATCO Bangladesh Ltd</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* Additional styles for product list page */
+        .product-list-page {
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        
+        .product-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 80px 0 60px;
+            margin-top: 76px;
+            position: relative;
+        }
+        
+        .product-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.05);
+        }
+        
+        .product-header h1 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            color: #ffffff;
+        }
+        
+        .product-header p {
+            font-size: 1.3rem;
+            opacity: 1;
+            margin-bottom: 0;
+            position: relative;
+            z-index: 2;
+            font-weight: 500;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            color: #ffffff;
+        }
+        
+        .product-table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 0;
+            overflow: hidden;
+            margin: 40px 0;
+            border: 1px solid #e9ecef;
+        }
+        
+        .product-table {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+        
+        .product-table thead th {
+            background: linear-gradient(135deg, #34495e 0%, #2980b9 100%);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 20px 15px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .product-table thead th:hover {
+            background: linear-gradient(135deg, #2c3e50 0%, #2471a3 100%);
+        }
+        
+        .product-table tbody td {
+            padding: 18px 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f3f4;
+            transition: all 0.3s ease;
+        }
+        
+        .product-table tbody tr:hover {
+            background-color: #f8f9ff;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(52, 73, 94, 0.1);
+        }
+        
+        .product-table tbody tr:nth-child(even) {
+            background-color: #fbfcfd;
+        }
+        
+        .product-table tbody tr:nth-child(even):hover {
+            background-color: #f8f9ff;
+        }
+        
+        .product-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .product-type {
+            color: #3498db;
+            font-weight: 500;
+        }
+        
+        .search-highlight {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+            color: #856404;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .product-search-box .form-control {
+            border-color: #bdc3c7;
+            transition: all 0.3s ease;
+        }
+        
+        .product-search-box .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .search-results-info {
+            font-size: 0.875rem;
+            padding: 8px 12px;
+            background: #e3f2fd;
+            border-radius: 6px;
+            border-left: 4px solid #2196f3;
+            margin-top: 10px;
+        }
+        
+        .product-table tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .back-to-home {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            z-index: 1000;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 25px;
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .back-to-home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+            color: white;
+            background: linear-gradient(135deg, #2980b9 0%, #2471a3 100%);
+        }
+        
+        .product-search-box .input-group-text {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
+            border-color: #3498db;
+        }
+        
+        .product-search-box .form-control {
+            border-color: #bdc3c7;
+        }
+        
+        .product-search-box .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        @media (max-width: 768px) {
+            .product-header {
+                padding: 60px 0 40px;
+                margin-top: 65px;
+            }
+            
+            .product-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .product-table {
+                font-size: 0.85rem;
+            }
+            
+            .product-table thead th,
+            .product-table tbody td {
+                padding: 12px 8px;
+            }
+            
+            .back-to-home {
+                bottom: 20px;
+                left: 20px;
+                padding: 12px 18px;
+                font-size: 0.9rem;
+            }
+            
+            /* Mobile Table Responsive Design */
+            .product-table thead {
+                display: none;
+            }
+            
+            .product-table tbody tr {
+                display: block;
+                border: 1px solid #e9ecef;
+                border-radius: 8px;
+                margin-bottom: 15px;
+                padding: 15px;
+                background: white;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+            
+            .product-table tbody td {
+                display: block;
+                text-align: left !important;
+                border: none;
+                padding: 8px 0;
+                position: relative;
+                padding-left: 130px;
+                border-bottom: 1px solid #f1f3f4;
+                min-height: 35px;
+                word-wrap: break-word;
+            }
+            
+            .product-table tbody td:last-child {
+                border-bottom: none;
+            }
+            
+            .product-table tbody td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 120px;
+                font-weight: 600;
+                color: #2c3e50;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                line-height: 1.4;
+                display: flex;
+                align-items: center;
+                min-height: 35px;
+            }
+            
+            .product-table tbody td:first-child {
+                text-align: center !important;
+                font-weight: 700;
+                color: #3498db;
+                font-size: 1.1rem;
+                padding-left: 15px !important;
+            }
+            
+            .product-table tbody td:first-child:before {
+                display: none;
+            }
+            
+            .product-table tbody td:nth-child(2):before {
+                content: "Product Name";
+            }
+            
+            .product-table tbody td:nth-child(3):before {
+                content: "Type";
+            }
+            
+            .product-table tbody td:nth-child(4):before {
+                content: "Generic Name";
+            }
+            
+            .product-table tbody td:nth-child(5):before {
+                content: "Pack Size";
+            }
+            
+            .product-table tbody td:nth-child(6):before {
+                content: "Packing Type";
+            }
+            
+            .product-name {
+                font-weight: 700 !important;
+                color: #2c3e50 !important;
+                font-size: 1rem !important;
+            }
+            
+            .product-type {
+                color: #3498db !important;
+                font-weight: 600 !important;
+                font-size: 0.9rem !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="product-list-page">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="vaatco_logo.jpeg" alt="VAATCO Logo" class="navbar-logo me-2">
+                <span class="brand-text">VAATCO</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#about">
+                            <i class="fas fa-info-circle me-1"></i>About
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-box me-1"></i>Products
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="index.html#products">Product Overview</a></li>
+                            <li><a class="dropdown-item active" href="product-list.html">Our Product List</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#services">
+                            <i class="fas fa-cogs me-1"></i>Services
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#contact">
+                            <i class="fas fa-envelope me-1"></i>Contact
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Product List Header -->
+    <section class="product-header">
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8">
+                    <h1>
+                        <i class="fas fa-boxes me-3"></i>
+                        Our Product List
+                    </h1>
+                    <p class="lead mb-0" style="font-size: 1.4rem; font-weight: 500; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.4); line-height: 1.6;">
+                        Discover our premium quality pharmaceutical raw materials and fine chemicals
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container my-5">
+        <!-- Product Table Container -->
+        <div class="product-table-container">
+            <div class="table-responsive">
+                <table class="table product-table mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col" width="6%">#</th>
+                            <th scope="col" width="28%">Product Name</th>
+                            <th scope="col" width="20%">Type</th>
+                            <th scope="col" width="26%">Generic Name</th>
+                            <th scope="col" width="10%">Pack Size</th>
+                            <th scope="col" width="10%">Packing Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">1</td>
+                            <td class="product-name">Acetaminophen</td>
+                            <td class="product-type">API (Active Pharmaceutical Ingredient)</td>
+                            <td>Paracetamol</td>
+                            <td>25 kg</td>
+                            <td>Drum</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">2</td>
+                            <td class="product-name">Ascorbic Acid</td>
+                            <td class="product-type">Vitamin C</td>
+                            <td>L-Ascorbic Acid</td>
+                            <td>25 kg</td>
+                            <td>Carton</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">3</td>
+                            <td class="product-name">Benzyl Alcohol</td>
+                            <td class="product-type">Fine Chemical</td>
+                            <td>Phenylmethanol</td>
+                            <td>200 kg</td>
+                            <td>Drum</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">4</td>
+                            <td class="product-name">Caffeine Anhydrous</td>
+                            <td class="product-type">API (Active Pharmaceutical Ingredient)</td>
+                            <td>1,3,7-Trimethylxanthine</td>
+                            <td>25 kg</td>
+                            <td>Carton</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">5</td>
+                            <td class="product-name">Calcium Carbonate</td>
+                            <td class="product-type">Pharmaceutical Excipient</td>
+                            <td>Precipitated Chalk</td>
+                            <td>25 kg</td>
+                            <td>Bag</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">6</td>
+                            <td class="product-name">Citric Acid Monohydrate</td>
+                            <td class="product-type">Food Grade Acid</td>
+                            <td>2-Hydroxypropane-1,2,3-tricarboxylic acid</td>
+                            <td>25 kg</td>
+                            <td>Bag</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">7</td>
+                            <td class="product-name">Dextrose Anhydrous</td>
+                            <td class="product-type">Pharmaceutical Sugar</td>
+                            <td>D-Glucose</td>
+                            <td>25 kg</td>
+                            <td>Carton</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">8</td>
+                            <td class="product-name">Ethyl Alcohol (Ethanol)</td>
+                            <td class="product-type">Industrial Solvent</td>
+                            <td>Grain Alcohol</td>
+                            <td>200 L</td>
+                            <td>Drum</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">9</td>
+                            <td class="product-name">Folic Acid</td>
+                            <td class="product-type">Vitamin B9</td>
+                            <td>Pteroylglutamic Acid</td>
+                            <td>25 kg</td>
+                            <td>Carton</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">10</td>
+                            <td class="product-name">Glycerin (Glycerol)</td>
+                            <td class="product-type">Pharmaceutical Excipient</td>
+                            <td>Propane-1,2,3-triol</td>
+                            <td>250 kg</td>
+                            <td>Drum</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">11</td>
+                            <td class="product-name">Hydrochloric Acid</td>
+                            <td class="product-type">Industrial Chemical</td>
+                            <td>Muriatic Acid</td>
+                            <td>35 kg</td>
+                            <td>Carboy</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">12</td>
+                            <td class="product-name">Ibuprofen</td>
+                            <td class="product-type">API (Active Pharmaceutical Ingredient)</td>
+                            <td>2-(4-Isobutylphenyl)propionic acid</td>
+                            <td>25 kg</td>
+                            <td>Drum</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">13</td>
+                            <td class="product-name">Lactose Monohydrate</td>
+                            <td class="product-type">Pharmaceutical Excipient</td>
+                            <td>Milk Sugar</td>
+                            <td>25 kg</td>
+                            <td>Bag</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">14</td>
+                            <td class="product-name">Magnesium Stearate</td>
+                            <td class="product-type">Pharmaceutical Lubricant</td>
+                            <td>Octadecanoic acid magnesium salt</td>
+                            <td>25 kg</td>
+                            <td>Carton</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">15</td>
+                            <td class="product-name">Niacin (Nicotinic Acid)</td>
+                            <td class="product-type">Vitamin B3</td>
+                            <td>Pyridine-3-carboxylic acid</td>
+                            <td>25 kg</td>
+                            <td>Carton</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">16</td>
+                            <td class="product-name">Potassium Chloride</td>
+                            <td class="product-type">Pharmaceutical Salt</td>
+                            <td>Muriate of Potash</td>
+                            <td>25 kg</td>
+                            <td>Bag</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">17</td>
+                            <td class="product-name">Riboflavin (Vitamin B2)</td>
+                            <td class="product-type">Vitamin B2</td>
+                            <td>7,8-Dimethyl-10-ribityliso alloxazine</td>
+                            <td>25 kg</td>
+                            <td>Carton</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">18</td>
+                            <td class="product-name">Sodium Chloride</td>
+                            <td class="product-type">Pharmaceutical Salt</td>
+                            <td>Common Salt</td>
+                            <td>25 kg</td>
+                            <td>Bag</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">19</td>
+                            <td class="product-name">Starch (Corn Starch)</td>
+                            <td class="product-type">Pharmaceutical Excipient</td>
+                            <td>Amylum</td>
+                            <td>25 kg</td>
+                            <td>Bag</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">20</td>
+                            <td class="product-name">Thiamine Hydrochloride</td>
+                            <td class="product-type">Vitamin B1</td>
+                            <td>Vitamin B1 HCl</td>
+                            <td>25 kg</td>
+                            <td>Carton</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">21</td>
+                            <td class="product-name">Zinc Oxide</td>
+                            <td class="product-type">Pharmaceutical Ingredient</td>
+                            <td>Flowers of Zinc</td>
+                            <td>25 kg</td>
+                            <td>Bag</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">22</td>
+                            <td class="product-name">Diclofenac Sodium</td>
+                            <td class="product-type">API (Active Pharmaceutical Ingredient)</td>
+                            <td>2-[(2,6-dichlorophenyl)amino]phenylacetic acid sodium</td>
+                            <td>25 kg</td>
+                            <td>Drum</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">23</td>
+                            <td class="product-name">Hydroxypropyl Methylcellulose</td>
+                            <td class="product-type">Pharmaceutical Excipient</td>
+                            <td>HPMC</td>
+                            <td>25 kg</td>
+                            <td>Carton</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">24</td>
+                            <td class="product-name">Polyethylene Glycol</td>
+                            <td class="product-type">Pharmaceutical Excipient</td>
+                            <td>PEG</td>
+                            <td>25 kg</td>
+                            <td>Carton</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">25</td>
+                            <td class="product-name">Tartaric Acid</td>
+                            <td class="product-type">Food Grade Acid</td>
+                            <td>2,3-Dihydroxybutanedioic acid</td>
+                            <td>25 kg</td>
+                            <td>Bag</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="row mt-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="card-title text-center mb-3" style="color: #2c3e50;">
+                            <i class="fas fa-info-circle me-2"></i>Additional Information
+                        </h5>
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-3">
+                                <div class="p-3">
+                                    <i class="fas fa-certificate text-success fa-2x mb-2"></i>
+                                    <h6>Quality Assured</h6>
+                                    <p class="small text-muted mb-0">All products meet international quality standards</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="p-3">
+                                    <i class="fas fa-shipping-fast text-primary fa-2x mb-2"></i>
+                                    <h6>Fast Delivery</h6>
+                                    <p class="small text-muted mb-0">Timely delivery across all area in Bangladesh</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="p-3">
+                                    <i class="fas fa-headset text-warning fa-2x mb-2"></i>
+                                    <h6>Expert Support</h6>
+                                    <p class="small text-muted mb-0">Professional technical support and consultation</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="index.html#contact" class="btn btn-outline-primary">
+                                <i class="fas fa-envelope me-2"></i>Contact for Custom Requirements
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Back to Home Button -->
+    <a href="index.html" class="back-to-home">
+        <i class="fas fa-home me-2"></i>Back to Home
+    </a>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="vaatco_logo.jpeg" alt="VAATCO Logo" class="footer-logo me-3">
+                        <div>
+                            <h5 class="mb-1 text-white">VAATCO Bangladesh Ltd</h5>
+                            <p class="mb-0 text-light-50">Your Trusted Chemical Partner</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="social-links mb-3">
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="border-light-50">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0 text-light-75">
+                        &copy; 2024 VAATCO Bangladesh Ltd. All rights reserved. | 
+                        <a href="product-list.html" class="text-light">Product List</a> | 
+                        <a href="index.html#contact" class="text-light">Contact Us</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="script_new.js"></script>
+</body>
+</html>
