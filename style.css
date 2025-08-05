@@ -161,8 +161,23 @@ select:focus,
 .navbar {
     background-color: #ffffff !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
     padding: 0.5rem 0;
+    transform: translateY(0);
+}
+
+.navbar.navbar-hidden {
+    transform: translateY(-100%);
+}
+
+.navbar.navbar-minimized {
+    padding: 0.25rem 0;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
+}
+
+.navbar.navbar-minimized .navbar-brand img {
+    max-height: 50px;
+    transition: max-height 0.3s ease;
 }
 
 .navbar-brand {

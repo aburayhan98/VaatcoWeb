@@ -7,12 +7,49 @@ document.addEventListener('DOMContentLoaded', function() {
     const navbarCollapse = document.querySelector('.navbar-collapse');
     const navLinks = document.querySelectorAll('.nav-link');
     
-    // Navbar scroll effect
+    // Navbar scroll effect with minimizing
+    let lastScrollTop = 0;
+    let scrollTimer = null;
+    
     window.addEventListener('scroll', function() {
-        if (window.scrollY > 50) {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Add scrolled class for styling
+        if (scrollTop > 50) {
             navbar.classList.add('scrolled');
+            navbar.classList.add('navbar-minimized');
         } else {
             navbar.classList.remove('scrolled');
+            navbar.classList.remove('navbar-minimized');
+        }
+        
+        // Hide/show navbar based on scroll direction
+        if (scrollTop > 100) { // Only apply effect after scrolling 100px
+            if (scrollTop > lastScrollTop && scrollTop > navbar.offsetHeight) {
+                // Scrolling down - hide navbar
+                navbar.classList.add('navbar-hidden');
+            } else {
+                // Scrolling up - show navbar
+                navbar.classList.remove('navbar-hidden');
+            }
+        } else {
+            // Always show navbar at the top
+            navbar.classList.remove('navbar-hidden');
+        }
+        
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
+        
+        // Clear timer and set a new one to show navbar after scrolling stops
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(function() {
+            navbar.classList.remove('navbar-hidden');
+        }, 1500); // Show navbar after 1.5 seconds of no scrolling
+    });
+    
+    // Show navbar when mouse is near the top of the screen
+    document.addEventListener('mousemove', function(e) {
+        if (e.clientY < 100) { // Mouse is within 100px of top
+            navbar.classList.remove('navbar-hidden');
         }
     });
     

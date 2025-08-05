@@ -7,13 +7,59 @@ document.addEventListener('DOMContentLoaded', function() {
     const navbarCollapse = document.querySelector('.navbar-collapse');
     const navLinks = document.querySelectorAll('.nav-link');
     
-    // Navbar scroll effect
+    // Navbar scroll effect with smart hide/show functionality
+    let lastScrollY = window.scrollY;
+    let isMouseOverNavbar = false;
+    let scrollTimeout;
+
+    // Track mouse position over navbar
+    navbar.addEventListener('mouseenter', function() {
+        isMouseOverNavbar = true;
+        navbar.classList.remove('navbar-hidden');
+    });
+
+    navbar.addEventListener('mouseleave', function() {
+        isMouseOverNavbar = false;
+    });
+
     window.addEventListener('scroll', function() {
-        if (window.scrollY > 50) {
+        const currentScrollY = window.scrollY;
+        
+        // Clear any existing timeout
+        clearTimeout(scrollTimeout);
+        
+        // Add scrolled class for styling
+        if (currentScrollY > 50) {
             navbar.classList.add('scrolled');
         } else {
             navbar.classList.remove('scrolled');
         }
+        
+        // Handle navbar visibility
+        if (currentScrollY > 100) { // Start hiding after 100px
+            if (currentScrollY > lastScrollY && !isMouseOverNavbar) {
+                // Scrolling down - hide navbar
+                navbar.classList.add('navbar-hidden');
+                navbar.classList.remove('navbar-minimized');
+            } else if (currentScrollY < lastScrollY) {
+                // Scrolling up - show navbar
+                navbar.classList.remove('navbar-hidden');
+                navbar.classList.add('navbar-minimized');
+            }
+        } else {
+            // At top of page - show full navbar
+            navbar.classList.remove('navbar-hidden', 'navbar-minimized');
+        }
+        
+        // Set a timeout to show navbar if user stops scrolling
+        scrollTimeout = setTimeout(() => {
+            if (!isMouseOverNavbar && currentScrollY > 100) {
+                navbar.classList.remove('navbar-hidden');
+                navbar.classList.add('navbar-minimized');
+            }
+        }, 2000); // Show after 2 seconds of no scrolling
+        
+        lastScrollY = currentScrollY;
     });
     
     // Close mobile menu when clicking on a link
