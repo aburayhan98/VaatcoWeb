@@ -68,6 +68,12 @@ h1, h2, h3, h4, h5, h6,
     color: var(--white) !important;
 }
 
+/* Management Team - Keep designations black */
+.management-designation strong,
+.management-designation b {
+    color: #000000 !important;
+}
+
 /* Smooth scrolling */
 html {
     scroll-behavior: smooth;
@@ -223,10 +229,15 @@ select:focus,
     font-weight: 500;
     color: var(--text-dark) !important;
     transition: all 0.3s ease;
-    margin: 0 8px;
-    padding: 8px 16px !important;
+    margin: 0 4px;
+    padding: 6px 12px !important;
     border-radius: 6px;
     position: relative;
+    font-size: 0.95rem;
+}
+
+.navbar-nav .nav-link i {
+    font-size: 0.9rem;
 }
 
 .navbar-nav .nav-link:hover {
@@ -268,6 +279,30 @@ select:focus,
 
 .navbar-toggler:hover .navbar-toggler-icon {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Dropdown Menu Styles */
+.dropdown-menu {
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(145, 1, 131, 0.1);
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(145, 1, 131, 0.1);
+    color: #910183;
+}
+
+.dropdown-item i {
+    font-size: 0.8rem;
 }
 
 /* Mobile navbar styles - Clean & Responsive */
@@ -3175,7 +3210,7 @@ footer img:hover {
     font-weight: 500;
     margin-bottom: 20px;
 }
-
+*/
 .management-info {
     margin-bottom: 20px;
 }
