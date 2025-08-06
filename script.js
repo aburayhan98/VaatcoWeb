@@ -253,13 +253,19 @@ document.addEventListener('DOMContentLoaded', function() {
     let translateX = 0;
     let translateY = 0;
     
+    // Mobile touch variables
+    let initialDistance = 0;
+    let initialScale = 1;
+    let isZooming = false;
+    let touches = [];
+    
     // Initialize image preview functionality
     function initializeImagePreview() {
         const previewImage = document.getElementById('previewImage');
         const imageContainer = document.querySelector('.preview-image-container');
         
         if (previewImage && imageContainer) {
-            // Mouse wheel zoom
+            // Mouse wheel zoom (desktop)
             imageContainer.addEventListener('wheel', function(e) {
                 e.preventDefault();
                 const rect = imageContainer.getBoundingClientRect();
@@ -273,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            // Mouse drag to pan
+            // Mouse drag to pan (desktop)
             previewImage.addEventListener('mousedown', function(e) {
                 isDragging = true;
                 startX = e.clientX - translateX;
@@ -297,31 +303,92 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            // Touch events for mobile
+            // Enhanced Touch events for mobile
             previewImage.addEventListener('touchstart', function(e) {
-                if (e.touches.length === 1) {
+                e.preventDefault();
+                touches = Array.from(e.touches);
+                
+                if (touches.length === 1) {
+                    // Single touch - start dragging
                     isDragging = true;
-                    const touch = e.touches[0];
+                    isZooming = false;
+                    const touch = touches[0];
                     startX = touch.clientX - translateX;
                     startY = touch.clientY - translateY;
+                } else if (touches.length === 2) {
+                    // Two touches - start zooming
+                    isDragging = false;
+                    isZooming = true;
+                    initialDistance = getDistance(touches[0], touches[1]);
+                    initialScale = currentZoom;
                 }
-                e.preventDefault();
             });
             
             previewImage.addEventListener('touchmove', function(e) {
-                if (isDragging && e.touches.length === 1) {
-                    const touch = e.touches[0];
+                e.preventDefault();
+                touches = Array.from(e.touches);
+                
+                if (touches.length === 1 && isDragging && !isZooming) {
+                    // Single touch dragging
+                    const touch = touches[0];
                     translateX = touch.clientX - startX;
                     translateY = touch.clientY - startY;
                     updateImageTransform();
+                } else if (touches.length === 2 && isZooming) {
+                    // Two touch zooming
+                    const currentDistance = getDistance(touches[0], touches[1]);
+                    const scale = (currentDistance / initialDistance) * initialScale;
+                    
+                    // Limit zoom levels
+                    currentZoom = Math.min(Math.max(scale, 0.5), 4);
+                    updateImageTransform();
                 }
-                e.preventDefault();
             });
             
-            previewImage.addEventListener('touchend', function() {
-                isDragging = false;
+            previewImage.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                touches = Array.from(e.touches);
+                
+                if (touches.length === 0) {
+                    isDragging = false;
+                    isZooming = false;
+                } else if (touches.length === 1) {
+                    // Switch back to dragging if one finger remains
+                    isDragging = true;
+                    isZooming = false;
+                    const touch = touches[0];
+                    startX = touch.clientX - translateX;
+                    startY = touch.clientY - translateY;
+                }
+            });
+            
+            // Double tap to zoom
+            let lastTapTime = 0;
+            previewImage.addEventListener('touchend', function(e) {
+                const currentTime = new Date().getTime();
+                const tapLength = currentTime - lastTapTime;
+                
+                if (tapLength < 500 && tapLength > 0 && e.touches.length === 0) {
+                    // Double tap detected
+                    if (currentZoom === 1) {
+                        currentZoom = 2;
+                        translateX = 0;
+                        translateY = 0;
+                    } else {
+                        resetZoom();
+                    }
+                    updateImageTransform();
+                }
+                lastTapTime = currentTime;
             });
         }
+    }
+    
+    // Helper function to calculate distance between two touch points
+    function getDistance(touch1, touch2) {
+        const dx = touch1.clientX - touch2.clientX;
+        const dy = touch1.clientY - touch2.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
     }
     
     // Call initialization
@@ -347,6 +414,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Image Preview Functions (Global scope for onclick handlers)
+let currentZoom = 1;
+let translateX = 0;
+let translateY = 0;
+let isDragging = false;
+let isZooming = false;
+
 function openImagePreview(imgElement) {
     const overlay = document.getElementById('imagePreviewOverlay');
     const previewImage = document.getElementById('previewImage');
@@ -361,6 +434,8 @@ function openImagePreview(imgElement) {
         currentZoom = 1;
         translateX = 0;
         translateY = 0;
+        isDragging = false;
+        isZooming = false;
         updateImageTransform();
     }
 }
@@ -392,15 +467,15 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function zoomIn() {
-    if (currentZoom < 3) {
-        currentZoom += 0.2;
+    if (currentZoom < 4) {
+        currentZoom += 0.3;
         updateImageTransform();
     }
 }
 
 function zoomOut() {
     if (currentZoom > 0.5) {
-        currentZoom -= 0.2;
+        currentZoom -= 0.3;
         updateImageTransform();
         
         // Reset position if zoomed out too much
@@ -421,8 +496,20 @@ function resetZoom() {
 function updateImageTransform() {
     const previewImage = document.getElementById('previewImage');
     if (previewImage) {
+        // Constrain translation based on zoom level
+        const maxTranslate = (currentZoom - 1) * 200;
+        translateX = Math.max(-maxTranslate, Math.min(maxTranslate, translateX));
+        translateY = Math.max(-maxTranslate, Math.min(maxTranslate, translateY));
+        
         previewImage.style.transform = `scale(${currentZoom}) translate(${translateX / currentZoom}px, ${translateY / currentZoom}px)`;
         previewImage.style.cursor = currentZoom > 1 ? 'grab' : 'default';
+        
+        // Add transition for smooth zoom operations from buttons
+        if (!isDragging && !isZooming) {
+            previewImage.style.transition = 'transform 0.3s ease';
+        } else {
+            previewImage.style.transition = 'none';
+        }
     }
 }
 
