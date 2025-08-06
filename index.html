@@ -565,6 +565,91 @@
         </div>
     </section>
 
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-5 bg-light">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center">
+                    <h2 class="gallery-title mb-3">Gallery</h2>
+                    <p class="gallery-subtitle">Explore our collection of products and achievements through our visual gallery.</p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- Gallery Image 1 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="gallery-item">
+                        <div class="gallery-image-wrapper">
+                            <img src="sticker/sticker1.jpeg" alt="Gallery Image 1" class="img-fluid gallery-image" onclick="openImagePreview(this)">
+                            <div class="gallery-overlay">
+                                <i class="fas fa-search-plus fa-2x text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Image 2 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="gallery-item">
+                        <div class="gallery-image-wrapper">
+                            <img src="sticker/sticker2.jpeg" alt="Gallery Image 2" class="img-fluid gallery-image" onclick="openImagePreview(this)">
+                            <div class="gallery-overlay">
+                                <i class="fas fa-search-plus fa-2x text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Image 3 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="gallery-item">
+                        <div class="gallery-image-wrapper">
+                            <img src="sticker/sticker3.jpeg" alt="Gallery Image 3" class="img-fluid gallery-image" onclick="openImagePreview(this)">
+                            <div class="gallery-overlay">
+                                <i class="fas fa-search-plus fa-2x text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Image 4 -->
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="gallery-item">
+                        <div class="gallery-image-wrapper">
+                            <img src="sticker/sticker4.jpeg" alt="Gallery Image 4" class="img-fluid gallery-image" onclick="openImagePreview(this)">
+                            <div class="gallery-overlay">
+                                <i class="fas fa-search-plus fa-2x text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Preview Overlay -->
+    <div id="imagePreviewOverlay" class="image-preview-overlay">
+        <div class="preview-container">
+            <button class="preview-close" onclick="closeImagePreview()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="preview-controls">
+                <button class="zoom-btn" id="zoomInBtn" onclick="zoomIn()">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button class="zoom-btn" id="zoomOutBtn" onclick="zoomOut()">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button class="zoom-btn" id="resetZoomBtn" onclick="resetZoom()">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                </button>
+            </div>
+            <div class="preview-image-container">
+                <img id="previewImage" src="" alt="Preview">
+            </div>
+        </div>
+    </div>
+
     <!-- Blog Section -->
     <section class="py-5">
         <div class="container">

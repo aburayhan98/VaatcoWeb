@@ -3384,3 +3384,272 @@ footer img:hover {
         margin-bottom: 0 !important;
     }
 }
+
+/* Gallery Section Styles */
+.gallery-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.gallery-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.gallery-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.gallery-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.gallery-item:hover .gallery-image {
+    transform: scale(1.02);
+}
+
+.gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 102, 204, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+/* Disabled hover effect for overlay
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+}
+*/
+
+.gallery-overlay i {
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+/* Disabled hover effect for icon
+.gallery-item:hover .gallery-overlay i {
+    transform: scale(1);
+}
+*/
+
+/* Gallery Modal Styles */
+#galleryModal .modal-content {
+    border: none;
+    border-radius: 15px;
+}
+
+#galleryModal .modal-header {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 15px 15px 0 0;
+}
+
+#galleryModal .modal-body {
+    padding: 2rem;
+}
+
+#modalImage {
+    max-height: 70vh;
+    width: auto;
+    border-radius: 10px;
+}
+
+/* Responsive Gallery */
+@media (max-width: 768px) {
+    .gallery-title {
+        font-size: 2rem;
+    }
+    
+    .gallery-image {
+        height: 200px;
+    }
+    
+    #modalImage {
+        max-height: 50vh;
+    }
+}
+
+@media (max-width: 576px) {
+    .gallery-image {
+        height: 180px;
+    }
+}
+
+/* Custom Image Preview Overlay Styles */
+.image-preview-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+}
+
+.preview-container {
+    position: relative;
+    width: 90%;
+    height: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.preview-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10001;
+    backdrop-filter: blur(10px);
+}
+
+.preview-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.preview-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10001;
+}
+
+.zoom-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.zoom-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.zoom-btn:active {
+    transform: scale(0.95);
+}
+
+.preview-image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.preview-image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .preview-container {
+        width: 95%;
+        height: 95%;
+    }
+    
+    .preview-close {
+        top: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+    
+    .preview-controls {
+        bottom: 10px;
+        gap: 8px;
+    }
+    
+    .zoom-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .zoom-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1);
+    }
+    
+    .zoom-btn:active {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(0.95);
+    }
+    
+    .preview-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1);
+    }
+    
+    .preview-close:active {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(0.95);
+    }
+}

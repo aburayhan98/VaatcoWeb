@@ -244,4 +244,209 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // Custom Image Preview functionality
+    let currentZoom = 1;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let translateX = 0;
+    let translateY = 0;
+    
+    // Initialize image preview functionality
+    function initializeImagePreview() {
+        const previewImage = document.getElementById('previewImage');
+        const imageContainer = document.querySelector('.preview-image-container');
+        
+        if (previewImage && imageContainer) {
+            // Mouse wheel zoom
+            imageContainer.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                const rect = imageContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                if (e.deltaY > 0) {
+                    zoomOut();
+                } else {
+                    zoomIn();
+                }
+            });
+            
+            // Mouse drag to pan
+            previewImage.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                previewImage.style.cursor = 'grabbing';
+                e.preventDefault();
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    translateX = e.clientX - startX;
+                    translateY = e.clientY - startY;
+                    updateImageTransform();
+                }
+            });
+            
+            document.addEventListener('mouseup', function() {
+                if (isDragging) {
+                    isDragging = false;
+                    previewImage.style.cursor = 'grab';
+                }
+            });
+            
+            // Touch events for mobile
+            previewImage.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 1) {
+                    isDragging = true;
+                    const touch = e.touches[0];
+                    startX = touch.clientX - translateX;
+                    startY = touch.clientY - translateY;
+                }
+                e.preventDefault();
+            });
+            
+            previewImage.addEventListener('touchmove', function(e) {
+                if (isDragging && e.touches.length === 1) {
+                    const touch = e.touches[0];
+                    translateX = touch.clientX - startX;
+                    translateY = touch.clientY - startY;
+                    updateImageTransform();
+                }
+                e.preventDefault();
+            });
+            
+            previewImage.addEventListener('touchend', function() {
+                isDragging = false;
+            });
+        }
+    }
+    
+    // Call initialization
+    initializeImagePreview();
+    
+    // Smooth scrolling for gallery link
+    const galleryLinks = document.querySelectorAll('a[href="#gallery"]');
+    galleryLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetSection = document.getElementById(targetId);
+            
+            if (targetSection) {
+                const offsetTop = targetSection.offsetTop - navbar.offsetHeight - 20;
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+});
+
+// Image Preview Functions (Global scope for onclick handlers)
+function openImagePreview(imgElement) {
+    const overlay = document.getElementById('imagePreviewOverlay');
+    const previewImage = document.getElementById('previewImage');
+    
+    if (overlay && previewImage && imgElement) {
+        previewImage.src = imgElement.src;
+        previewImage.alt = imgElement.alt;
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        
+        // Reset zoom and position
+        currentZoom = 1;
+        translateX = 0;
+        translateY = 0;
+        updateImageTransform();
+    }
+}
+
+function closeImagePreview() {
+    const overlay = document.getElementById('imagePreviewOverlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        
+        // Reset values
+        currentZoom = 1;
+        translateX = 0;
+        translateY = 0;
+    }
+}
+
+// Close on overlay background click
+document.addEventListener('DOMContentLoaded', function() {
+    const overlay = document.getElementById('imagePreviewOverlay');
+    if (overlay) {
+        overlay.addEventListener('click', function(e) {
+            // Close if clicking on overlay background (not on image or controls)
+            if (e.target === overlay) {
+                closeImagePreview();
+            }
+        });
+    }
+});
+
+function zoomIn() {
+    if (currentZoom < 3) {
+        currentZoom += 0.2;
+        updateImageTransform();
+    }
+}
+
+function zoomOut() {
+    if (currentZoom > 0.5) {
+        currentZoom -= 0.2;
+        updateImageTransform();
+        
+        // Reset position if zoomed out too much
+        if (currentZoom <= 1) {
+            translateX = 0;
+            translateY = 0;
+        }
+    }
+}
+
+function resetZoom() {
+    currentZoom = 1;
+    translateX = 0;
+    translateY = 0;
+    updateImageTransform();
+}
+
+function updateImageTransform() {
+    const previewImage = document.getElementById('previewImage');
+    if (previewImage) {
+        previewImage.style.transform = `scale(${currentZoom}) translate(${translateX / currentZoom}px, ${translateY / currentZoom}px)`;
+        previewImage.style.cursor = currentZoom > 1 ? 'grab' : 'default';
+    }
+}
+
+// Keyboard controls for image preview
+document.addEventListener('keydown', function(e) {
+    const overlay = document.getElementById('imagePreviewOverlay');
+    if (overlay && overlay.style.display === 'flex') {
+        switch(e.key) {
+            case 'Escape':
+                closeImagePreview();
+                break;
+            case '+':
+            case '=':
+                e.preventDefault();
+                zoomIn();
+                break;
+            case '-':
+                e.preventDefault();
+                zoomOut();
+                break;
+            case '0':
+                e.preventDefault();
+                resetZoom();
+                break;
+        }
+    }
 });
