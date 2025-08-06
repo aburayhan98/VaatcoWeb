@@ -245,19 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Custom Image Preview functionality
-    let currentZoom = 1;
-    let isDragging = false;
-    let startX = 0;
-    let startY = 0;
-    let translateX = 0;
-    let translateY = 0;
-    
-    // Mobile touch variables
-    let initialDistance = 0;
-    let initialScale = 1;
-    let isZooming = false;
-    let touches = [];
+    // Custom Image Preview functionality - removed duplicate variables
     
     // Initialize image preview functionality
     function initializeImagePreview() {
@@ -391,8 +379,17 @@ document.addEventListener('DOMContentLoaded', function() {
         return Math.sqrt(dx * dx + dy * dy);
     }
     
-    // Call initialization
-    initializeImagePreview();
+    // Helper function to calculate distance between two touch points
+    function getDistance(touch1, touch2) {
+        const dx = touch1.clientX - touch2.clientX;
+        const dy = touch1.clientY - touch2.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+    
+    // Call initialization after DOM is ready
+    setTimeout(function() {
+        initializeImagePreview();
+    }, 100);
     
     // Smooth scrolling for gallery link
     const galleryLinks = document.querySelectorAll('a[href="#gallery"]');
@@ -419,6 +416,11 @@ let translateX = 0;
 let translateY = 0;
 let isDragging = false;
 let isZooming = false;
+let startX = 0;
+let startY = 0;
+let touches = [];
+let initialDistance = 0;
+let initialScale = 1;
 
 function openImagePreview(imgElement) {
     const overlay = document.getElementById('imagePreviewOverlay');
@@ -437,6 +439,11 @@ function openImagePreview(imgElement) {
         isDragging = false;
         isZooming = false;
         updateImageTransform();
+        
+        // Re-initialize event handlers to ensure they work
+        setTimeout(function() {
+            initializeImagePreview();
+        }, 50);
     }
 }
 
@@ -510,6 +517,148 @@ function updateImageTransform() {
         } else {
             previewImage.style.transition = 'none';
         }
+    }
+}
+
+// Helper function to calculate distance between two touch points
+function getDistance(touch1, touch2) {
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+// Global initialization function for image preview
+function initializeImagePreview() {
+    const previewImage = document.getElementById('previewImage');
+    const imageContainer = document.querySelector('.preview-image-container');
+    
+    if (previewImage && imageContainer) {
+        // Remove existing event listeners to avoid duplicates
+        previewImage.removeEventListener('touchstart', handleTouchStart);
+        previewImage.removeEventListener('touchmove', handleTouchMove);
+        previewImage.removeEventListener('touchend', handleTouchEnd);
+        previewImage.removeEventListener('mousedown', handleMouseDown);
+        
+        // Mouse wheel zoom (desktop)
+        imageContainer.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            if (e.deltaY > 0) {
+                zoomOut();
+            } else {
+                zoomIn();
+            }
+        });
+        
+        // Mouse drag to pan (desktop)
+        previewImage.addEventListener('mousedown', handleMouseDown);
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+        
+        // Touch events for mobile
+        previewImage.addEventListener('touchstart', handleTouchStart);
+        previewImage.addEventListener('touchmove', handleTouchMove);
+        previewImage.addEventListener('touchend', handleTouchEnd);
+    }
+}
+
+// Touch event handlers
+function handleTouchStart(e) {
+    e.preventDefault();
+    touches = Array.from(e.touches);
+    
+    if (touches.length === 1) {
+        // Single touch - start dragging
+        isDragging = true;
+        isZooming = false;
+        const touch = touches[0];
+        startX = touch.clientX - translateX;
+        startY = touch.clientY - translateY;
+    } else if (touches.length === 2) {
+        // Two touches - start zooming
+        isDragging = false;
+        isZooming = true;
+        initialDistance = getDistance(touches[0], touches[1]);
+        initialScale = currentZoom;
+    }
+}
+
+function handleTouchMove(e) {
+    e.preventDefault();
+    touches = Array.from(e.touches);
+    
+    if (touches.length === 1 && isDragging && !isZooming) {
+        // Single touch dragging
+        const touch = touches[0];
+        translateX = touch.clientX - startX;
+        translateY = touch.clientY - startY;
+        updateImageTransform();
+    } else if (touches.length === 2 && isZooming) {
+        // Two touch zooming
+        const currentDistance = getDistance(touches[0], touches[1]);
+        const scale = (currentDistance / initialDistance) * initialScale;
+        
+        // Limit zoom levels
+        currentZoom = Math.min(Math.max(scale, 0.5), 4);
+        updateImageTransform();
+    }
+}
+
+let lastTapTime = 0;
+function handleTouchEnd(e) {
+    e.preventDefault();
+    touches = Array.from(e.touches);
+    
+    // Double tap to zoom detection
+    const currentTime = new Date().getTime();
+    const tapLength = currentTime - lastTapTime;
+    
+    if (tapLength < 500 && tapLength > 0 && e.touches.length === 0) {
+        // Double tap detected
+        if (currentZoom === 1) {
+            currentZoom = 2;
+            translateX = 0;
+            translateY = 0;
+        } else {
+            resetZoom();
+        }
+        updateImageTransform();
+    }
+    lastTapTime = currentTime;
+    
+    if (touches.length === 0) {
+        isDragging = false;
+        isZooming = false;
+    } else if (touches.length === 1) {
+        // Switch back to dragging if one finger remains
+        isDragging = true;
+        isZooming = false;
+        const touch = touches[0];
+        startX = touch.clientX - translateX;
+        startY = touch.clientY - translateY;
+    }
+}
+
+// Mouse event handlers
+function handleMouseDown(e) {
+    isDragging = true;
+    startX = e.clientX - translateX;
+    startY = e.clientY - translateY;
+    document.getElementById('previewImage').style.cursor = 'grabbing';
+    e.preventDefault();
+}
+
+function handleMouseMove(e) {
+    if (isDragging) {
+        translateX = e.clientX - startX;
+        translateY = e.clientY - startY;
+        updateImageTransform();
+    }
+}
+
+function handleMouseUp() {
+    if (isDragging) {
+        isDragging = false;
+        document.getElementById('previewImage').style.cursor = 'grab';
     }
 }
 
