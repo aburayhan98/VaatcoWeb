@@ -471,6 +471,31 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Theme toggle (shared with admin logic pattern)
+    const themeBtn = document.getElementById('themeToggle');
+    if(themeBtn){
+        const savedTheme = localStorage.getItem('vaatco_public_theme');
+        if(savedTheme === 'dark') document.body.classList.add('theme-dark');
+        updateThemeIcon();
+        themeBtn.addEventListener('click', ()=>{
+            document.body.classList.toggle('theme-dark');
+            const mode = document.body.classList.contains('theme-dark') ? 'dark':'light';
+            localStorage.setItem('vaatco_public_theme', mode);
+            updateThemeIcon();
+        });
+        function updateThemeIcon(){
+            const icon = themeBtn.querySelector('i');
+            if(!icon) return;
+            if(document.body.classList.contains('theme-dark')){
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+    }
 });
 
 function zoomIn() {

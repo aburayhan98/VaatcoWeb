@@ -9,7 +9,128 @@
     --bg-light: #f8f9fa;
     --white: #ffffff;
     --bold-text-color: #910183;
+    --bg-body: #ffffff;
+    --bg-section-alt: #f8f9fa;
+    --bg-surface: #ffffff;
+    --border-color: #e2e6ea;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+    --shadow: 0 6px 18px -4px rgba(0,0,0,0.15);
+    --gradient-accent: linear-gradient(135deg,#32CD32,#910183 70%);
 }
+
+body.theme-dark {
+    --bg-body: #0f1115;
+    --bg-section-alt: #181b22;
+    --bg-surface: #1f242c;
+    --text-dark: #e6eaf1;
+    --text-light: #94a0b2;
+    --bold-text-color: #d26bd2;
+    --border-color: #2d3541;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.03) inset;
+    --shadow: 0 4px 14px -2px rgba(0,0,0,.7),0 2px 6px -1px rgba(0,0,0,.5);
+}
+
+body { background: var(--bg-body); }
+
+body.theme-dark .navbar { background:#181b22 !important; }
+body.theme-dark .navbar-nav .nav-link { color: var(--text-light) !important; }
+body.theme-dark .navbar-nav .nav-link.active { background:#32CD32; color:#fff !important; }
+/* Enhanced dark theme navbar visibility (especially mobile) */
+body.theme-dark .navbar { background:#181b22 !important; box-shadow:0 2px 10px -2px rgba(0,0,0,.75); }
+body.theme-dark .navbar-nav .nav-link { color:#e6eaf1 !important; font-weight:500; }
+body.theme-dark .navbar-nav .nav-link:hover { background:#273038; color:#ffffff !important; }
+body.theme-dark .navbar-nav .nav-link:focus { background:#273038; }
+body.theme-dark .navbar-nav .nav-link.active { background:linear-gradient(135deg,#25a389,#1b6f91); color:#fff !important; box-shadow:0 2px 10px -2px rgba(0,0,0,.6); }
+body.theme-dark .dropdown-menu { background:#1f242c; border-color:#2d3541; box-shadow:0 8px 24px -6px rgba(0,0,0,.85); }
+body.theme-dark .dropdown-item { color:#d0d7de; }
+body.theme-dark .dropdown-item:hover { background:#273038; color:#fff; }
+/* Mobile collapsed menu background */
+@media (max-width: 991.98px){
+    body.theme-dark .navbar-collapse { background:#1f242c !important; border:1px solid #2d3541; box-shadow:0 10px 30px -8px rgba(0,0,0,.8); }
+    body.theme-dark .navbar-nav .nav-link { padding:12px 16px !important; border-radius:8px; }
+    body.theme-dark .navbar-nav .nav-link + .nav-link { margin-top:4px; }
+}
+/* Toggler adjustments for dark theme */
+body.theme-dark .navbar-toggler { border-color:#25a389; }
+body.theme-dark .navbar-toggler:hover { background:#25a389; border-color:#25a389; }
+body.theme-dark .navbar-toggler-icon { background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23e6eaf1' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important; }
+/* Language toggle button contrast in dark mode */
+body.theme-dark #languageToggle { color:#9bd8ff; border-color:#2d3541; background:#1f242c; }
+body.theme-dark #languageToggle:hover { background:#273038; color:#ffffff; }
+body.theme-dark .dropdown-menu { background: var(--bg-surface); border-color: var(--border-color); }
+body.theme-dark .dropdown-item { color: var(--text-light); }
+body.theme-dark .dropdown-item:hover { background: rgba(255,255,255,.05); color:#fff; }
+body.theme-dark section.bg-light { background: var(--bg-section-alt) !important; }
+body.theme-dark .offer-card, 
+body.theme-dark .feature-card, 
+body.theme-dark .service-card, 
+body.theme-dark .management-card, 
+body.theme-dark .blog-card, 
+body.theme-dark .contact-form-container, 
+body.theme-dark .contact-info-card, 
+body.theme-dark .products-container, 
+body.theme-dark .product-item, 
+body.theme-dark table, 
+body.theme-dark .gallery-item { background: var(--bg-surface) !important; color: var(--text-dark); border-color: var(--border-color); }
+body.theme-dark .table-striped>tbody>tr:nth-of-type(odd)>* { --bs-table-accent-bg: rgba(255,255,255,.02); color: inherit; }
+body.theme-dark .table-hover tbody tr:hover { background: rgba(255,255,255,.04); }
+body.theme-dark .table-primary th { background:#213042 !important; }
+body.theme-dark footer.bg-dark { background:#0f1115 !important; }
+body.theme-dark .hero-section { border-color:#910183; }
+body.theme-dark .hero-title, body.theme-dark .hero-subtitle { color:#fff !important; }
+body.theme-dark .about-title, body.theme-dark h2 { color: var(--bold-text-color) !important; }
+body.theme-dark .btn-primary { background: var(--gradient-accent); border:0; }
+body.theme-dark .btn-outline-primary { color:#32CD32; border-color:#32CD32; }
+body.theme-dark .btn-outline-primary:hover { background:#32CD32; color:#fff; }
+body.theme-dark .contact-form-header h4, body.theme-dark .contact-info-header h5 { color: var(--bold-text-color) !important; }
+body.theme-dark .gallery-overlay { background: rgba(0,0,0,.45); }
+body.theme-dark .back-to-top { background:#32CD32 !important; }
+body.theme-dark .product-overlay { background: rgba(0,0,0,.55); }
+body.theme-dark .management-designation strong { color:#fff !important; }
+body.theme-dark .table.table-striped thead.table-primary { background:#213042 !important; color:#fff; }
+body.theme-dark #dealers .table thead { background:#213042 !important; color:#fff; }
+body.theme-dark #dealers table tbody tr { background:#1a2026; }
+body.theme-dark #dealers table tbody tr:nth-child(even) { background:#182026; }
+body.theme-dark #dealers table tbody tr:hover { background:#222c35; }
+body.theme-dark #dealers table td, body.theme-dark #dealers table th { border-color:#2d3541; color:#d0d7de; }
+body.theme-dark #dealers table td { font-weight:500; }
+/* Dealers table enhanced styling */
+#dealers .dealers-table { border:1px solid rgba(0,0,0,.06); box-shadow:0 4px 14px -4px rgba(0,0,0,.1); border-radius:14px; overflow:hidden; }
+#dealers .dealers-table thead { background:linear-gradient(135deg,#0066cc,#32CD32); color:#fff; }
+#dealers .dealers-table thead th { border:none; letter-spacing:.5px; font-size:.8rem; text-transform:uppercase; padding:14px 16px; font-weight:600; }
+#dealers .dealers-table tbody tr { transition:.25s ease; }
+#dealers .dealers-table tbody tr:hover { background:rgba(0,102,204,.06); transform:translateY(-2px); box-shadow:0 6px 18px -6px rgba(0,0,0,.2); }
+#dealers .dealers-table tbody td { padding:14px 16px; vertical-align:middle; font-size:.95rem; }
+#dealers .dealer-district { display:inline-flex; align-items:center; gap:.4rem; font-weight:600; color:#0066cc; }
+#dealers .dealer-name { font-weight:600; color:#910183; letter-spacing:.3px; }
+#dealers .dealer-contact { font-family:monospace; background:linear-gradient(135deg,#e0f7ff,#f0ffe9); padding:4px 10px; border-radius:30px; font-size:.85rem; font-weight:600; color:#004b63; box-shadow:0 2px 6px -2px rgba(0,0,0,.25); }
+#dealers .dealer-contact i { color:#32CD32; }
+@media (max-width: 767.98px){
+    #dealers .dealers-table thead { display:none; }
+    #dealers .dealers-table tbody tr { display:block; margin-bottom:14px; border:1px solid rgba(0,0,0,.08); border-radius:12px; background:#fff; box-shadow:0 4px 12px -4px rgba(0,0,0,.15); }
+    body.theme-dark #dealers .dealers-table tbody tr { background:#1f242c; box-shadow:0 4px 14px -4px rgba(0,0,0,.6); }
+    #dealers .dealers-table tbody td { display:flex; justify-content:space-between; padding:10px 14px; position:relative; }
+    #dealers .dealers-table tbody td:before { content:attr(data-label); font-size:.7rem; font-weight:600; text-transform:uppercase; letter-spacing:.5px; color:var(--text-light); opacity:.8; margin-right:1rem; }
+    #dealers .dealers-table tbody td:nth-child(1):before { content:"District"; }
+    #dealers .dealers-table tbody td:nth-child(2):before { content:"Dealer"; }
+    #dealers .dealers-table tbody td:nth-child(3):before { content:"Contact"; }
+    #dealers .dealers-table tbody td { border-bottom:1px dashed rgba(0,0,0,.06); }
+    body.theme-dark #dealers .dealers-table tbody td { border-bottom:1px dashed #2d3541; }
+    #dealers .dealers-table tbody tr:last-child td:last-child { border-bottom:none; }
+    #dealers .dealer-contact { width:100%; justify-content:flex-end; }
+}
+body.theme-dark #dealers .dealer-district { color:#58b8ff; }
+body.theme-dark #dealers .dealer-name { color:#d26bd2; }
+body.theme-dark #dealers .dealer-contact { background:linear-gradient(135deg,#183743,#1f4c57); color:#9bd8ff; box-shadow:0 2px 8px -2px rgba(0,0,0,.7); }
+body.theme-dark #dealers .dealer-contact i { color:#25a389; }
+
+/* Theme toggle states */
+#themeToggle { transition: all .25s ease; }
+body.theme-dark #themeToggle i.fa-moon { display:none; }
+body.theme-dark #themeToggle i.fa-sun { display:inline-block; }
+#themeToggle i.fa-sun { display:none; }
+body.theme-dark #themeToggle { color:#ffd700; border-color:#ffd700; }
+body.theme-dark #themeToggle:hover { background:#ffd700; color:#111; }
 
 * {
     margin: 0;
@@ -3157,7 +3278,7 @@ footer img:hover {
     border-radius: 15px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    background: white;
+    background: var(--bg-surface);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -3190,7 +3311,7 @@ footer img:hover {
 
 .management-content {
     padding: 25px;
-    background: white;
+    background: var(--bg-surface);
     position: relative;
     z-index: 2;
     text-align: center;
@@ -3210,7 +3331,6 @@ footer img:hover {
     font-weight: 500;
     margin-bottom: 20px;
 }
-*/
 .management-info {
     margin-bottom: 20px;
 }
@@ -3345,24 +3465,13 @@ footer img:hover {
         height: 36px;
     }
 }
-    
-    .management-content {
-        padding: 12px;
-        height: 150px;
-    }
-    
-    .management-name {
-        font-size: 1rem;
-        line-height: 1.2;
-    }
-    
-    .management-designation {
-        font-size: 0.85rem;
-    }
-    
-    .info-item span {
-        font-size: 0.85rem;
-    }
+
+/* Extra small devices fine-tuning */
+@media (max-width: 480px) {
+    .management-content { padding:12px; height:150px; }
+    .management-name { font-size:1rem; line-height:1.2; }
+    .management-designation { font-size:0.85rem; }
+    .info-item span { font-size:0.85rem; }
 }
 
 /* Service Buttons Container */
@@ -3607,8 +3716,6 @@ footer img:hover {
     -webkit-tap-highlight-color: transparent;
     touch-action: none;
 }
-}
-
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
     .preview-container {

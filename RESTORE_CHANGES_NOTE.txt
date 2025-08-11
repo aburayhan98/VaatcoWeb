@@ -1,0 +1,9 @@
+Dynamic features removed per request on 2025-08-10:
+- Removed public-data.js inclusion from index.html
+- Restored static gallery, dealers, and product list tables
+- Restored static product rows in product-list.html
+- Any previously added dynamic localStorage loaders now unused
+
+Files adjusted: index.html, product-list.html
+
+If you need to re-enable dynamic loading later, re-add public-data.js and replace static tbody with dynamic ids.

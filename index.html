@@ -24,6 +24,12 @@
             <a class="navbar-brand" href="#home">
                 <img src="vaatco_logo.jpeg" alt="VAATCO Logo" height="45">
             </a>
+            <button id="themeToggle" class="btn btn-outline-secondary btn-sm ms-2 order-lg-2" type="button" aria-label="Toggle theme" title="Toggle light/dark">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button id="languageToggle" class="btn btn-outline-secondary btn-sm ms-2 order-lg-2" type="button" aria-label="Toggle language" title="Translate English/Bangla">
+                <span class="lang-label" data-lang-label>BN</span>
+            </button>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -31,45 +37,45 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link active" href="#home">
-                            <i class="fas fa-home me-1"></i>Home
+                            <i class="fas fa-home me-1"></i><span data-i18n="nav.home">Home</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#about">
-                            <i class="fas fa-info-circle me-1"></i>About
+                            <i class="fas fa-info-circle me-1"></i><span data-i18n="nav.about">About</span>
                         </a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#products" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-fish me-1"></i>Products
+                            <i class="fas fa-fish me-1"></i><span data-i18n="nav.products">Products</span>
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#products">
-                                <i class="fas fa-eye me-1"></i>Overview
+                                <i class="fas fa-eye me-1"></i><span data-i18n="nav.productsOverview">Overview</span>
                             </a></li>
                             <li><a class="dropdown-item" href="product-list.html">
-                                <i class="fas fa-list-ul me-1"></i>Product List
+                                <i class="fas fa-list-ul me-1"></i><span data-i18n="nav.productList">Product List</span>
                             </a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#services">
-                            <i class="fas fa-cogs me-1"></i>Services
+                            <i class="fas fa-cogs me-1"></i><span data-i18n="nav.services">Services</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#management">
-                            <i class="fas fa-users me-1"></i>Team
+                            <i class="fas fa-users me-1"></i><span data-i18n="nav.team">Team</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#dealers">
-                            <i class="fas fa-store me-1"></i>Dealers
+                            <i class="fas fa-store me-1"></i><span data-i18n="nav.dealers">Dealers</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#contact">
-                            <i class="fas fa-envelope me-1"></i>Contact
+                            <i class="fas fa-envelope me-1"></i><span data-i18n="nav.contact">Contact</span>
                         </a>
                     </li>
                 </ul>
@@ -95,11 +101,11 @@
                             <div class="container">
                                 <div class="row align-items-center min-vh-100">
                                     <div class="col-lg-8">
-                                        <h1 class="hero-title">VAATCO Bangladesh Ltd: The Wave of The Future</h1>
-                                        <p class="hero-subtitle">VAATCO Bangladesh Ltd Operates in the aquaculture/agro sector, specializing in fish, cattle & poultry medicine and feed supplements products</p>
-                                        <div class="hero-buttons">
-                                            <a href="#products" class="btn btn-primary btn-lg me-3">Explore Products</a>
-                                            <a href="#contact" class="btn btn-outline-light btn-lg">Contact Us</a>
+                                        <h1 class="hero-title" data-i18n="hero.title1">VAATCO Bangladesh Ltd: The Wave of The Future</h1>
+                                                    <p class="hero-subtitle" data-i18n="hero.subtitle1">VAATCO Bangladesh Ltd Operates in the aquaculture/agro sector, specializing in fish, cattle & poultry medicine and feed supplements products</p>
+                                                    <div class="hero-buttons">
+                                                        <a href="#products" class="btn btn-primary btn-lg me-3" data-i18n="actions.exploreProducts">Explore Products</a>
+                                                        <a href="#contact" class="btn btn-outline-light btn-lg" data-i18n="actions.contactUs">Contact Us</a>
                                         </div>
                                     </div>
                                 </div>
@@ -115,11 +121,11 @@
                             <div class="container">
                                 <div class="row align-items-center min-vh-100">
                                     <div class="col-lg-8">
-                                        <h1 class="hero-title">Sustainable Aquaculture Solutions</h1>
-                                        <p class="hero-subtitle">Empowering farmers with high-quality probiotics, essential supplements, and advanced water management solutions for sustainable growth</p>
+                                        <h1 class="hero-title" data-i18n="hero.title2">Sustainable Aquaculture Solutions</h1>
+                                        <p class="hero-subtitle" data-i18n="hero.subtitle2">Empowering farmers with high-quality probiotics, essential supplements, and advanced water management solutions for sustainable growth</p>
                                         <div class="hero-buttons">
-                                            <a href="#about" class="btn btn-primary btn-lg me-3">Learn More</a>
-                                            <a href="#dealers" class="btn btn-outline-light btn-lg">Find Dealers</a>
+                                            <a href="#about" class="btn btn-primary btn-lg me-3" data-i18n="actions.learnMore">Learn More</a>
+                                            <a href="#dealers" class="btn btn-outline-light btn-lg" data-i18n="actions.findDealers">Find Dealers</a>
                                         </div>
                                     </div>
                                 </div>
@@ -135,11 +141,11 @@
                             <div class="container">
                                 <div class="row align-items-center min-vh-100">
                                     <div class="col-lg-8">
-                                        <h1 class="hero-title">Excellence in Fish Health & Water Quality</h1>
-                                        <p class="hero-subtitle">Discover our comprehensive range of aquaculture products designed to optimize fish health and maintain pristine pond environments</p>
+                                        <h1 class="hero-title" data-i18n="hero.title3">Excellence in Fish Health & Water Quality</h1>
+                                        <p class="hero-subtitle" data-i18n="hero.subtitle3">Discover our comprehensive range of aquaculture products designed to optimize fish health and maintain pristine pond environments</p>
                                         <div class="hero-buttons">
-                                            <a href="#products" class="btn btn-primary btn-lg me-3">View Products</a>
-                                            <a href="#gallery" class="btn btn-outline-light btn-lg">View Gallery</a>
+                                            <a href="#products" class="btn btn-primary btn-lg me-3" data-i18n="actions.viewProducts">View Products</a>
+                                            <a href="#gallery" class="btn btn-outline-light btn-lg" data-i18n="actions.viewGallery">View Gallery</a>
                                         </div>
                                     </div>
                                 </div>
@@ -164,34 +170,34 @@
     <!-- What We Offer Section -->
     <section class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-center mb-5">What We Offer</h2>
+            <h2 class="text-center mb-5" data-i18n="sections.offer">What We Offer</h2>
             <div class="row">
                 <div class="col-md-3 col-sm-6 mb-4">
                     <div class="offer-card text-center p-4">
                         <i class="fas fa-fish fa-3x text-primary mb-3"></i>
-                        <h5>Wide Selection of Quality Products</h5>
-                        <p>Provide a wide selection of quality aquaculture and veterinary products</p>
+                        <h5 data-i18n="offer.wideSelection.title">Wide Selection of Quality Products</h5>
+                        <p data-i18n="offer.wideSelection.text">Provide a wide selection of quality aquaculture and veterinary products</p>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6 mb-4">
                     <div class="offer-card text-center p-4">
                         <i class="fas fa-handshake fa-3x text-primary mb-3"></i>
-                        <h5>Trusted and Reliable</h5>
-                        <p>To be a Trusted and Reliable partner in your aquaculture journey</p>
+                        <h5 data-i18n="offer.trusted.title">Trusted and Reliable</h5>
+                        <p data-i18n="offer.trusted.text">To be a Trusted and Reliable partner in your aquaculture journey</p>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6 mb-4">
                     <div class="offer-card text-center p-4">
                         <i class="fas fa-users fa-3x text-primary mb-3"></i>
-                        <h5>Customer Focus</h5>
-                        <p>Customer Focus is at the heart of everything we do</p>
+                        <h5 data-i18n="offer.focus.title">Customer Focus</h5>
+                        <p data-i18n="offer.focus.text">Customer Focus is at the heart of everything we do</p>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6 mb-4">
                     <div class="offer-card text-center p-4">
                         <i class="fas fa-headset fa-3x text-primary mb-3"></i>
-                        <h5>Customer Service Priority</h5>
-                        <p>Customer Service Priority ensures your satisfaction</p>
+                        <h5 data-i18n="offer.service.title">Customer Service Priority</h5>
+                        <p data-i18n="offer.service.text">Customer Service Priority ensures your satisfaction</p>
                     </div>
                 </div>
             </div>
@@ -206,11 +212,11 @@
                     <div class="about-content">
                         <div class="about-badge">
                             <i class="fas fa-seedling"></i>
-                            <span>Since 2024</span>
+                            <span data-i18n="about.since">Since 2024</span>
                         </div>
-                        <h2 class="about-title mb-4">About VAATCO: Pioneering Sustainable Solutions</h2>
-                        <p class="about-lead">VAATCO Bangladesh Ltd stands at the forefront of providing high-quality probiotics, essential supplements, and advanced water management solutions.</p>
-                        <p class="about-description">Our commitment is to foster sustainable growth in aquaculture and agriculture, empowering farmers with effective and reliable products that enhance productivity and ensure the well-being of their stock.</p>
+                        <h2 class="about-title mb-4" data-i18n="about.title">About VAATCO: Pioneering Sustainable Solutions</h2>
+                        <p class="about-lead" data-i18n="about.lead">VAATCO Bangladesh Ltd stands at the forefront of providing high-quality probiotics, essential supplements, and advanced water management solutions.</p>
+                        <p class="about-description" data-i18n="about.description">Our commitment is to foster sustainable growth in aquaculture and agriculture, empowering farmers with effective and reliable products that enhance productivity and ensure the well-being of their stock.</p>
                         
                         <div class="about-features">
                             <div class="about-feature">
@@ -218,8 +224,8 @@
                                     <i class="fas fa-check-circle"></i>
                                 </div>
                                 <div class="feature-text">
-                                    <strong>Quality Assured</strong>
-                                    <p>ISO certified products with rigorous testing</p>
+                                    <strong data-i18n="about.features.quality.title">Quality Assured</strong>
+                                    <p data-i18n="about.features.quality.text">ISO certified products with rigorous testing</p>
                                 </div>
                             </div>
                             <div class="about-feature">
@@ -227,8 +233,8 @@
                                     <i class="fas fa-leaf"></i>
                                 </div>
                                 <div class="feature-text">
-                                    <strong>Eco-Friendly</strong>
-                                    <p>Sustainable solutions for environmental protection</p>
+                                    <strong data-i18n="about.features.eco.title">Eco-Friendly</strong>
+                                    <p data-i18n="about.features.eco.text">Sustainable solutions for environmental protection</p>
                                 </div>
                             </div>
                             <div class="about-feature">
@@ -236,18 +242,16 @@
                                     <i class="fas fa-users"></i>
                                 </div>
                                 <div class="feature-text">
-                                    <strong>Expert Support</strong>
-                                    <p>24/7 technical assistance from our specialists</p>
+                                    <strong data-i18n="about.features.support.title">Expert Support</strong>
+                                    <p data-i18n="about.features.support.text">24/7 technical assistance from our specialists</p>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="about-buttons">
-                            <a href="#products" class="btn btn-primary about-btn-primary">
-                                <i class="fas fa-arrow-right me-2"></i>Explore Products
+                            <a href="#products" class="btn btn-primary about-btn-primary"><i class="fas fa-arrow-right me-2"></i><span data-i18n="actions.exploreProducts">Explore Products</span>
                             </a>
-                            <a href="#contact" class="btn btn-outline-primary about-btn-outline">
-                                <i class="fas fa-phone me-2"></i>Contact Us
+                            <a href="#contact" class="btn btn-outline-primary about-btn-outline"><i class="fas fa-phone me-2"></i><span data-i18n="actions.contactUs">Contact Us</span>
                             </a>
                         </div>
                     </div>
@@ -287,7 +291,7 @@
     <!-- Products Section -->
     <section id="products" class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-center mb-5">Our Core Product Categories</h2>
+            <h2 class="text-center mb-5" data-i18n="products.sectionTitle">Our Core Product Categories</h2>
             
             <!-- Single unified card containing all three products -->
             <div class="row justify-content-center">
@@ -303,8 +307,8 @@
                                         </div>
                                     </div>
                                     <div class="product-content">
-                                        <h4>Aquaculture Products</h4>
-                                        <p>Discover our range of products designed to optimize fish health, promote rapid growth, and maintain pristine pond environments. From probiotics to growth enhancers, we cover all your aquaculture needs.</p>
+                                        <h4 data-i18n="products.cat1.title">Aquaculture Products</h4>
+                                        <p data-i18n="products.cat1.text">Discover our range of products designed to optimize fish health, promote rapid growth, and maintain pristine pond environments. From probiotics to growth enhancers, we cover all your aquaculture needs.</p>
                                     </div>
                                 </div>
                             </div>
@@ -317,8 +321,8 @@
                                         </div>
                                     </div>
                                     <div class="product-content">
-                                        <h4>Veterinary Products</h4>
-                                        <p>VAATCO offers a comprehensive selection of veterinary medicines and supplements, ensuring the vitality and productivity of your livestock. Our solutions address common ailments and promote overall animal well-being.</p>
+                                        <h4 data-i18n="products.cat2.title">Veterinary Products</h4>
+                                        <p data-i18n="products.cat2.text">VAATCO offers a comprehensive selection of veterinary medicines and supplements, ensuring the vitality and productivity of your livestock. Our solutions address common ailments and promote overall animal well-being.</p>
                                     </div>
                                 </div>
                             </div>
@@ -331,8 +335,8 @@
                                         </div>
                                     </div>
                                     <div class="product-content">
-                                        <h4>Water Treatment & Pond Care</h4>
-                                        <p>Achieve optimal water quality with our advanced water treatment and pond care solutions. Our products effectively manage pond parameters, prevent disease outbreaks, and create a healthy aquatic ecosystem.</p>
+                                        <h4 data-i18n="products.cat3.title">Water Treatment & Pond Care</h4>
+                                        <p data-i18n="products.cat3.text">Achieve optimal water quality with our advanced water treatment and pond care solutions. Our products effectively manage pond parameters, prevent disease outbreaks, and create a healthy aquatic ecosystem.</p>
                                     </div>
                                 </div>
                             </div>
@@ -343,11 +347,9 @@
             
             <!-- Complete Product List Button -->
             <div class="text-center mt-5">
-                <a href="product-list.html" class="btn btn-primary btn-lg btn-product-list" data-action="product-list">
-                    <i class="fas fa-list-ul me-2"></i>View Our Product List
+                <a href="product-list.html" class="btn btn-primary btn-lg btn-product-list" data-action="product-list"><i class="fas fa-list-ul me-2"></i><span data-i18n="products.viewListBtn">View Our Product List</span>
                 </a>
-                <p class="mt-3 text-muted">
-                    <small>Explore our comprehensive catalog with detailed product specifications and search functionality</small>
+                <p class="mt-3 text-muted"><small data-i18n="products.viewListNote">Explore our comprehensive catalog with detailed product specifications and search functionality</small>
                 </p>
             </div>
         </div>
@@ -356,15 +358,15 @@
     <!-- Why Choose VAATCO Section -->
     <section class="py-5 bg-light why-choose-section">
         <div class="container">
-            <h2 class="text-center mb-5">Why Choose VAATCO? Our Commitment to Your Success</h2>
+            <h2 class="text-center mb-5" data-i18n="why.title">Why Choose VAATCO? Our Commitment to Your Success</h2>
             <div class="row">
                 <div class="col-lg-3 col-md-6 mb-4">
                     <div class="feature-card text-center">
                         <div class="feature-icon mb-3">
                             <i class="fas fa-award fa-3x text-primary"></i>
                         </div>
-                        <h5>High-Quality Products</h5>
-                        <p>We adhere to stringent quality controls, ensuring every product meets the highest industry standards for purity and effectiveness.</p>
+                        <h5 data-i18n="why.card1.title">High-Quality Products</h5>
+                        <p data-i18n="why.card1.text">We adhere to stringent quality controls, ensuring every product meets the highest industry standards for purity and effectiveness.</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4">
@@ -372,8 +374,8 @@
                         <div class="feature-icon mb-3">
                             <i class="fas fa-flask fa-3x text-primary"></i>
                         </div>
-                        <h5>Field-Tested Solutions</h5>
-                        <p>Our products are rigorously tested in real-world farming conditions to guarantee their performance and reliability.</p>
+                        <h5 data-i18n="why.card2.title">Field-Tested Solutions</h5>
+                        <p data-i18n="why.card2.text">Our products are rigorously tested in real-world farming conditions to guarantee their performance and reliability.</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4">
@@ -381,8 +383,8 @@
                         <div class="feature-icon mb-3">
                             <i class="fas fa-support fa-3x text-primary"></i>
                         </div>
-                        <h5>Farmer & Dealer Support</h5>
-                        <p>VAATCO provides unparalleled support, offering expert advice and assistance to our farmers and distribution partners.</p>
+                        <h5 data-i18n="why.card3.title">Farmer & Dealer Support</h5>
+                        <p data-i18n="why.card3.text">VAATCO provides unparalleled support, offering expert advice and assistance to our farmers and distribution partners.</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4">
@@ -390,8 +392,8 @@
                         <div class="feature-icon mb-3">
                             <i class="fas fa-dollar-sign fa-3x text-primary"></i>
                         </div>
-                        <h5>Affordable & Effective</h5>
-                        <p>We offer cost-effective solutions that deliver significant results, maximizing your return on investment.</p>
+                        <h5 data-i18n="why.card4.title">Affordable & Effective</h5>
+                        <p data-i18n="why.card4.text">We offer cost-effective solutions that deliver significant results, maximizing your return on investment.</p>
                     </div>
                 </div>
             </div>
@@ -401,8 +403,8 @@
     <!-- Services Section -->
     <section id="services" class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-center mb-3">Our Services</h2>
-            <p class="text-center mb-5">VAATCO Bangladesh Ltd provides comprehensive services to support sustainable aquaculture and agriculture. Our expert team delivers solutions tailored to meet the unique needs of farmers and industry professionals.</p>
+            <h2 class="text-center mb-3" data-i18n="services.title">Our Services</h2>
+            <p class="text-center mb-5" data-i18n="services.lead">VAATCO Bangladesh Ltd provides comprehensive services to support sustainable aquaculture and agriculture. Our expert team delivers solutions tailored to meet the unique needs of farmers and industry professionals.</p>
             
             <div class="row">
                 <div class="col-lg-4 col-md-6 mb-4">
@@ -411,8 +413,8 @@
                             <div class="service-icon mb-3">
                                 <i class="fas fa-fish fa-3x text-primary"></i>
                             </div>
-                            <h5 class="card-title">Aquaculture Consultation</h5>
-                            <p class="card-text">Expert guidance on fish farming practices, pond management, and water quality optimization for maximum productivity.</p>
+                            <h5 class="card-title" data-i18n="services.card1.title">Aquaculture Consultation</h5>
+                            <p class="card-text" data-i18n="services.card1.text">Expert guidance on fish farming practices, pond management, and water quality optimization for maximum productivity.</p>
                         </div>
                     </div>
                 </div>
@@ -422,8 +424,8 @@
                             <div class="service-icon mb-3">
                                 <i class="fas fa-seedling fa-3x text-primary"></i>
                             </div>
-                            <h5 class="card-title">Agricultural Support</h5>
-                            <p class="card-text">Comprehensive support for livestock and poultry farming with specialized medicine and feed supplement solutions.</p>
+                            <h5 class="card-title" data-i18n="services.card2.title">Agricultural Support</h5>
+                            <p class="card-text" data-i18n="services.card2.text">Comprehensive support for livestock and poultry farming with specialized medicine and feed supplement solutions.</p>
                         </div>
                     </div>
                 </div>
@@ -433,8 +435,8 @@
                             <div class="service-icon mb-3">
                                 <i class="fas fa-microscope fa-3x text-primary"></i>
                             </div>
-                            <h5 class="card-title">Water Quality Testing</h5>
-                            <p class="card-text">Professional water analysis and testing services to ensure optimal conditions for aquatic life and farming success.</p>
+                            <h5 class="card-title" data-i18n="services.card3.title">Water Quality Testing</h5>
+                            <p class="card-text" data-i18n="services.card3.text">Professional water analysis and testing services to ensure optimal conditions for aquatic life and farming success.</p>
                         </div>
                     </div>
                 </div>
@@ -444,8 +446,8 @@
                             <div class="service-icon mb-3">
                                 <i class="fas fa-graduation-cap fa-3x text-primary"></i>
                             </div>
-                            <h5 class="card-title">Training Programs</h5>
-                            <p class="card-text">Educational workshops and training sessions on modern farming techniques and best practices in aquaculture.</p>
+                            <h5 class="card-title" data-i18n="services.card4.title">Training Programs</h5>
+                            <p class="card-text" data-i18n="services.card4.text">Educational workshops and training sessions on modern farming techniques and best practices in aquaculture.</p>
                         </div>
                     </div>
                 </div>
@@ -455,8 +457,8 @@
                             <div class="service-icon mb-3">
                                 <i class="fas fa-truck fa-3x text-primary"></i>
                             </div>
-                            <h5 class="card-title">Product Distribution</h5>
-                            <p class="card-text">Reliable distribution network ensuring timely delivery of quality products across Bangladesh and beyond.</p>
+                            <h5 class="card-title" data-i18n="services.card5.title">Product Distribution</h5>
+                            <p class="card-text" data-i18n="services.card5.text">Reliable distribution network ensuring timely delivery of quality products across Bangladesh and beyond.</p>
                         </div>
                     </div>
                 </div>
@@ -466,16 +468,16 @@
                             <div class="service-icon mb-3">
                                 <i class="fas fa-headset fa-3x text-primary"></i>
                             </div>
-                            <h5 class="card-title">Technical Support</h5>
-                            <p class="card-text">24/7 technical assistance and customer support to help you maximize the benefits of our products and services.</p>
+                            <h5 class="card-title" data-i18n="services.card6.title">Technical Support</h5>
+                            <p class="card-text" data-i18n="services.card6.text">24/7 technical assistance and customer support to help you maximize the benefits of our products and services.</p>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="service-buttons text-center">
-                <a href="#contact" class="btn btn-primary me-3">Get Our Services</a>
-                <a href="#contact" class="btn btn-outline-primary">Contact for Consultation</a>
+                <a href="#contact" class="btn btn-primary me-3" data-i18n="services.getBtn">Get Our Services</a>
+                <a href="#contact" class="btn btn-outline-primary" data-i18n="services.contactBtn">Contact for Consultation</a>
             </div>
         </div>
     </section>
@@ -485,8 +487,8 @@
         <div class="container">
             <div class="row justify-content-center mb-5">
                 <div class="col-lg-8 text-center">
-                    <h2 class="management-title mb-3">Management Team</h2>
-                    <p class="management-subtitle">Meet our experienced leadership team dedicated to driving excellence in aquaculture and agriculture solutions across Bangladesh Agricultural Industry.</p>
+                    <h2 class="management-title mb-3" data-i18n="management.title">Management Team</h2>
+                    <p class="management-subtitle" data-i18n="management.subtitle">Meet our experienced leadership team dedicated to driving excellence in aquaculture and agriculture solutions across Bangladesh Agricultural Industry.</p>
                 </div>
             </div>
             
@@ -499,7 +501,7 @@
                         </div>
                         <div class="management-content">
                             <h5 class="management-name">Md. Salequl Kausar Shameem</h5>
-                            <p class="management-designation" style="color:#000 !important;"><strong>Head of Operations</strong></p>
+                            <p class="management-designation"><strong data-i18n="management.headOps">Head of Operations</strong></p>
                             <div class="management-info">
                                 <div class="info-item">
                                     <i class="fas fa-envelope"></i>
@@ -523,7 +525,7 @@
                         </div>
                         <div class="management-content">
                             <h5 class="management-name">A.K.M Shahinur Alam Shahin</h5>
-                            <p class="management-designation" style="color:#000 !important;"><strong>General Manager (Operation)</strong></p>
+                            <p class="management-designation"><strong data-i18n="management.gmOps">General Manager (Operation)</strong></p>
                             <div class="management-info">
                                 <div class="info-item">
                                     <i class="fas fa-envelope"></i>
@@ -546,7 +548,7 @@
                         </div>
                         <div class="management-content">
                             <h5 class="management-name">Md. Omar Faruque Titu</h5>
-                            <p class="management-designation" style="color:#000 !important;"><strong>Deputy General Manager (Technical)</strong></p>
+                            <p class="management-designation"><strong data-i18n="management.dgmTech">Deputy General Manager (Technical)</strong></p>
                             <div class="management-info">
                                 <div class="info-item">
                                     <i class="fas fa-envelope"></i>
@@ -570,8 +572,8 @@
         <div class="container">
             <div class="row justify-content-center mb-5">
                 <div class="col-lg-8 text-center">
-                    <h2 class="gallery-title mb-3">Gallery</h2>
-                    <p class="gallery-subtitle">Explore our collection of products and achievements through our visual gallery.</p>
+                    <h2 class="gallery-title mb-3" data-i18n="gallery.title">Gallery</h2>
+                    <p class="gallery-subtitle" data-i18n="gallery.subtitle">Explore our collection of products and achievements through our visual gallery.</p>
                 </div>
             </div>
             
@@ -653,30 +655,30 @@
     <!-- Blog Section -->
     <section class="py-5">
         <div class="container">
-            <h2 class="text-center mb-3">Latest Insights: VAATCO Blog</h2>
-            <p class="text-center mb-5">Stay informed with the latest trends and best practices in aquaculture and agro-based medicine through our blog. We regularly publish articles to help you optimize your farming operations and enhance productivity.</p>
+            <h2 class="text-center mb-3" data-i18n="blog.title">Latest Insights: VAATCO Blog</h2>
+            <p class="text-center mb-5" data-i18n="blog.lead">Stay informed with the latest trends and best practices in aquaculture and agro-based medicine through our blog. We regularly publish articles to help you optimize your farming operations and enhance productivity.</p>
             
             <div class="row">
                 <div class="col-lg-6 mb-4">
                     <div class="blog-card">
                         <div class="card-body">
-                            <h5>5 Benefits of Zeolite in Aquaculture</h5>
-                            <p>Learn how Zeolite plays a crucial role in maintaining water quality, absorbing toxins, and improving overall pond health for better fish growth.</p>
+                            <h5 data-i18n="blog.post1.title">5 Benefits of Zeolite in Aquaculture</h5>
+                            <p data-i18n="blog.post1.text">Learn how Zeolite plays a crucial role in maintaining water quality, absorbing toxins, and improving overall pond health for better fish growth.</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6 mb-4">
                     <div class="blog-card">
                         <div class="card-body">
-                            <h5>How Yucca Improves Pond Water Quality</h5>
-                            <p>Discover the natural power of Yucca extract in reducing ammonia levels and unpleasant odors, leading to a healthier aquatic environment.</p>
+                            <h5 data-i18n="blog.post2.title">How Yucca Improves Pond Water Quality</h5>
+                            <p data-i18n="blog.post2.text">Discover the natural power of Yucca extract in reducing ammonia levels and unpleasant odors, leading to a healthier aquatic environment.</p>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="text-center">
-                <a href="#" class="btn btn-primary">Read More Articles</a>
+                <a href="#" class="btn btn-primary" data-i18n="blog.readMore">Read More Articles</a>
             </div>
         </div>
     </section>
@@ -684,35 +686,35 @@
     <!-- Dealers Section -->
     <section id="dealers" class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-center mb-3">Find Our Dealers: Your Local VAATCO Partner</h2>
-            <p class="text-center mb-5">Locate your nearest VAATCO authorized dealer with ease. Our extensive network ensures that high-quality aquaculture and veterinary products are readily available across Bangladesh. Search by district to find a partner close to you.</p>
+            <h2 class="text-center mb-3" data-i18n="dealers.title">Find Our Dealers: Your Local VAATCO Partner</h2>
+            <p class="text-center mb-5" data-i18n="dealers.lead">Locate your nearest VAATCO authorized dealer with ease. Our extensive network ensures that high-quality aquaculture and veterinary products are readily available across Bangladesh. Search by district to find a partner close to you.</p>
             
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover">
+                        <table class="table table-striped table-hover dealers-table">
                             <thead class="table-primary">
                                 <tr>
-                                    <th>District</th>
-                                    <th>Dealer Name</th>
-                                    <th>Contact</th>
+                                    <th data-i18n="dealers.table.district">District</th>
+                                    <th data-i18n="dealers.table.dealer">Dealer Name</th>
+                                    <th data-i18n="dealers.table.contact">Contact</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Dhaka</td>
-                                    <td>Green Farms Supply</td>
-                                    <td>+88017XXXXXXX</td>
+                                    <td><span class="dealer-district">Dhaka</span></td>
+                                    <td><span class="dealer-name">Green Farms Supply</span></td>
+                                    <td><span class="dealer-contact"><i class="fas fa-phone me-1"></i>+88017XXXXXXX</span></td>
                                 </tr>
                                 <tr>
-                                    <td>Chittagong</td>
-                                    <td>Aqua Plus Solutions</td>
-                                    <td>+88019XXXXXXX</td>
+                                    <td><span class="dealer-district">Chittagong</span></td>
+                                    <td><span class="dealer-name">Aqua Plus Solutions</span></td>
+                                    <td><span class="dealer-contact"><i class="fas fa-phone me-1"></i>+88019XXXXXXX</span></td>
                                 </tr>
                                 <tr>
-                                    <td>Khulna</td>
-                                    <td>Delta Agro-Vet</td>
-                                    <td>+88018XXXXXXX</td>
+                                    <td><span class="dealer-district">Khulna</span></td>
+                                    <td><span class="dealer-name">Delta Agro-Vet</span></td>
+                                    <td><span class="dealer-contact"><i class="fas fa-phone me-1"></i>+88018XXXXXXX</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -721,7 +723,7 @@
             </div>
             
             <div class="text-center mt-4">
-                <a href="#" class="btn btn-primary">Become a Distributor</a>
+                <a href="#" class="btn btn-primary" data-i18n="dealers.become">Become a Distributor</a>
             </div>
         </div>
     </section>
@@ -731,8 +733,8 @@
         <div class="container">
             <div class="row justify-content-center mb-5">
                 <div class="col-lg-8 text-center">
-                    <h2 class="contact-title mb-3">Contact Us: Get in Touch with VAATCO</h2>
-                    <p class="contact-subtitle">Have questions or need assistance? Reach out to VAATCO Bangladesh Ltd. Our dedicated team is ready to provide expert advice and support for all your aquaculture and agriculture needs.</p>
+                    <h2 class="contact-title mb-3" data-i18n="contact.title">Contact Us: Get in Touch with VAATCO</h2>
+                    <p class="contact-subtitle" data-i18n="contact.subtitle">Have questions or need assistance? Reach out to VAATCO Bangladesh Ltd. Our dedicated team is ready to provide expert advice and support for all your aquaculture and agriculture needs.</p>
                 </div>
             </div>
             
@@ -740,46 +742,45 @@
                 <div class="col-lg-8 mb-4">
                     <div class="contact-form-container">
                         <div class="contact-form-header">
-                            <h4><i class="fas fa-paper-plane me-2"></i>Send us a Message</h4>
-                            <p>Feel free to fill out the form below, and we will get back to you promptly. For immediate assistance, use our direct call or WhatsApp options.</p>
+                            <h4><i class="fas fa-paper-plane me-2"></i><span data-i18n="contact.form.title">Send us a Message</span></h4>
+                            <p data-i18n="contact.form.lead">Feel free to fill out the form below, and we will get back to you promptly. For immediate assistance, use our direct call or WhatsApp options.</p>
                         </div>
                         
                         <form id="contactForm" class="contact-form">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <div class="form-group">
-                                        <label for="name" class="form-label"><i class="fas fa-user me-1"></i>Full Name</label>
-                                        <input type="text" class="form-control" id="name" placeholder="Enter your full name" required>
+                                        <label for="name" class="form-label"><i class="fas fa-user me-1"></i><span data-i18n="contact.form.fullNameLabel">Full Name</span></label>
+                                        <input type="text" class="form-control" id="name" placeholder="Enter your full name" data-i18n-placeholder="contact.form.fullNamePh" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="form-group">
-                                        <label for="email" class="form-label"><i class="fas fa-envelope me-1"></i>Email Address</label>
-                                        <input type="email" class="form-control" id="email" placeholder="Enter your email address" required>
+                                        <label for="email" class="form-label"><i class="fas fa-envelope me-1"></i><span data-i18n="contact.form.emailLabel">Email Address</span></label>
+                                        <input type="email" class="form-control" id="email" placeholder="Enter your email address" data-i18n-placeholder="contact.form.emailPh" required>
                                     </div>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <div class="form-group">
-                                    <label for="phone" class="form-label"><i class="fas fa-phone me-1"></i>Phone Number</label>
-                                    <input type="tel" class="form-control" id="phone" placeholder="Enter your phone number">
+                                    <label for="phone" class="form-label"><i class="fas fa-phone me-1"></i><span data-i18n="contact.form.phoneLabel">Phone Number</span></label>
+                                    <input type="tel" class="form-control" id="phone" placeholder="Enter your phone number" data-i18n-placeholder="contact.form.phonePh">
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <div class="form-group">
-                                    <label for="subject" class="form-label"><i class="fas fa-tag me-1"></i>Subject</label>
-                                    <input type="text" class="form-control" id="subject" placeholder="What is this regarding?" required>
+                                    <label for="subject" class="form-label"><i class="fas fa-tag me-1"></i><span data-i18n="contact.form.subjectLabel">Subject</span></label>
+                                    <input type="text" class="form-control" id="subject" placeholder="What is this regarding?" data-i18n-placeholder="contact.form.subjectPh" required>
                                 </div>
                             </div>
                             <div class="mb-4">
                                 <div class="form-group">
-                                    <label for="message" class="form-label"><i class="fas fa-comment me-1"></i>Message</label>
-                                    <textarea class="form-control" id="message" rows="5" placeholder="Tell us how we can help you..." required></textarea>
+                                    <label for="message" class="form-label"><i class="fas fa-comment me-1"></i><span data-i18n="contact.form.messageLabel">Message</span></label>
+                                    <textarea class="form-control" id="message" rows="5" placeholder="Tell us how we can help you..." data-i18n-placeholder="contact.form.messagePh" required></textarea>
                                 </div>
                             </div>
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary btn-lg contact-submit-btn">
-                                    <i class="fas fa-paper-plane me-2"></i>Send Message
+                                <button type="submit" class="btn btn-primary btn-lg contact-submit-btn"><i class="fas fa-paper-plane me-2"></i><span data-i18n="contact.form.sendBtn">Send Message</span>
                                 </button>
                             </div>
                         </form>
@@ -788,7 +789,7 @@
                 <div class="col-lg-4">
                     <div class="contact-info-card">
                         <div class="contact-info-header">
-                            <h5><i class="fas fa-info-circle me-2"></i>Contact Information</h5>
+                            <h5><i class="fas fa-info-circle me-2"></i><span data-i18n="contact.info.title">Contact Information</span></h5>
                         </div>
                         <div class="contact-info-body">
                             <div class="contact-item">
@@ -796,7 +797,7 @@
                                     <i class="fas fa-map-marker-alt"></i>
                                 </div>
                                 <div class="contact-details">
-                                    <strong>Office Address</strong>
+                                    <strong data-i18n="contact.info.addressLabel">Office Address</strong>
                                     <p>Your Office Address Here</p>
                                 </div>
                             </div>
@@ -805,7 +806,7 @@
                                     <i class="fas fa-phone"></i>
                                 </div>
                                 <div class="contact-details">
-                                    <strong>Call Now</strong>
+                                    <strong data-i18n="contact.info.callLabel">Call Now</strong>
                                     <p>+8801XXXXXXXX</p>
                                 </div>
                             </div>
@@ -814,16 +815,14 @@
                                     <i class="fas fa-envelope"></i>
                                 </div>
                                 <div class="contact-details">
-                                    <strong>Email</strong>
+                                    <strong data-i18n="contact.info.emailLabel">Email</strong>
                                     <p>info@vaatco.com</p>
                                 </div>
                             </div>
                             <div class="contact-buttons">
-                                <a href="tel:+8801XXXXXXXX" class="btn btn-success contact-btn">
-                                    <i class="fas fa-phone me-2"></i>Call Us
+                                <a href="tel:+8801XXXXXXXX" class="btn btn-success contact-btn"><i class="fas fa-phone me-2"></i><span data-i18n="contact.info.callBtn">Call Us</span>
                                 </a>
-                                <a href="https://wa.me/8801XXXXXXXX" class="btn btn-success contact-btn">
-                                    <i class="fab fa-whatsapp me-2"></i>WhatsApp Us
+                                <a href="https://wa.me/8801XXXXXXXX" class="btn btn-success contact-btn"><i class="fab fa-whatsapp me-2"></i><span data-i18n="contact.info.whatsappBtn">WhatsApp Us</span>
                                 </a>
                             </div>
                         </div>
@@ -839,11 +838,11 @@
             <div class="row">
                 <div class="col-lg-6">
                     <img src="vaatco_logo.jpeg" alt="VAATCO Logo" height="40" class="mb-3">
-                    <p>VAATCO Bangladesh Ltd - The Wave of The Future</p>
+                    <p data-i18n="footer.tagline">VAATCO Bangladesh Ltd - The Wave of The Future</p>
                 </div>
                 <div class="col-lg-6 text-lg-end">
-                    <p>&copy; 2025 VAATCO Bangladesh Ltd. All rights reserved.</p>
-                    <p>Made with ❤️ for sustainable aquaculture</p>
+                    <p data-i18n="footer.copyright">&copy; 2025 VAATCO Bangladesh Ltd. All rights reserved.</p>
+                    <p data-i18n="footer.love">Made with ❤️ for sustainable aquaculture</p>
                 </div>
             </div>
         </div>
@@ -851,6 +850,8 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Translation JS -->
+    <script src="translate.js"></script>
     <!-- Custom JS -->
     <script src="script.js"></script>
 </body>
