@@ -4,7 +4,8 @@ const STORAGE_KEYS = {
   AUTH: 'vaatco_admin_auth',
   GALLERY: 'vaatco_gallery_items',
   PRODUCTS: 'vaatco_products',
-  DEALERS: 'vaatco_dealers'
+  DEALERS: 'vaatco_dealers',
+  BLOG: 'vaatco_blog_posts'
 };
 
 // Default demo data (can be removed later)
@@ -21,6 +22,10 @@ const defaultData = {
   dealers: [
     { id: 1, district: 'Dhaka', name: 'Green Farms Supply', contact: '+88017XXXXXXX' },
     { id: 2, district: 'Chittagong', name: 'Aqua Plus Solutions', contact: '+88019XXXXXXX' }
+  ],
+  blog: [
+    { id:1, title:'5 Benefits of Zeolite in Aquaculture', summary:'How Zeolite improves water quality and pond health for better growth.' },
+    { id:2, title:'How Yucca Improves Pond Water Quality', summary:'Natural reduction of ammonia and odors in aquaculture systems.' }
   ]
 };
 
@@ -28,6 +33,7 @@ function initStorage() {
   if (!localStorage.getItem(STORAGE_KEYS.GALLERY)) localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(defaultData.gallery));
   if (!localStorage.getItem(STORAGE_KEYS.PRODUCTS)) localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(defaultData.products));
   if (!localStorage.getItem(STORAGE_KEYS.DEALERS)) localStorage.setItem(STORAGE_KEYS.DEALERS, JSON.stringify(defaultData.dealers));
+  if (!localStorage.getItem(STORAGE_KEYS.BLOG)) localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(defaultData.blog));
 }
 
 // Auth (simple demo - replace with real backend later)
@@ -56,11 +62,13 @@ function renderStats() {
   const gallery = JSON.parse(localStorage.getItem(STORAGE_KEYS.GALLERY) || '[]');
   const products = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
   const dealers = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || '[]');
+  const blog = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]');
   statsRow.innerHTML = '';
   const tiles = [
     { icon: 'fa-image', label: 'Gallery Items', value: gallery.length },
     { icon: 'fa-box', label: 'Products', value: products.length },
-    { icon: 'fa-store', label: 'Dealers', value: dealers.length }
+    { icon: 'fa-store', label: 'Dealers', value: dealers.length },
+    { icon: 'fa-blog', label: 'Blog Posts', value: blog.length }
   ];
   tiles.forEach(t => {
     const col = ce('div', 'col-md-4 mb-3');
@@ -150,6 +158,39 @@ function loadDealers() {
     tr.innerHTML = `<td>${item.district}</td><td>${item.name}</td><td>${item.contact}</td><td><button class="btn btn-sm btn-outline-primary me-1 edit" data-id="${item.id}"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-outline-danger del" data-id="${item.id}"><i class="fas fa-trash"></i></button></td>`;
     tbody.appendChild(tr);
   });
+}
+
+// Blog CRUD
+function loadBlog(){
+  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]');
+  const tbody = document.querySelector('#blogTable tbody');
+  if(!tbody) return;
+  tbody.innerHTML='';
+  list.forEach(post=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${post.title}</td><td>${post.summary}</td><td style="width:120px;"><button class='btn btn-sm btn-outline-primary me-1 edit' data-id='${post.id}'><i class='fas fa-pen'></i></button><button class='btn btn-sm btn-outline-danger del' data-id='${post.id}'><i class='fas fa-trash'></i></button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+function saveBlog(e){
+  e.preventDefault();
+  const id = document.getElementById('blogId').value;
+  const title = document.getElementById('blogTitle').value.trim();
+  const summary = document.getElementById('blogSummary').value.trim();
+  if(!title || !summary) return;
+  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]');
+  if(id){
+    const idx = list.findIndex(p=>p.id==id);
+    if(idx>-1) list[idx] = { ...list[idx], title, summary };
+  } else {
+    list.push({ id: generateId(list), title, summary });
+  }
+  localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(list));
+  loadBlog();
+  bootstrap.Modal.getInstance(document.getElementById('blogModal')).hide();
+  document.getElementById('blogForm').reset();
+  document.getElementById('blogId').value='';
+  renderStats();
 }
 
 function saveDealer(e) {
@@ -290,6 +331,26 @@ function attachDelegates() {
       loadDealers();
       renderStats();
     }
+    if (e.target.closest('#blogTable .edit')) {
+      const id = e.target.closest('button').dataset.id;
+      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]');
+      const item = list.find(i=> i.id==id);
+      if(item){
+        document.getElementById('blogId').value = item.id;
+        document.getElementById('blogTitle').value = item.title;
+        document.getElementById('blogSummary').value = item.summary;
+        new bootstrap.Modal(document.getElementById('blogModal')).show();
+      }
+    }
+    if (e.target.closest('#blogTable .del')) {
+      const id = e.target.closest('button').dataset.id;
+      if(!confirm('Delete this blog post?')) return;
+      let list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]');
+      list = list.filter(i=> i.id != id);
+      localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(list));
+      loadBlog();
+      renderStats();
+    }
   });
 }
 
@@ -307,6 +368,7 @@ function setupNav() {
       if (section === 'gallery') loadGallery();
       if (section === 'products') loadProducts();
       if (section === 'dealers') loadDealers();
+  if (section === 'blog') loadBlog();
       if (section === 'dashboard') renderStats();
     });
   });
@@ -320,6 +382,8 @@ function setupForms() {
   if (productForm) productForm.addEventListener('submit', saveProduct);
   const dealerForm = document.getElementById('dealerForm');
   if (dealerForm) dealerForm.addEventListener('submit', saveDealer);
+  const blogForm = document.getElementById('blogForm');
+  if (blogForm) blogForm.addEventListener('submit', saveBlog);
 }
 
 // Auth handling
@@ -409,7 +473,8 @@ window.addEventListener('orientationchange', ()=>{
 function getGalleryItems() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.GALLERY) || '[]'); }
 function getProducts() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]'); }
 function getDealers() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || '[]'); }
-window.VAATCO_DATA = { getGalleryItems, getProducts, getDealers };
+function getBlogPosts() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]'); }
+window.VAATCO_DATA = { getGalleryItems, getProducts, getDealers, getBlogPosts };
 
 // Init
 window.addEventListener('DOMContentLoaded', function(){
