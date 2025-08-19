@@ -1086,12 +1086,60 @@ section {
 }
 
 /* Add general section spacing to replace borders */
+/* Enhanced section styling with attractive borders for visual separation */
 section {
     padding: 4rem 0 !important; /* Standard section padding */
+    position: relative;
+    transition: all 0.3s ease; /* Smooth transitions */
 }
 
 section.hero-section {
     padding: 0 !important; /* Override for hero section */
+}
+
+/* Add decorative borders to sections for better visual separation */
+section:not(.hero-section) {
+    border-bottom: 3px solid transparent;
+    border-image: linear-gradient(to right, transparent, rgba(138, 43, 226, 0.3), transparent) 1;
+    margin-bottom: 2rem;
+}
+
+/* Hover effect for sections */
+section:not(.hero-section):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Specific section border styling for visual hierarchy */
+section.bg-light {
+    border-bottom: 3px solid rgba(138, 43, 226, 0.2) !important;
+    border-image: none !important;
+    box-shadow: 0 2px 10px rgba(138, 43, 226, 0.1);
+}
+
+section#about {
+    border-bottom: 3px solid rgba(50, 205, 50, 0.3) !important;
+    border-image: none !important;
+}
+
+section#services {
+    border-bottom: 3px solid rgba(0, 123, 255, 0.3) !important;
+    border-image: none !important;
+}
+
+section#management {
+    border-bottom: 3px solid rgba(255, 193, 7, 0.4) !important;
+    border-image: none !important;
+}
+
+section#gallery {
+    border-bottom: 3px solid rgba(220, 53, 69, 0.3) !important;
+    border-image: none !important;
+}
+
+section#dealers {
+    border-bottom: 3px solid rgba(40, 167, 69, 0.3) !important;
+    border-image: none !important;
 }
 
 /* Remove borders from all carousel elements */
@@ -1132,18 +1180,20 @@ section.hero-section {
     background-image: inherit !important;
 }
 
-/* Replace section borders with padding for visual separation */
+/* Replace section borders with attractive visual borders */
 section.bg-light {
-    border: none !important;
-    padding: 4rem 0 5rem 0 !important; /* Add extra padding instead of border */
+    border-bottom: 3px solid rgba(138, 43, 226, 0.2) !important;
+    padding: 4rem 0 5rem 0 !important;
     background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%) !important;
     margin-bottom: 2rem !important;
+    box-shadow: 0 2px 10px rgba(138, 43, 226, 0.1);
 }
 
 section.bg-white {
-    border: none !important;
-    padding: 4rem 0 5rem 0 !important; /* Add extra padding instead of border */
+    border-bottom: 3px solid rgba(50, 205, 50, 0.2) !important;
+    padding: 4rem 0 5rem 0 !important;
     margin-bottom: 2rem !important;
+    box-shadow: 0 2px 10px rgba(50, 205, 50, 0.1);
 }
 
 /* What We Offer Section - Enhanced Design */
@@ -1435,13 +1485,15 @@ section.bg-white {
     }
 }
 
-/* About Section */
+/* About Section - Enhanced with attractive border */
 .about-section {
     background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     position: relative;
     overflow: hidden;
-    border-bottom: 4px solid #32CD32;
+    border-bottom: 4px solid #32CD32 !important;
+    border-top: 2px solid rgba(50, 205, 50, 0.2);
     box-shadow: 0 3px 15px rgba(50, 205, 50, 0.1);
+    margin-bottom: 2rem;
 }
 
 .about-section::before {
@@ -2295,13 +2347,14 @@ section.bg-white {
     }
 }
 
-/* Features Section - Why Choose VAATCO Cards - Replace border with padding */
+/* Features Section - Why Choose VAATCO Cards - Enhanced with border */
 .why-choose-section {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     position: relative;
-    border: none !important; /* Remove border */
-    padding: 5rem 0 6rem 0 !important; /* Add extra padding instead */
-    margin-bottom: 3rem !important; /* Add margin for separation */
+    border-bottom: 4px solid #8A2BE2 !important; /* Restore attractive border */
+    border-top: 2px solid rgba(138, 43, 226, 0.2);
+    padding: 5rem 0 6rem 0 !important;
+    margin-bottom: 3rem !important;
     box-shadow: 0 3px 15px rgba(138, 43, 226, 0.1);
 }
 
@@ -2476,13 +2529,14 @@ section.bg-white {
     background-color: rgba(0, 102, 204, 0.05);
 }
 
-/* Contact Section - Replace borders with padding */
+/* Contact Section - Enhanced with attractive borders */
 .contact-section {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     position: relative;
-    border: none !important; /* Remove all borders */
-    padding: 6rem 0 6rem 0 !important; /* Add generous padding instead */
-    margin: 3rem 0 !important; /* Add margin for separation */
+    border-top: 4px solid #8A2BE2 !important; /* Restore top border */
+    border-bottom: 4px solid #32CD32 !important; /* Restore bottom border */
+    padding: 6rem 0 6rem 0 !important;
+    margin: 3rem 0 !important;
     box-shadow: 0 3px 15px rgba(138, 43, 226, 0.1), 0 -3px 15px rgba(50, 205, 50, 0.1);
 }
 
@@ -2811,6 +2865,53 @@ body:not(.theme-dark) .contact-info-header h5 { font-size:1.3rem; letter-spacing
 .btn-success:hover {
     background: #218838;
     transform: translateY(-2px);
+}
+
+/* Additional Section Styling for Better Visual Separation */
+
+/* Services Section Enhancement */
+#services {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-bottom: 4px solid #007bff !important;
+    border-top: 2px solid rgba(0, 123, 255, 0.2);
+    box-shadow: 0 3px 15px rgba(0, 123, 255, 0.1);
+    margin-bottom: 2rem;
+}
+
+/* Management Section Enhancement */
+#management {
+    background: linear-gradient(135deg, #ffffff 0%, #fff3cd 50%, #ffffff 100%);
+    border-bottom: 4px solid #ffc107 !important;
+    border-top: 2px solid rgba(255, 193, 7, 0.3);
+    box-shadow: 0 3px 15px rgba(255, 193, 7, 0.15);
+    margin-bottom: 2rem;
+}
+
+/* Gallery Section Enhancement */
+#gallery {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffe6e6 50%, #f8f9fa 100%);
+    border-bottom: 4px solid #dc3545 !important;
+    border-top: 2px solid rgba(220, 53, 69, 0.2);
+    box-shadow: 0 3px 15px rgba(220, 53, 69, 0.1);
+    margin-bottom: 2rem;
+}
+
+/* Dealers Section Enhancement */
+#dealers,
+.dealers-section {
+    background: linear-gradient(135deg, #ffffff 0%, #d4edda 50%, #ffffff 100%);
+    border-bottom: 4px solid #28a745 !important;
+    border-top: 2px solid rgba(40, 167, 69, 0.2);
+    box-shadow: 0 3px 15px rgba(40, 167, 69, 0.1);
+    margin-bottom: 2rem;
+}
+
+/* Products Section Enhancement */
+#products {
+    border-bottom: 4px solid #6610f2 !important;
+    border-top: 2px solid rgba(102, 16, 242, 0.2);
+    box-shadow: 0 3px 15px rgba(102, 16, 242, 0.1);
+    margin-bottom: 2rem;
 }
 
 /* Footer */
