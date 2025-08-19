@@ -1036,16 +1036,94 @@ section {
 
 /* Removed section::after rule that was causing decorative border lines */
 
-/* Ensure no borders appear on hero section or carousel */
-.hero-section,
-.hero-section *,
-#heroCarousel,
-#heroCarousel * {
+/* Replace borders with padding for better visual separation */
+.hero-section {
     border: none !important;
-    border-top: none !important;
-    border-bottom: none !important;
-    border-left: none !important;
-    border-right: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Add padding to carousel content for visual spacing */
+#heroCarousel {
+    border: none !important;
+    padding: 0 !important;
+}
+
+.carousel-inner {
+    border: none !important;
+    padding: 0 !important;
+}
+
+.carousel-item {
+    border: none !important;
+    padding: 0 !important;
+}
+
+/* Add padding to hero slide content for better spacing */
+.hero-slide {
+    border: none !important;
+    padding: 2rem 0 !important;
+}
+
+.hero-overlay {
+    padding: 4rem 0 !important;
+}
+
+/* Add padding to text content within carousel */
+.hero-title {
+    margin-bottom: 1.5rem !important;
+    padding: 0 1rem !important;
+}
+
+.hero-subtitle {
+    margin-bottom: 2rem !important;
+    padding: 0 1rem !important;
+}
+
+.hero-buttons {
+    padding: 0 1rem !important;
+    margin-top: 2rem !important;
+}
+
+/* Add general section spacing to replace borders */
+section {
+    padding: 4rem 0 !important; /* Standard section padding */
+}
+
+section.hero-section {
+    padding: 0 !important; /* Override for hero section */
+}
+
+/* Remove borders from all carousel elements */
+.carousel *,
+.carousel-fade *,
+.hero-slide *,
+.hero-overlay * {
+    border: none !important;
+    outline: none !important;
+}
+
+/* Remove any potential Bootstrap default borders */
+#heroCarousel.carousel,
+.carousel.slide,
+.carousel-fade {
+    border: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Override Bootstrap button borders for carousel controls */
+.carousel-control-prev,
+.carousel-control-next {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Keep carousel indicators functional but remove borders if needed */
+.carousel-indicators [data-bs-target] {
+    border: 2px solid rgba(255, 255, 255, 0.8) !important; /* Keep indicator borders for visibility */
+    background-color: transparent !important;
 }
 
 /* Exception for carousel controls which need their background styling */
@@ -1054,14 +1132,18 @@ section {
     background-image: inherit !important;
 }
 
-/* Special border styling for different section types */
+/* Replace section borders with padding for visual separation */
 section.bg-light {
-    border-bottom: 3px solid rgba(138, 43, 226, 0.15);
+    border: none !important;
+    padding: 4rem 0 5rem 0 !important; /* Add extra padding instead of border */
     background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%) !important;
+    margin-bottom: 2rem !important;
 }
 
 section.bg-white {
-    border-bottom: 3px solid rgba(50, 205, 50, 0.1);
+    border: none !important;
+    padding: 4rem 0 5rem 0 !important; /* Add extra padding instead of border */
+    margin-bottom: 2rem !important;
 }
 
 /* What We Offer Section - Enhanced Design */
@@ -2213,11 +2295,13 @@ section.bg-white {
     }
 }
 
-/* Features Section - Why Choose VAATCO Cards */
+/* Features Section - Why Choose VAATCO Cards - Replace border with padding */
 .why-choose-section {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     position: relative;
-    border-bottom: 4px solid #8A2BE2;
+    border: none !important; /* Remove border */
+    padding: 5rem 0 6rem 0 !important; /* Add extra padding instead */
+    margin-bottom: 3rem !important; /* Add margin for separation */
     box-shadow: 0 3px 15px rgba(138, 43, 226, 0.1);
 }
 
@@ -2392,12 +2476,13 @@ section.bg-white {
     background-color: rgba(0, 102, 204, 0.05);
 }
 
-/* Contact Section */
+/* Contact Section - Replace borders with padding */
 .contact-section {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     position: relative;
-    border-top: 4px solid #8A2BE2;
-    border-bottom: 4px solid #32CD32;
+    border: none !important; /* Remove all borders */
+    padding: 6rem 0 6rem 0 !important; /* Add generous padding instead */
+    margin: 3rem 0 !important; /* Add margin for separation */
     box-shadow: 0 3px 15px rgba(138, 43, 226, 0.1), 0 -3px 15px rgba(50, 205, 50, 0.1);
 }
 
