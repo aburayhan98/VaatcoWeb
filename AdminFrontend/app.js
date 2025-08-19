@@ -15,13 +15,71 @@ const defaultData = {
     { id: 2, url: '../sticker/sticker2.jpeg', alt: 'Sticker 2' }
   ],
   products: [
-    { id: 1, name: 'Acetaminophen', type: 'API (Active Pharmaceutical Ingredient)', genericName: 'Paracetamol', packSize: '25 kg', packingType: 'Drum' },
-    { id: 2, name: 'Ascorbic Acid', type: 'Vitamin C', genericName: 'L-Ascorbic Acid', packSize: '25 kg', packingType: 'Carton' },
-    { id: 3, name: 'Benzyl Alcohol', type: 'Fine Chemical', genericName: 'Phenylmethanol', packSize: '200 kg', packingType: 'Drum' }
+    { 
+      id: 1, 
+      name: 'Micro off', 
+      description: `A newly designed powder formula for harmful microorganism
+
+Key Ingredients (Per 100gm):
+1. Dodecyl Dimethyl Benzal Ammonium Chloride- 40%
+2. Cetylpyridinium Chloride-2%
+3. Glutaraldehyde-15%
+
+Function:
+* Immediate germicidal activity against gram positive and gram negative bacteria, algae, fungus and some viruses.
+* 100% bio degradable and environment friendly.
+* Designed to perform in hard water & reduce ammonia level
+* Design to work effectivly in wide pH range
+* Reduce the mortality rate of fingerling during early stages.
+
+Dosage & Administration:
+* Prevention: 1 gm/ decimal for 3-5 feet water depth
+* Treatment: 2-3 gm/ decimal for 3-5 feet water depth
+
+Origin: Germany
+
+Pack Size: 100gm & 50 gm`
+    },
+    { 
+      id: 2, 
+      name: 'Acetaminophen', 
+      description: `Widely used pain reliever and a fever reducer.
+
+Key Ingredients:
+* Paracetamol
+
+Function:
+* Reduces fever and relieves mild to moderate pain.
+
+Dosage & Administration:
+* As directed by physician.
+
+Origin: Bangladesh
+
+Pack Size: 25 kg`
+    },
+    { 
+      id: 3, 
+      name: 'Ascorbic Acid', 
+      description: `Vitamin C, essential for growth and repair of tissues.
+
+Key Ingredients:
+* L-Ascorbic Acid
+
+Function:
+* Boosts immune system, antioxidant.
+
+Dosage & Administration:
+* As directed by physician.
+
+Origin: Bangladesh
+
+Pack Size: 25 kg`
+    }
   ],
   dealers: [
-    { id: 1, district: 'Dhaka', name: 'Green Farms Supply', contact: '+88017XXXXXXX' },
-    { id: 2, district: 'Chittagong', name: 'Aqua Plus Solutions', contact: '+88019XXXXXXX' }
+    { id: 1, district: 'Dhaka', name: 'Green Farms Supply', shop: 'Green Farms Supply Store', location: 'Dhanmondi, Dhaka', contact: '+88017XXXXXXX' },
+    { id: 2, district: 'Chittagong', name: 'Aqua Plus Solutions', shop: 'Aqua Plus Store', location: 'Agrabad, Chittagong', contact: '+88019XXXXXXX' }
   ],
   blog: [
     { id:1, title:'5 Benefits of Zeolite in Aquaculture', summary:'How Zeolite improves water quality and pond health for better growth.' },
@@ -48,7 +106,11 @@ function login(username, password) {
 }
 
 function isAuthenticated() { return localStorage.getItem(STORAGE_KEYS.AUTH) === 'true'; }
-function logout() { localStorage.removeItem(STORAGE_KEYS.AUTH); }
+function logout() { 
+  localStorage.removeItem(STORAGE_KEYS.AUTH); 
+  // Also clear any cached data if needed
+  console.log('User logged out');
+}
 
 // Utility
 function generateId(items) { return items.length ? Math.max(...items.map(i => i.id)) + 1 : 1; }
@@ -119,7 +181,14 @@ function loadProducts() {
   tbody.innerHTML = '';
   list.forEach(item => {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${item.name||''}</td><td>${item.type||''}</td><td>${item.genericName||''}</td><td>${item.packSize||''}</td><td>${item.packingType||''}</td><td><button class=\"btn btn-sm btn-outline-primary me-1 edit\" data-id=\"${item.id}\"><i class=\"fas fa-pen\"></i></button><button class=\"btn btn-sm btn-outline-danger del\" data-id=\"${item.id}\"><i class=\"fas fa-trash\"></i></button></td>`;
+    tr.innerHTML = `
+      <td class="fw-semibold">${item.name||''}</td>
+      <td>
+        <button class="btn btn-sm btn-outline-info me-1 view-details" data-id="${item.id}"><i class="fas fa-eye"></i> View Details</button>
+        <button class="btn btn-sm btn-outline-primary me-1 edit" data-id="${item.id}"><i class="fas fa-pen"></i></button>
+        <button class="btn btn-sm btn-outline-danger del" data-id="${item.id}"><i class="fas fa-trash"></i></button>
+      </td>
+    `;
     tbody.appendChild(tr);
   });
 }
@@ -127,17 +196,27 @@ function saveProduct(e) {
   e.preventDefault();
   const id = document.getElementById('productId').value;
   const name = document.getElementById('productName').value.trim();
-  const type = document.getElementById('productType').value.trim();
-  const genericName = document.getElementById('productGeneric').value.trim();
-  const packSize = document.getElementById('productPackSize').value.trim();
-  const packingType = document.getElementById('productPackingType').value.trim();
-  if(!name||!type||!genericName||!packSize||!packingType) return;
+  const description = document.getElementById('productDescription').value.trim();
+
+  if(!name || !description) {
+    alert('Please fill in both Product Name and Description fields.');
+    return;
+  }
+
   const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
   if (id) {
     const idx = list.findIndex(i => i.id == id);
-    if (idx > -1) list[idx] = { ...list[idx], name, type, genericName, packSize, packingType };
+    if (idx > -1) list[idx] = { 
+      ...list[idx], 
+      name, 
+      description
+    };
   } else {
-    list.push({ id: generateId(list), name, type, genericName, packSize, packingType });
+    list.push({ 
+      id: generateId(list), 
+      name, 
+      description
+    });
   }
   localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(list));
   loadProducts();
@@ -155,7 +234,8 @@ function loadDealers() {
   tbody.innerHTML = '';
   list.forEach(item => {
     const tr = ce('tr');
-    tr.innerHTML = `<td>${item.district}</td><td>${item.name}</td><td>${item.contact}</td><td><button class="btn btn-sm btn-outline-primary me-1 edit" data-id="${item.id}"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-outline-danger del" data-id="${item.id}"><i class="fas fa-trash"></i></button></td>`;
+    const shortMap = item.map ? (item.map.length > 28 ? item.map.slice(0,25)+'...' : item.map) : '';
+    tr.innerHTML = `<td>${item.district || ''}</td><td>${item.name || ''}</td><td>${item.shop || ''}</td><td>${item.location || ''}</td><td>${shortMap}</td><td>${item.contact || ''}</td><td><button class="btn btn-sm btn-outline-primary me-1 edit" data-id="${item.id}"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-outline-danger del" data-id="${item.id}"><i class="fas fa-trash"></i></button></td>`;
     tbody.appendChild(tr);
   });
 }
@@ -198,14 +278,17 @@ function saveDealer(e) {
   const id = qs('#dealerId').value;
   const district = qs('#dealerDistrict').value.trim();
   const name = qs('#dealerName').value.trim();
+  const shop = qs('#dealerShop').value.trim();
+  const location = qs('#dealerLocation').value.trim();
+  const map = (qs('#dealerMap')?.value || '').trim();
   const contact = qs('#dealerContact').value.trim();
-  if (!district || !name || !contact) return;
+  if (!district || !name || !shop || !location || !contact) return;
   const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || '[]');
   if (id) {
     const idx = list.findIndex(i => i.id == id);
-    if (idx > -1) list[idx] = { ...list[idx], district, name, contact };
+    if (idx > -1) list[idx] = { ...list[idx], district, name, shop, location, map, contact };
   } else {
-    list.push({ id: generateId(list), district, name, contact });
+    list.push({ id: generateId(list), district, name, shop, location, map, contact });
   }
   localStorage.setItem(STORAGE_KEYS.DEALERS, JSON.stringify(list));
   loadDealers();
@@ -265,6 +348,23 @@ function filterTable(selector, term){
 // Delegated actions
 function attachDelegates() {
   document.body.addEventListener('click', function(e) {
+    // Product View Details
+    if (e.target.closest('#productsTable .view-details')) {
+      const id = e.target.closest('button').dataset.id;
+      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
+      const item = list.find(i => i.id == id);
+      if (item) {
+        let html = `<h4 class="mb-3">${item.name||''}</h4>`;
+        if (item.description) {
+          // Display description with proper formatting
+          const formattedDescription = item.description.replace(/\n/g, '<br>');
+          html += `<div class="product-description">${formattedDescription}</div>`;
+        }
+        document.getElementById('adminProductDetailsBody').innerHTML = html;
+        var modal = new bootstrap.Modal(document.getElementById('adminProductDetailsModal'));
+        modal.show();
+      }
+    }
     if (e.target.closest('#galleryGrid .edit')) {
       const id = e.target.closest('button').dataset.id;
       const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GALLERY) || '[]');
@@ -286,17 +386,14 @@ function attachDelegates() {
       renderStats();
     }
 
-    if (e.target.closest('#productsTable .edit')) {
+  if (e.target.closest('#productsTable .edit')) {
       const id = e.target.closest('button').dataset.id;
       const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
       const item = list.find(i => i.id == id);
       if (item) {
         qs('#productId').value = item.id;
         qs('#productName').value = item.name;
-        qs('#productType').value = item.type;
-        qs('#productGeneric').value = item.genericName;
-        qs('#productPackSize').value = item.packSize;
-        qs('#productPackingType').value = item.packingType;
+        qs('#productDescription').value = item.description || '';
         new bootstrap.Modal(document.getElementById('productModal')).show();
       }
     }
@@ -310,15 +407,18 @@ function attachDelegates() {
       renderStats();
     }
 
-    if (e.target.closest('#dealersTable .edit')) {
+  if (e.target.closest('#dealersTable .edit')) {
       const id = e.target.closest('button').dataset.id;
       const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || '[]');
       const item = list.find(i => i.id == id);
       if (item) {
         qs('#dealerId').value = item.id;
-        qs('#dealerDistrict').value = item.district;
-        qs('#dealerName').value = item.name;
-        qs('#dealerContact').value = item.contact;
+        qs('#dealerDistrict').value = item.district || '';
+        qs('#dealerName').value = item.name || '';
+        qs('#dealerShop').value = item.shop || '';
+        qs('#dealerLocation').value = item.location || '';
+    const mapInput = qs('#dealerMap'); if(mapInput) mapInput.value = item.map || '';
+    qs('#dealerContact').value = item.contact || '';
         new bootstrap.Modal(document.getElementById('dealerModal')).show();
       }
     }
@@ -392,30 +492,44 @@ function setupAuth() {
   const panelView = document.getElementById('panelView');
   const loginForm = document.getElementById('loginForm');
   const logoutBtn = document.getElementById('logoutBtn');
+  
+  console.log('Setting up auth...', { authView, panelView, loginForm, logoutBtn });
+  
   if (loginForm) {
     loginForm.addEventListener('submit', function(e){
       e.preventDefault();
       const u = document.getElementById('username').value.trim();
       const p = document.getElementById('password').value.trim();
       if (login(u,p)) {
+        console.log('Login successful');
         authView.classList.add('d-none');
         panelView.classList.remove('d-none');
         renderStats();
       } else {
-        alert('Invalid credentials');
+        alert('Invalid credentials. Use username: admin, password: admin123');
       }
     });
   }
+  
   if (logoutBtn) {
     logoutBtn.addEventListener('click', function(){
+      console.log('Logout clicked');
       logout();
       location.reload();
     });
   }
-  if (isAuthenticated()) {
-    authView.classList.add('d-none');
-    panelView.classList.remove('d-none');
+  
+  // Show appropriate view based on authentication status
+  const isAuth = isAuthenticated();
+  console.log('Auth status:', isAuth);
+  
+  if (isAuth) {
+    if (authView) authView.classList.add('d-none');
+    if (panelView) panelView.classList.remove('d-none');
     renderStats();
+  } else {
+    if (authView) authView.classList.remove('d-none');
+    if (panelView) panelView.classList.add('d-none');
   }
 }
 
@@ -474,7 +588,20 @@ function getGalleryItems() { return JSON.parse(localStorage.getItem(STORAGE_KEYS
 function getProducts() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]'); }
 function getDealers() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || '[]'); }
 function getBlogPosts() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]'); }
+
+// Admin helper functions
+function forceLogout() {
+  logout();
+  location.reload();
+}
+
+function checkAuthStatus() {
+  console.log('Authenticated:', isAuthenticated());
+  console.log('Auth token:', localStorage.getItem(STORAGE_KEYS.AUTH));
+}
+
 window.VAATCO_DATA = { getGalleryItems, getProducts, getDealers, getBlogPosts };
+window.VAATCO_ADMIN = { forceLogout, checkAuthStatus, login, logout, isAuthenticated };
 
 // Init
 window.addEventListener('DOMContentLoaded', function(){

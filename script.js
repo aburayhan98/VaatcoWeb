@@ -710,4 +710,578 @@ document.addEventListener('keydown', function(e) {
                 break;
         }
     }
+    
+    // ========================================
+    // DEALERS SECTION INITIALIZATION
+    // ========================================
+    
+    // Initialize dealers section when DOM is loaded
+    setTimeout(function() {
+        console.log('Delayed check for dealersGrid element...');
+        const dealersGridElement = document.getElementById('dealersGrid');
+        console.log('dealersGrid element:', dealersGridElement);
+        
+        if (dealersGridElement) {
+            console.log('dealersGrid found, loading dealers...');
+            loadDealers();
+            setupDealerSearch();
+            
+            // Reload dealers when localStorage changes (from admin updates)
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'vaatco_dealers') {
+                    loadDealers();
+                }
+            });
+        } else {
+            console.log('dealersGrid element not found!');
+        }
+    }, 1000); // Wait 1 second to ensure everything is loaded
 });
+
+// ========================================
+// DEALERS SECTION FUNCTIONALITY
+// ========================================
+
+// Load dealers from admin system
+function loadDealers() {
+    console.log('loadDealers function called');
+    const dealersGrid = document.getElementById('dealersGrid');
+    console.log('dealersGrid in loadDealers:', dealersGrid);
+    
+    if (!dealersGrid) {
+        console.error('dealersGrid element not found in loadDealers');
+        return;
+    }
+    
+    const loadingSpinner = dealersGrid.querySelector('.loading-spinner');
+    const noDealersMessage = document.getElementById('noDealersMessage');
+    
+    try {
+        // Get dealers from localStorage (from admin system)
+        const dealers = JSON.parse(localStorage.getItem('vaatco_dealers')) || [];
+        console.log('Dealers from localStorage:', dealers);
+        
+        // Clear loading spinner
+        dealersGrid.innerHTML = '';
+        if (noDealersMessage) {
+            noDealersMessage.classList.add('d-none');
+        }
+        
+        if (dealers.length === 0) {
+            console.log('No dealers in localStorage, using default dealers');
+            // Show default dealers if none in localStorage
+            const defaultDealers = [
+                {
+                    id: 'default-1',
+                    district: 'Dhaka',
+                    name: 'Green Farms Supply',
+                    shop: 'Premium Aqua Solutions',
+                    location: 'Dhanmondi, Dhaka',
+                    contact: '01700000001'
+                },
+                {
+                    id: 'default-2',
+                    district: 'Chittagong',
+                    name: 'Aqua Plus Solutions',
+                    shop: 'Marine Fish Center',
+                    location: 'Agrabad, Chittagong',
+                    contact: '01700000002'
+                },
+                {
+                    id: 'default-3',
+                    district: 'Khulna',
+                    name: 'Delta Agro-Vet',
+                    shop: 'Shrimp Farmers Hub',
+                    location: 'Sonadanga, Khulna',
+                    contact: '01700000003'
+                },
+                {
+                    id: 'default-4',
+                    district: 'Sylhet',
+                    name: 'Hills Aquaculture',
+                    shop: 'Tea Garden Fish Farm',
+                    location: 'Zindabazar, Sylhet',
+                    contact: '01700000004'
+                },
+                {
+                    id: 'default-5',
+                    district: 'Rajshahi',
+                    name: 'Padma Fish Supplies',
+                    shop: 'Silk City Aqua',
+                    location: 'Shaheb Bazar, Rajshahi',
+                    contact: '01700000005'
+                },
+                {
+                    id: 'default-6',
+                    district: 'Barisal',
+                    name: 'River Delta Aqua',
+                    shop: 'Coastal Fish Solutions',
+                    location: 'Band Road, Barisal',
+                    contact: '01700000006'
+                },
+                {
+                    id: 'default-7',
+                    district: 'Rangpur',
+                    name: 'Northern Fish Enterprise',
+                    shop: 'Highland Aqua Center',
+                    location: 'Station Road, Rangpur',
+                    contact: '01700000007'
+                },
+                {
+                    id: 'default-8',
+                    district: 'Mymensingh',
+                    name: 'Brahmaputra Aquaculture',
+                    shop: 'River View Fish Farm',
+                    location: 'Choto Bazar, Mymensingh',
+                    contact: '01700000008'
+                },
+                {
+                    id: 'default-9',
+                    district: 'Comilla',
+                    name: 'Eastern Aqua Solutions',
+                    shop: 'Mainamati Fish Center',
+                    location: 'Kandirpar, Comilla',
+                    contact: '01700000009'
+                },
+                {
+                    id: 'default-10',
+                    district: 'Cox\'s Bazar',
+                    name: 'Coastal Marine Supply',
+                    shop: 'Sea Beach Aquaculture',
+                    location: 'Kalatoli Road, Cox\'s Bazar',
+                    contact: '01700000010'
+                },
+                {
+                    id: 'default-11',
+                    district: 'Bogura',
+                    name: 'Central Fish Hub',
+                    shop: 'Mahasthangarh Aqua',
+                    location: 'Rangpur Road, Bogura',
+                    contact: '01700000011'
+                },
+                {
+                    id: 'default-12',
+                    district: 'Jessore',
+                    name: 'Border Aqua Enterprise',
+                    shop: 'Flower City Fish Farm',
+                    location: 'MK Road, Jessore',
+                    contact: '01700000012'
+                },
+                {
+                    id: 'default-13',
+                    district: 'Faridpur',
+                    name: 'Padma River Aquaculture',
+                    shop: 'Golden Fish Center',
+                    location: 'Goal Chand Road, Faridpur',
+                    contact: '01700000013'
+                },
+                {
+                    id: 'default-14',
+                    district: 'Tangail',
+                    name: 'Textile City Aqua',
+                    shop: 'Bangabandhu Fish Farm',
+                    location: 'Kagmari Road, Tangail',
+                    contact: '01700000014'
+                },
+                {
+                    id: 'default-15',
+                    district: 'Dinajpur',
+                    name: 'Litchi Land Aquaculture',
+                    shop: 'North Bengal Fish Hub',
+                    location: 'Pulhat Road, Dinajpur',
+                    contact: '01700000015'
+                },
+                {
+                    id: 'default-16',
+                    district: 'Pabna',
+                    name: 'Hardinge Bridge Aqua',
+                    shop: 'Padma Side Fish Center',
+                    location: 'Station Road, Pabna',
+                    contact: '01700000016'
+                },
+                {
+                    id: 'default-17',
+                    district: 'Kushtia',
+                    name: 'Lalon Fish Enterprise',
+                    shop: 'Cultural City Aquaculture',
+                    location: 'NS Road, Kushtia',
+                    contact: '01700000017'
+                },
+                {
+                    id: 'default-18',
+                    district: 'Sirajganj',
+                    name: 'Jamuna River Aqua',
+                    shop: 'Ferry Ghat Fish Farm',
+                    location: 'Shaheed Kamruzzaman Road, Sirajganj',
+                    contact: '01700000018'
+                },
+                {
+                    id: 'default-19',
+                    district: 'Noakhali',
+                    name: 'Coastal Delta Solutions',
+                    shop: 'Meghna Estuary Aqua',
+                    location: 'Maijdee Court, Noakhali',
+                    contact: '01700000019'
+                },
+                {
+                    id: 'default-20',
+                    district: 'Patuakhali',
+                    name: 'Kuakata Fish Supply',
+                    shop: 'Sea View Aquaculture',
+                    location: 'Sadar Road, Patuakhali',
+                    contact: '01700000020'
+                },
+                {
+                    id: 'default-21',
+                    district: 'Narsingdi',
+                    name: 'Textile Belt Aqua',
+                    shop: 'Meghna Bank Fish Center',
+                    location: 'Chinishpur, Narsingdi',
+                    contact: '01700000021'
+                }
+            ];
+            displayDealers(defaultDealers);
+        } else {
+            displayDealers(dealers);
+        }
+        
+    } catch (error) {
+        console.error('Error loading dealers:', error);
+        dealersGrid.innerHTML = `
+            <div class="col-12 text-center">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Unable to load dealer information. Please try again later.
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Display dealers in grid format
+function displayDealers(dealers) {
+    console.log('displayDealers called with:', dealers.length, 'dealers');
+    const dealersGrid = document.getElementById('dealersGrid');
+    
+    if (!dealersGrid) {
+        console.error('dealersGrid not found in displayDealers');
+        return;
+    }
+    
+    if (dealers.length === 0) {
+        const noDealersMessage = document.getElementById('noDealersMessage');
+        if (noDealersMessage) {
+            noDealersMessage.classList.remove('d-none');
+        }
+        return;
+    }
+    
+    const dealersHTML = dealers.map(dealer => {
+        const contactNumber = dealer.contact.replace(/\D/g, ''); // Extract numbers only
+        const whatsappLink = contactNumber ? `https://wa.me/88${contactNumber.startsWith('0') ? contactNumber.slice(1) : contactNumber}` : '#';
+        const rawMap = dealer.map || '';
+        let locationLink;
+        if(rawMap){
+            if(rawMap.startsWith('http')){
+                locationLink = rawMap;
+            } else if(/^-?\d{1,3}\.\d+,-?\d{1,3}\.\d+$/.test(rawMap)){ // coordinate pair
+                locationLink = `https://www.google.com/maps?q=${encodeURIComponent(rawMap)}`;
+            } else {
+                locationLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rawMap)}`;
+            }
+        } else {
+            locationLink = dealer.location.includes('http') ? dealer.location : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dealer.location + ', Bangladesh')}`;
+        }
+        
+        return `
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="dealer-card">
+                    <div class="dealer-card-header">
+                        <div class="dealer-district">${dealer.district}</div>
+                    </div>
+                    <div class="dealer-card-body">
+                        <div class="dealer-name">${dealer.name}</div>
+                        <div class="dealer-shop">${dealer.shop}</div>
+                        
+                        <div class="dealer-info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>${dealer.location}</span>
+                        </div>
+                        
+                        <div class="dealer-info-item">
+                            <i class="fas fa-phone"></i>
+                            <span>${dealer.contact}</span>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <a href="${whatsappLink}" target="_blank" class="dealer-contact-btn">
+                                <i class="fab fa-whatsapp"></i>
+                                WhatsApp
+                            </a>
+                            <a href="${locationLink}" target="_blank" class="dealer-location-btn">
+                                <i class="fas fa-map"></i>
+                                Map
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    dealersGrid.innerHTML = dealersHTML;
+}
+
+// Search functionality
+function setupDealerSearch() {
+    const searchInput = document.getElementById('dealerSearch');
+    if (!searchInput) return;
+    
+    let searchTimeout;
+    
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            const query = this.value.toLowerCase().trim();
+            filterDealers(query);
+        }, 300); // Debounce search
+    });
+}
+
+// Filter dealers based on search query
+function filterDealers(query) {
+    try {
+        const dealers = JSON.parse(localStorage.getItem('vaatco_dealers')) || [];
+        let filteredDealers = dealers;
+        
+        // Use default dealers if no admin dealers
+        if (dealers.length === 0) {
+            filteredDealers = [
+                {
+                    id: 'default-1',
+                    district: 'Dhaka',
+                    name: 'Green Farms Supply',
+                    shop: 'Premium Aqua Solutions',
+                    location: 'Dhanmondi, Dhaka',
+                    contact: '+880171234567'
+                },
+                {
+                    id: 'default-2',
+                    district: 'Chittagong',
+                    name: 'Aqua Plus Solutions',
+                    shop: 'Marine Fish Center',
+                    location: 'Agrabad, Chittagong',
+                    contact: '+880191234567'
+                },
+                {
+                    id: 'default-3',
+                    district: 'Khulna',
+                    name: 'Delta Agro-Vet',
+                    shop: 'Shrimp Farmers Hub',
+                    location: 'Sonadanga, Khulna',
+                    contact: '+880181234567'
+                },
+                {
+                    id: 'default-4',
+                    district: 'Sylhet',
+                    name: 'Hills Aquaculture',
+                    shop: 'Tea Garden Fish Farm',
+                    location: 'Zindabazar, Sylhet',
+                    contact: '+880171234568'
+                },
+                {
+                    id: 'default-5',
+                    district: 'Rajshahi',
+                    name: 'Padma Fish Supplies',
+                    shop: 'Silk City Aqua',
+                    location: 'Shaheb Bazar, Rajshahi',
+                    contact: '+880181234568'
+                },
+                {
+                    id: 'default-6',
+                    district: 'Barisal',
+                    name: 'River Delta Aqua',
+                    shop: 'Coastal Fish Solutions',
+                    location: 'Band Road, Barisal',
+                    contact: '+880191234568'
+                },
+                {
+                    id: 'default-7',
+                    district: 'Rangpur',
+                    name: 'Northern Fish Enterprise',
+                    shop: 'Highland Aqua Center',
+                    location: 'Station Road, Rangpur',
+                    contact: '+880171234569'
+                },
+                {
+                    id: 'default-8',
+                    district: 'Mymensingh',
+                    name: 'Brahmaputra Aquaculture',
+                    shop: 'River View Fish Farm',
+                    location: 'Choto Bazar, Mymensingh',
+                    contact: '+880181234569'
+                },
+                {
+                    id: 'default-9',
+                    district: 'Comilla',
+                    name: 'Eastern Aqua Solutions',
+                    shop: 'Mainamati Fish Center',
+                    location: 'Kandirpar, Comilla',
+                    contact: '+880191234569'
+                },
+                {
+                    id: 'default-10',
+                    district: 'Cox\'s Bazar',
+                    name: 'Coastal Marine Supply',
+                    shop: 'Sea Beach Aquaculture',
+                    location: 'Kalatoli Road, Cox\'s Bazar',
+                    contact: '+880171234570'
+                },
+                {
+                    id: 'default-11',
+                    district: 'Bogura',
+                    name: 'Central Fish Hub',
+                    shop: 'Mahasthangarh Aqua',
+                    location: 'Rangpur Road, Bogura',
+                    contact: '+880181234570'
+                },
+                {
+                    id: 'default-12',
+                    district: 'Jessore',
+                    name: 'Border Aqua Enterprise',
+                    shop: 'Flower City Fish Farm',
+                    location: 'MK Road, Jessore',
+                    contact: '+880191234570'
+                },
+                {
+                    id: 'default-13',
+                    district: 'Faridpur',
+                    name: 'Padma River Aquaculture',
+                    shop: 'Golden Fish Center',
+                    location: 'Goal Chand Road, Faridpur',
+                    contact: '+880171234571'
+                },
+                {
+                    id: 'default-14',
+                    district: 'Tangail',
+                    name: 'Textile City Aqua',
+                    shop: 'Bangabandhu Fish Farm',
+                    location: 'Kagmari Road, Tangail',
+                    contact: '+880181234571'
+                },
+                {
+                    id: 'default-15',
+                    district: 'Dinajpur',
+                    name: 'Litchi Land Aquaculture',
+                    shop: 'North Bengal Fish Hub',
+                    location: 'Pulhat Road, Dinajpur',
+                    contact: '+880191234571'
+                },
+                {
+                    id: 'default-16',
+                    district: 'Pabna',
+                    name: 'Hardinge Bridge Aqua',
+                    shop: 'Padma Side Fish Center',
+                    location: 'Station Road, Pabna',
+                    contact: '+880171234572'
+                },
+                {
+                    id: 'default-17',
+                    district: 'Kushtia',
+                    name: 'Lalon Fish Enterprise',
+                    shop: 'Cultural City Aquaculture',
+                    location: 'NS Road, Kushtia',
+                    contact: '+880181234572'
+                },
+                {
+                    id: 'default-18',
+                    district: 'Sirajganj',
+                    name: 'Jamuna River Aqua',
+                    shop: 'Ferry Ghat Fish Farm',
+                    location: 'Shaheed Kamruzzaman Road, Sirajganj',
+                    contact: '+880191234572'
+                },
+                {
+                    id: 'default-19',
+                    district: 'Noakhali',
+                    name: 'Coastal Delta Solutions',
+                    shop: 'Meghna Estuary Aqua',
+                    location: 'Maijdee Court, Noakhali',
+                    contact: '+880171234573'
+                },
+                {
+                    id: 'default-20',
+                    district: 'Patuakhali',
+                    name: 'Kuakata Fish Supply',
+                    shop: 'Sea View Aquaculture',
+                    location: 'Sadar Road, Patuakhali',
+                    contact: '+880181234573'
+                },
+                {
+                    id: 'default-21',
+                    district: 'Narsingdi',
+                    name: 'Textile Belt Aqua',
+                    shop: 'Meghna Bank Fish Center',
+                    location: 'Chinishpur, Narsingdi',
+                    contact: '+880191234573'
+                }
+            ];
+        }
+        
+        if (query) {
+            filteredDealers = filteredDealers.filter(dealer => 
+                dealer.district.toLowerCase().includes(query) ||
+                dealer.name.toLowerCase().includes(query) ||
+                dealer.shop.toLowerCase().includes(query) ||
+                dealer.location.toLowerCase().includes(query) ||
+                dealer.contact.toLowerCase().includes(query)
+            );
+        }
+        
+        displayDealers(filteredDealers);
+        
+    } catch (error) {
+        console.error('Error filtering dealers:', error);
+    }
+}
+
+// ========================================
+// FORCE DEALERS LOADING - FINAL ATTEMPT
+// ========================================
+
+// Multiple attempts to ensure dealers load
+window.addEventListener('load', function() {
+    console.log('Window loaded, trying to load dealers...');
+    setTimeout(function() {
+        const dealersGrid = document.getElementById('dealersGrid');
+        if (dealersGrid) {
+            console.log('Found dealersGrid on window load, loading dealers now...');
+            loadDealers();
+            setupDealerSearch();
+        }
+    }, 500);
+});
+
+// Also try on DOM content loaded as a backup
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, trying to load dealers...');
+    setTimeout(function() {
+        const dealersGrid = document.getElementById('dealersGrid');
+        if (dealersGrid) {
+            console.log('Found dealersGrid on DOM loaded, loading dealers now...');
+            loadDealers();
+            setupDealerSearch();
+        }
+    }, 1000);
+});
+
+// Final fallback with longer delay
+setTimeout(function() {
+    console.log('Final fallback attempt to load dealers...');
+    const dealersGrid = document.getElementById('dealersGrid');
+    if (dealersGrid && dealersGrid.innerHTML.includes('Loading dealers')) {
+        console.log('Found dealersGrid in fallback, still showing loading - loading dealers now...');
+        loadDealers();
+        setupDealerSearch();
+    }
+}, 3000);

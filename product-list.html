@@ -45,7 +45,198 @@
         body.theme-dark .product-header h1, body.theme-dark .product-header p { color:#fff !important; }
         body.theme-dark .product-table thead th:hover { background: linear-gradient(135deg,#24323e 0%, #21506e 100%); }
 
-        /* Additional styles for product list page */
+        /* Enhanced product list styles */
+        .search-container {
+            position: relative;
+        }
+        
+        .search-container .input-group-text {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
+            border-color: #3498db;
+            color: white !important;
+        }
+        
+        .search-container .form-control {
+            border-color: #bdc3c7;
+            font-size: 1rem;
+            padding: 12px 16px;
+        }
+        
+        .search-container .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .search-results-info {
+            background: #e3f2fd;
+            border-radius: 6px;
+            border-left: 4px solid #2196f3;
+            padding: 8px 12px;
+            font-size: 0.875rem;
+        }
+        
+        .card-header.bg-gradient {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%) !important;
+        }
+        
+        .product-list-wrapper {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .product-item {
+            border-bottom: 1px solid #e9ecef;
+            padding: 1rem 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .product-item:last-child {
+            border-bottom: none;
+        }
+        
+        .product-item:hover {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f4fd 100%);
+            transform: translateX(5px);
+        }
+        
+        .product-name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-preview {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+        
+        .view-details-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+        }
+        
+        .view-details-btn:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #2471a3 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+            color: white;
+        }
+        
+        .product-hidden {
+            display: none !important;
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .product-header {
+                padding: 50px 0 30px;
+            }
+            
+            .product-header h1 {
+                font-size: 2rem;
+            }
+            
+            .product-header p {
+                font-size: 1.1rem;
+            }
+            
+            .search-container .form-control {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 10px 14px;
+            }
+            
+            .product-item {
+                padding: 1rem;
+            }
+            
+            .product-name {
+                font-size: 1rem;
+            }
+            
+            .product-preview {
+                font-size: 0.85rem;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            
+            .view-details-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+            
+            .product-item:hover {
+                transform: none;
+                background: #f8f9fa;
+            }
+            
+            .modal-dialog {
+                margin: 1rem;
+            }
+            
+            .modal-body {
+                font-size: 0.9rem;
+                line-height: 1.5;
+            }
+        }
+        
+        /* Small mobile devices */
+        @media (max-width: 480px) {
+            .container {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            
+            .product-header {
+                padding: 40px 0 25px;
+            }
+            
+            .product-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .card {
+                margin: 0 -5px;
+            }
+            
+            .search-container .input-group {
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+            }
+        }
+        
+        /* Enhanced scrollbar for product list */
+        .product-list-wrapper::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .product-list-wrapper::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .product-list-wrapper::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 3px;
+        }
+        
+        .product-list-wrapper::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #2980b9, #2471a3);
+        }
         .product-list-page {
             background: #f8f9fa;
             min-height: 100vh;
@@ -426,264 +617,66 @@
         </div>
     </section>
 
+
     <!-- Main Content -->
     <main class="container my-5">
-        <!-- Product Table Container -->
-        <div class="product-table-container">
-            <div class="table-responsive">
-                <table class="table product-table mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col" width="6%" data-i18n="table.serial">#</th>
-                            <th scope="col" width="28%" data-i18n="table.productName">Product Name</th>
-                            <th scope="col" width="20%" data-i18n="table.type">Type</th>
-                            <th scope="col" width="26%" data-i18n="table.genericName">Generic Name</th>
-                            <th scope="col" width="10%" data-i18n="table.packSize">Pack Size</th>
-                            <th scope="col" width="10%" data-i18n="table.packingType">Packing Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-center">1</td>
-                            <td class="product-name">Acetaminophen</td>
-                            <td class="product-type">API (Active Pharmaceutical Ingredient)</td>
-                            <td>Paracetamol</td>
-                            <td>25 kg</td>
-                            <td>Drum</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">2</td>
-                            <td class="product-name">Ascorbic Acid</td>
-                            <td class="product-type">Vitamin C</td>
-                            <td>L-Ascorbic Acid</td>
-                            <td>25 kg</td>
-                            <td>Carton</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">3</td>
-                            <td class="product-name">Benzyl Alcohol</td>
-                            <td class="product-type">Fine Chemical</td>
-                            <td>Phenylmethanol</td>
-                            <td>200 kg</td>
-                            <td>Drum</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">4</td>
-                            <td class="product-name">Caffeine Anhydrous</td>
-                            <td class="product-type">API (Active Pharmaceutical Ingredient)</td>
-                            <td>1,3,7-Trimethylxanthine</td>
-                            <td>25 kg</td>
-                            <td>Carton</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">5</td>
-                            <td class="product-name">Calcium Carbonate</td>
-                            <td class="product-type">Pharmaceutical Excipient</td>
-                            <td>Precipitated Chalk</td>
-                            <td>25 kg</td>
-                            <td>Bag</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">6</td>
-                            <td class="product-name">Citric Acid Monohydrate</td>
-                            <td class="product-type">Food Grade Acid</td>
-                            <td>2-Hydroxypropane-1,2,3-tricarboxylic acid</td>
-                            <td>25 kg</td>
-                            <td>Bag</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">7</td>
-                            <td class="product-name">Dextrose Anhydrous</td>
-                            <td class="product-type">Pharmaceutical Sugar</td>
-                            <td>D-Glucose</td>
-                            <td>25 kg</td>
-                            <td>Carton</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">8</td>
-                            <td class="product-name">Ethyl Alcohol (Ethanol)</td>
-                            <td class="product-type">Industrial Solvent</td>
-                            <td>Grain Alcohol</td>
-                            <td>200 L</td>
-                            <td>Drum</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">9</td>
-                            <td class="product-name">Folic Acid</td>
-                            <td class="product-type">Vitamin B9</td>
-                            <td>Pteroylglutamic Acid</td>
-                            <td>25 kg</td>
-                            <td>Carton</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">10</td>
-                            <td class="product-name">Glycerin (Glycerol)</td>
-                            <td class="product-type">Pharmaceutical Excipient</td>
-                            <td>Propane-1,2,3-triol</td>
-                            <td>250 kg</td>
-                            <td>Drum</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">11</td>
-                            <td class="product-name">Hydrochloric Acid</td>
-                            <td class="product-type">Industrial Chemical</td>
-                            <td>Muriatic Acid</td>
-                            <td>35 kg</td>
-                            <td>Carboy</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">12</td>
-                            <td class="product-name">Ibuprofen</td>
-                            <td class="product-type">API (Active Pharmaceutical Ingredient)</td>
-                            <td>2-(4-Isobutylphenyl)propionic acid</td>
-                            <td>25 kg</td>
-                            <td>Drum</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">13</td>
-                            <td class="product-name">Lactose Monohydrate</td>
-                            <td class="product-type">Pharmaceutical Excipient</td>
-                            <td>Milk Sugar</td>
-                            <td>25 kg</td>
-                            <td>Bag</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">14</td>
-                            <td class="product-name">Magnesium Stearate</td>
-                            <td class="product-type">Pharmaceutical Lubricant</td>
-                            <td>Octadecanoic acid magnesium salt</td>
-                            <td>25 kg</td>
-                            <td>Carton</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">15</td>
-                            <td class="product-name">Niacin (Nicotinic Acid)</td>
-                            <td class="product-type">Vitamin B3</td>
-                            <td>Pyridine-3-carboxylic acid</td>
-                            <td>25 kg</td>
-                            <td>Carton</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">16</td>
-                            <td class="product-name">Potassium Chloride</td>
-                            <td class="product-type">Pharmaceutical Salt</td>
-                            <td>Muriate of Potash</td>
-                            <td>25 kg</td>
-                            <td>Bag</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">17</td>
-                            <td class="product-name">Riboflavin (Vitamin B2)</td>
-                            <td class="product-type">Vitamin B2</td>
-                            <td>7,8-Dimethyl-10-ribityliso alloxazine</td>
-                            <td>25 kg</td>
-                            <td>Carton</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">18</td>
-                            <td class="product-name">Sodium Chloride</td>
-                            <td class="product-type">Pharmaceutical Salt</td>
-                            <td>Common Salt</td>
-                            <td>25 kg</td>
-                            <td>Bag</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">19</td>
-                            <td class="product-name">Starch (Corn Starch)</td>
-                            <td class="product-type">Pharmaceutical Excipient</td>
-                            <td>Amylum</td>
-                            <td>25 kg</td>
-                            <td>Bag</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">20</td>
-                            <td class="product-name">Thiamine Hydrochloride</td>
-                            <td class="product-type">Vitamin B1</td>
-                            <td>Vitamin B1 HCl</td>
-                            <td>25 kg</td>
-                            <td>Carton</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">21</td>
-                            <td class="product-name">Zinc Oxide</td>
-                            <td class="product-type">Pharmaceutical Ingredient</td>
-                            <td>Flowers of Zinc</td>
-                            <td>25 kg</td>
-                            <td>Bag</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">22</td>
-                            <td class="product-name">Diclofenac Sodium</td>
-                            <td class="product-type">API (Active Pharmaceutical Ingredient)</td>
-                            <td>2-[(2,6-dichlorophenyl)amino]phenylacetic acid sodium</td>
-                            <td>25 kg</td>
-                            <td>Drum</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">23</td>
-                            <td class="product-name">Hydroxypropyl Methylcellulose</td>
-                            <td class="product-type">Pharmaceutical Excipient</td>
-                            <td>HPMC</td>
-                            <td>25 kg</td>
-                            <td>Carton</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">24</td>
-                            <td class="product-name">Polyethylene Glycol</td>
-                            <td class="product-type">Pharmaceutical Excipient</td>
-                            <td>PEG</td>
-                            <td>25 kg</td>
-                            <td>Carton</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">25</td>
-                            <td class="product-name">Tartaric Acid</td>
-                            <td class="product-type">Food Grade Acid</td>
-                            <td>2,3-Dihydroxybutanedioic acid</td>
-                            <td>25 kg</td>
-                            <td>Bag</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- Search Section -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-6 col-md-8">
+                <div class="search-container">
+                    <div class="input-group shadow-sm">
+                        <span class="input-group-text bg-primary text-white">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" class="form-control" id="productSearchInput" 
+                               placeholder="Search products..." 
+                               aria-label="Search products">
+                        <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn" title="Clear search">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="search-results-info mt-2 text-center text-muted small" style="display: none;"></div>
+                </div>
             </div>
         </div>
 
-        <!-- Additional Information -->
-        <div class="row mt-5">
-            <div class="col-lg-8 mx-auto">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body p-4">
-                        <h5 class="card-title text-center mb-3" style="color: #2c3e50;">
-                            <i class="fas fa-info-circle me-2"></i>Additional Information
+        <!-- Product List Section -->
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-gradient text-white text-center">
+                        <h2 class="mb-0"><i class="fas fa-boxes me-2"></i>Our Products</h2>
+                        <p class="mb-0 mt-2 opacity-75">Click "View Details" to see complete product information</p>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="productListContainer" class="product-list-wrapper">
+                            <!-- Product list will be rendered here -->
+                        </div>
+                        <div id="noResultsMessage" class="text-center p-4" style="display: none;">
+                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No products found</h5>
+                            <p class="text-muted">Try adjusting your search terms</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Details Modal -->
+        <div class="modal fade" id="productDetailsModal" tabindex="-1" aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="productDetailsModalLabel">
+                            <i class="fas fa-info-circle me-2"></i>Product Details
                         </h5>
-                        <div class="row text-center">
-                            <div class="col-md-4 mb-3">
-                                <div class="p-3">
-                                    <i class="fas fa-certificate text-success fa-2x mb-2"></i>
-                                    <h6 data-i18n="product.info.qualityTitle">Quality Assured</h6>
-                                    <p class="small text-muted mb-0" data-i18n="product.info.qualityText">All products meet international quality standards</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="p-3">
-                                    <i class="fas fa-shipping-fast text-primary fa-2x mb-2"></i>
-                                    <h6 data-i18n="product.info.deliveryTitle">Fast Delivery</h6>
-                                    <p class="small text-muted mb-0" data-i18n="product.info.deliveryText">Timely delivery across all area in Bangladesh</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="p-3">
-                                    <i class="fas fa-headset text-warning fa-2x mb-2"></i>
-                                    <h6 data-i18n="product.info.supportTitle">Expert Support</h6>
-                                    <p class="small text-muted mb-0" data-i18n="product.info.supportText">Professional technical support and consultation</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-center mt-3">
-                            <a href="index.html#contact" class="btn btn-outline-primary" data-i18n="product.info.contactButton">
-                                <i class="fas fa-envelope me-2"></i>Contact for Custom Requirements
-                            </a>
-                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="productDetailsBody">
+                        <!-- Details will be injected here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -739,8 +732,233 @@
         <!-- Translation JS -->
         <script src="translate.js"></script>
         <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src="script_new.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Custom JS -->
+        <script>
+        // Load products from admin localStorage or use fallback data
+        function getProducts() {
+            try {
+                const adminProducts = localStorage.getItem('vaatco_products');
+                if (adminProducts) {
+                    return JSON.parse(adminProducts);
+                }
+            } catch (e) {
+                console.log('Could not load admin products, using fallback data');
+            }
+            
+            // Fallback products if admin data not available
+            return [
+                {
+                    name: "Micro off",
+                    description: `A newly designed powder formula for harmful microorganism
+
+Key Ingredients (Per 100gm):
+1. Dodecyl Dimethyl Benzal Ammonium Chloride- 40%
+2. Cetylpyridinium Chloride-2%
+3. Glutaraldehyde-15%
+
+Function:
+* Immediate germicidal activity against gram positive and gram negative bacteria, algae, fungus and some viruses.
+* 100% bio degradable and environment friendly.
+* Designed to perform in hard water & reduce ammonia level
+* Design to work effectivly in wide pH range
+* Reduce the mortality rate of fingerling during early stages.
+
+Dosage & Administration:
+* Prevention: 1 gm/ decimal for 3-5 feet water depth
+* Treatment: 2-3 gm/ decimal for 3-5 feet water depth
+
+Origin: Germany
+
+Pack Size: 100gm & 50 gm`
+                },
+                {
+                    name: "Acetaminophen",
+                    description: `Widely used pain reliever and a fever reducer.
+
+Key Ingredients:
+* Paracetamol
+
+Function:
+* Reduces fever and relieves mild to moderate pain.
+
+Dosage & Administration:
+* As directed by physician.
+
+Origin: Bangladesh
+
+Pack Size: 25 kg`
+                },
+                {
+                    name: "Ascorbic Acid",
+                    description: `Vitamin C, essential for growth and repair of tissues.
+
+Key Ingredients:
+* L-Ascorbic Acid
+
+Function:
+* Boosts immune system, antioxidant.
+
+Dosage & Administration:
+* As directed by physician.
+
+Origin: Bangladesh
+
+Pack Size: 25 kg`
+                }
+            ];
+        }
+
+        const products = getProducts();
+
+        function renderProductList(productsToRender = null) {
+            const container = document.getElementById('productListContainer');
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            if (!container) return;
+            
+            const displayProducts = productsToRender || products;
+            
+            if (!displayProducts || displayProducts.length === 0) {
+                container.innerHTML = '';
+                noResultsMessage.style.display = 'block';
+                return;
+            }
+            
+            noResultsMessage.style.display = 'none';
+            let html = '';
+            
+            displayProducts.forEach((product, idx) => {
+                // Get original index for modal functionality
+                const originalIdx = productsToRender ? products.findIndex(p => p.name === product.name) : idx;
+                
+                // Extract preview text (first 100 characters of description)
+                let preview = '';
+                if (product.description) {
+                    preview = product.description.replace(/\n/g, ' ').substring(0, 100);
+                    if (product.description.length > 100) {
+                        preview += '...';
+                    }
+                }
+                
+                html += `
+                    <div class="product-item" data-product-idx="${originalIdx}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="product-name">${product.name}</div>
+                                ${preview ? `<div class="product-preview">${preview}</div>` : ''}
+                            </div>
+                            <div class="ms-3">
+                                <button class="btn view-details-btn" onclick="showProductDetails(${originalIdx})">
+                                    <i class="fas fa-eye me-1"></i>View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function searchProducts(searchTerm) {
+            const resultsInfo = document.querySelector('.search-results-info');
+            
+            if (!searchTerm || searchTerm.trim() === '') {
+                renderProductList();
+                resultsInfo.style.display = 'none';
+                return;
+            }
+            
+            const term = searchTerm.toLowerCase().trim();
+            const filteredProducts = products.filter(product => {
+                return product.name.toLowerCase().includes(term) || 
+                       (product.description && product.description.toLowerCase().includes(term));
+            });
+            
+            renderProductList(filteredProducts);
+            
+            // Update search results info
+            if (filteredProducts.length === 0) {
+                resultsInfo.innerHTML = `<i class="fas fa-search me-1"></i>No products found for "<strong>${searchTerm}</strong>"`;
+                resultsInfo.className = 'search-results-info mt-2 text-center text-warning small';
+                resultsInfo.style.display = 'block';
+            } else if (filteredProducts.length < products.length) {
+                resultsInfo.innerHTML = `<i class="fas fa-filter me-1"></i>Showing <strong>${filteredProducts.length}</strong> of <strong>${products.length}</strong> products`;
+                resultsInfo.className = 'search-results-info mt-2 text-center text-info small';
+                resultsInfo.style.display = 'block';
+            } else {
+                resultsInfo.style.display = 'none';
+            }
+        }
+
+        function showProductDetails(idx) {
+            const product = products[idx];
+            if (!product) return;
+            
+            let html = `<div class="product-details-content">`;
+            html += `<h4 class="mb-3 text-primary"><i class="fas fa-box me-2"></i>${product.name}</h4>`;
+            if (product.description) {
+                // Display description with proper formatting (convert line breaks to HTML)
+                const formattedDescription = product.description.replace(/\n/g, '<br>');
+                html += `<div class="product-description">${formattedDescription}</div>`;
+            }
+            html += `</div>`;
+            
+            document.getElementById('productDetailsBody').innerHTML = html;
+            var modal = new bootstrap.Modal(document.getElementById('productDetailsModal'));
+            modal.show();
+        }
+
+        // Render on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProductList();
+            
+            // Setup search functionality
+            const searchInput = document.getElementById('productSearchInput');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            let searchTimeout;
+            
+            if (searchInput) {
+                // Debounced search
+                searchInput.addEventListener('input', function() {
+                    const searchValue = this.value.trim();
+                    
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        searchProducts(searchValue);
+                    }, 300);
+                });
+                
+                // Handle paste events
+                searchInput.addEventListener('paste', function() {
+                    setTimeout(() => {
+                        const searchValue = this.value.trim();
+                        searchProducts(searchValue);
+                    }, 10);
+                });
+                
+                // Handle enter key
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        clearTimeout(searchTimeout);
+                        searchProducts(this.value.trim());
+                    }
+                });
+            }
+            
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function() {
+                    searchInput.value = '';
+                    searchProducts('');
+                    searchInput.focus();
+                    
+                    if (searchTimeout) {
+                        clearTimeout(searchTimeout);
+                    }
+                });
+            }
+        });
+        </script>
+        <script src="script_new.js"></script>
 </body>
 </html>

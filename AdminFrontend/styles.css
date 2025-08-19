@@ -40,6 +40,8 @@ body.theme-light thead.table-dark { background: var(--color-bg-alt) !important; 
 body.theme-light thead.table-dark th { color: var(--color-text-dim); }
 body.theme-light .sidebar { border-right:1px solid var(--color-border); }
 body.theme-light .sidebar .nav-link.active { color: var(--color-accent)!important; }
+body.theme-light .sidebar #logoutBtn { border-color: var(--color-border); color: var(--color-text-dim); }
+body.theme-light .sidebar #logoutBtn:hover { background: var(--color-danger); border-color: var(--color-danger); color: #ffffff; }
 body.theme-light .stat-tile::before { background: radial-gradient(circle at 15% 20%, rgba(var(--color-accent-rgb),.18), transparent 70%); }
 body.theme-light #galleryGrid .gallery-card button { background: var(--color-bg-alt); }
 body.theme-light ::-webkit-scrollbar-track { background: var(--color-bg-alt); }
