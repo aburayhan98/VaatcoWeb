@@ -76,7 +76,7 @@ body.theme-dark .table-striped>tbody>tr:nth-of-type(odd)>* { --bs-table-accent-b
 body.theme-dark .table-hover tbody tr:hover { background: rgba(255,255,255,.04); }
 body.theme-dark .table-primary th { background:#213042 !important; }
 body.theme-dark footer.bg-dark { background:#0f1115 !important; }
-body.theme-dark .hero-section { border-color:#910183; }
+/* Removed body.theme-dark .hero-section rule that was causing border issues */
 body.theme-dark .hero-title, body.theme-dark .hero-subtitle { color:#fff !important; }
 body.theme-dark .about-title, body.theme-dark h2 { color: var(--bold-text-color) !important; }
 body.theme-dark .btn-primary { background: var(--gradient-accent); border:0; }
@@ -125,6 +125,158 @@ body.theme-dark #dealers .dealer-district { color:#58b8ff; }
 body.theme-dark #dealers .dealer-name { color:#d26bd2; }
 body.theme-dark #dealers .dealer-contact { background:linear-gradient(135deg,#183743,#1f4c57); color:#9bd8ff; box-shadow:0 2px 8px -2px rgba(0,0,0,.7); }
 body.theme-dark #dealers .dealer-contact i { color:#25a389; }
+
+/* Custom Map Disclaimer Toast */
+.custom-map-toast { 
+    width: 360px; 
+    background: #ffffff; 
+    border: 1px solid rgba(0,0,0,.08); 
+    border-radius: 18px; 
+    box-shadow: 0 18px 40px -12px rgba(0,0,0,.25), 0 2px 8px -2px rgba(0,0,0,.12); 
+    overflow: hidden; 
+    font-size: .9rem; 
+    animation: toastSlideIn .45s cubic-bezier(.21,.72,.27,.99); 
+    position: relative; 
+    backdrop-filter: blur(4px); 
+}
+.custom-map-toast .toast-body { background:linear-gradient(135deg,#fff,#f7fbff 70%); }
+.custom-map-toast .custom-toast-accent { position:absolute; left:0; top:0; bottom:0; width:6px; background:linear-gradient(180deg,#ffb347,#ff7730); }
+.custom-toast-icon { width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:12px; background:linear-gradient(135deg,#fff2e5,#ffe4d1); box-shadow:0 4px 10px -4px rgba(0,0,0,.2); color:#d35400; font-size:1.1rem; }
+.custom-toast-title { font-size:.95rem; letter-spacing:.5px; text-transform:uppercase; color:#d35400; }
+.custom-toast-message { line-height:1.35; color:#5a4638; font-weight:500; }
+.custom-toast-actions .btn { font-weight:600; letter-spacing:.3px; }
+.custom-toast-btn-confirm.btn-gradient, .btn-gradient { background:linear-gradient(135deg,#ff9040,#ff5e62); color:#fff; border:0; box-shadow:0 4px 14px -4px rgba(255,94,98,.6); }
+.custom-toast-btn-confirm.btn-gradient:hover { filter:brightness(1.05); }
+.custom-toast-btn-cancel { border-color:#d5d8db; color:#555; }
+.custom-toast-btn-cancel:hover { background:#eceff2; }
+.custom-toast-progress { position:absolute; left:0; bottom:0; height:3px; width:0; background:linear-gradient(90deg,#ff9040,#ff5e62); animation: toastProgress 7s linear forwards; }
+@keyframes toastSlideIn { from { transform:translateX(40px) translateY(10px) scale(.92); opacity:0; } to { transform:translateX(0) translateY(0) scale(1); opacity:1; } }
+@keyframes toastProgress { to { width:100%; } }
+
+/* Dark theme adjustments for toast */
+body.theme-dark .custom-map-toast { background:#1f242c; border-color:#2d3541; box-shadow:0 18px 40px -12px rgba(0,0,0,.75),0 2px 8px -2px rgba(0,0,0,.6); }
+body.theme-dark .custom-map-toast .toast-body { background:linear-gradient(135deg,#1f242c,#1b2026 70%); }
+body.theme-dark .custom-toast-accent { background:linear-gradient(180deg,#ffb347,#ff7730); }
+body.theme-dark .custom-toast-icon { background:linear-gradient(135deg,#2a3038,#232a32); color:#ffb347; box-shadow:0 4px 12px -4px rgba(0,0,0,.8); }
+body.theme-dark .custom-toast-title { color:#ffb347; }
+body.theme-dark .custom-toast-message { color:#d0d7de; }
+body.theme-dark .custom-toast-btn-cancel { border-color:#3a444f; color:#d0d7de; background:#232a32; }
+body.theme-dark .custom-toast-btn-cancel:hover { background:#2b343e; }
+body.theme-dark .custom-toast-btn-confirm { background:linear-gradient(135deg,#ff9040,#ff5e62); color:#fff; }
+body.theme-dark .custom-toast-btn-confirm:hover { filter:brightness(1.07); }
+body.theme-dark .custom-toast-progress { opacity:.9; }
+
+/* Enhanced Color Variant for Map Toast (brand gradients) */
+/* Apply colorized style by default */
+.custom-map-toast { 
+    --toast-accent-start:#32CD32; 
+    --toast-accent-end:#910183; 
+    --toast-accent-mid:#0066cc; 
+    --toast-bg-start:#ffffff; 
+    --toast-bg-end:#f4f8ff; 
+    --toast-icon-bg-start:#e2ffe9; 
+    --toast-icon-bg-end:#f9e2ff; 
+    --toast-icon-color:#910183; 
+    --toast-title-color:#0066cc; 
+    --toast-text-color:#3d4152; 
+    --toast-progress-start:#32CD32; 
+    --toast-progress-end:#910183; 
+}
+.custom-map-toast .toast-body { 
+    background: linear-gradient(145deg,var(--toast-bg-start) 0%, var(--toast-bg-end) 60%); 
+    position:relative; 
+}
+.custom-map-toast .custom-toast-accent { 
+    background: linear-gradient(180deg,var(--toast-accent-start), var(--toast-accent-mid) 55%, var(--toast-accent-end));
+    box-shadow:0 0 0 1px rgba(0,0,0,.05),0 0 12px -2px var(--toast-accent-end);
+}
+.custom-map-toast .custom-toast-icon { 
+    background: linear-gradient(135deg,var(--toast-icon-bg-start), var(--toast-icon-bg-end));
+    color: var(--toast-icon-color);
+    border:1px solid rgba(145,1,131,.15);
+}
+.custom-map-toast .custom-toast-title { 
+    background: linear-gradient(90deg,var(--toast-title-color), var(--toast-accent-end));
+    -webkit-background-clip:text; background-clip:text; color:transparent; font-weight:700;
+}
+.custom-map-toast .custom-toast-message { color: var(--toast-text-color); }
+.custom-map-toast .custom-toast-btn-confirm { 
+    background: linear-gradient(120deg,#32CD32,#0066cc 40%,#910183); 
+    border:0; 
+    position:relative; 
+    overflow:hidden; 
+}
+.custom-map-toast .custom-toast-btn-confirm:before { content:""; position:absolute; inset:0; background:linear-gradient(60deg,rgba(255,255,255,.35),rgba(255,255,255,0) 60%); mix-blend-mode:overlay; opacity:.6; }
+.custom-map-toast .custom-toast-btn-confirm:hover { filter:brightness(1.07) saturate(1.1); }
+.custom-map-toast .custom-toast-btn-cancel { background:rgba(0,102,204,.05); }
+.custom-map-toast .custom-toast-btn-cancel:hover { background:rgba(0,102,204,.12); }
+.custom-map-toast .custom-toast-progress { 
+    background: linear-gradient(90deg,var(--toast-progress-start), var(--toast-progress-end)); 
+    box-shadow:0 0 6px -1px var(--toast-progress-end),0 0 2px var(--toast-progress-start) inset;
+}
+@keyframes toastPulseGlow { 0% { box-shadow:0 0 0 0 rgba(145,1,131,.4); } 70% { box-shadow:0 0 0 10px rgba(145,1,131,0); } 100% { box-shadow:0 0 0 0 rgba(145,1,131,0); } }
+.custom-map-toast .custom-toast-icon { animation: toastPulseGlow 4s ease-in-out infinite; }
+
+/* Dark theme overrides for colorized toast */
+body.theme-dark .custom-map-toast { 
+    --toast-bg-start:#1f242c; 
+    --toast-bg-end:#1a2026; 
+    --toast-icon-bg-start:#273038; 
+    --toast-icon-bg-end:#262c38; 
+    --toast-icon-color:#32CD32; 
+    --toast-title-color:#32CD32; 
+    --toast-text-color:#d0d7de; 
+    --toast-progress-start:#32CD32; 
+    --toast-progress-end:#910183; 
+}
+body.theme-dark .custom-map-toast .custom-toast-btn-cancel { background:#232a32; border-color:#2d3541; }
+body.theme-dark .custom-map-toast .custom-toast-btn-cancel:hover { background:#2d3541; }
+body.theme-dark .custom-map-toast .custom-toast-btn-confirm { box-shadow:0 4px 14px -4px rgba(50,205,50,.45); }
+
+/* Dealer lead paragraph higher contrast (subtle version) */
+.dealer-lead { 
+    color:#384049; 
+    font-weight:500; 
+    background:linear-gradient(90deg,rgba(0,102,204,.05),rgba(145,1,131,.05)); 
+    padding:10px 14px; 
+    border-radius:10px; 
+    border:1px solid rgba(0,0,0,.06); 
+}
+body.theme-dark .dealer-lead { 
+    color:#d0d7de; 
+    background:linear-gradient(90deg,rgba(50,205,50,.12),rgba(145,1,131,.15)); 
+    border-color:#2d3541; 
+}
+
+/* Dealers Hero Section */
+.dealers-hero { 
+    background:linear-gradient(135deg,#f0f7ff 0%,#ffffff 55%,#f9f2ff 100%); 
+    padding:70px 0 60px; 
+    position:relative; 
+    border-bottom:1px solid rgba(0,0,0,.06); 
+}
+.dealers-hero:after { content:""; position:absolute; inset:0; background:radial-gradient(circle at 85% 30%,rgba(145,1,131,.08),transparent 60%); pointer-events:none; }
+.dealers-hero h1 { font-weight:800; font-size:2.4rem; letter-spacing:.5px; background:linear-gradient(90deg,#0066cc,#910183); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.dealers-hero .lead { 
+    font-size:1.05rem; 
+    font-weight:600; 
+    color:#23313d; 
+    line-height:1.45; 
+    background:linear-gradient(90deg,rgba(0,102,204,.07),rgba(145,1,131,.07)); 
+    padding:14px 18px; 
+    border-left:5px solid #0066cc; 
+    border-radius:10px; 
+    box-shadow:0 4px 12px -6px rgba(0,0,0,.12); 
+}
+body.theme-dark .dealers-hero { background:linear-gradient(135deg,#12161c,#1b222b 60%,#1f1624 100%); border-color:#2d3541; }
+body.theme-dark .dealers-hero:after { background:radial-gradient(circle at 80% 25%,rgba(145,1,131,.22),transparent 65%); }
+body.theme-dark .dealers-hero h1 { background:linear-gradient(90deg,#58b8ff,#d26bd2); -webkit-background-clip:text; background-clip:text; color:transparent; }
+body.theme-dark .dealers-hero .lead { 
+    color:#d0d7de; 
+    background:linear-gradient(90deg,rgba(0,102,204,.15),rgba(145,1,131,.18)); 
+    border-left-color:#32CD32; 
+    box-shadow:0 6px 18px -10px rgba(0,0,0,.65); 
+}
 
 /* Theme toggle states */
 #themeToggle { transition: all .25s ease; }
@@ -497,8 +649,7 @@ select:focus,
     position: relative;
     min-height: 100vh;
     overflow: hidden;
-    border-bottom: 5px solid #8A2BE2;
-    box-shadow: 0 5px 20px rgba(138, 43, 226, 0.2);
+    /* Removed border-bottom that was causing the line above carousel */
 }
 
 .carousel-fade .carousel-item {
@@ -647,6 +798,162 @@ select:focus,
     opacity: 1;
 }
 
+/* Enhanced Mobile Responsiveness for Carousel */
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 100vh; /* Ensure full height on mobile */
+    }
+    
+    .hero-slide {
+        min-height: 100vh;
+        background-attachment: scroll; /* Fix for mobile parallax issues */
+        padding: 1rem 0;
+    }
+    
+    .hero-title {
+        font-size: 2.2rem;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        padding: 0 1rem;
+    }
+    
+    .hero-buttons {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+    
+    .hero-buttons .btn {
+        display: block;
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto 1rem auto;
+        padding: 14px 20px;
+        font-size: 1rem;
+    }
+    
+    .hero-buttons .btn:last-child {
+        margin-bottom: 0;
+    }
+    
+    /* Carousel controls for mobile */
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 8%;
+        opacity: 0.6;
+    }
+    
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        width: 25px;
+        height: 25px;
+        background-size: 100%;
+    }
+    
+    /* Carousel indicators for mobile */
+    .carousel-indicators {
+        bottom: 20px;
+        margin-bottom: 0;
+    }
+    
+    .carousel-indicators [data-bs-target] {
+        width: 12px;
+        height: 12px;
+        margin: 0 3px;
+    }
+    
+    /* Ensure content is vertically centered on mobile */
+    .hero-slide .row {
+        min-height: 100vh;
+        align-items: center !important;
+    }
+    
+    /* Adjust overlay for better mobile readability */
+    .hero-overlay {
+        background: rgba(0, 0, 0, 0.5); /* Slightly darker on mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 1.8rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 1.2rem;
+        padding: 0 0.5rem;
+    }
+    
+    .hero-buttons .btn {
+        padding: 12px 16px;
+        font-size: 0.95rem;
+    }
+    
+    /* Smaller carousel controls for very small screens */
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 10%;
+    }
+    
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .carousel-indicators [data-bs-target] {
+        width: 10px;
+        height: 10px;
+        margin: 0 2px;
+    }
+}
+
+/* Landscape orientation fixes for mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero-section {
+        min-height: 100vh;
+    }
+    
+    .hero-slide {
+        min-height: 100vh;
+        padding: 0.5rem 0;
+    }
+    
+    .hero-title {
+        font-size: 1.6rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.8rem;
+        margin-bottom: 1rem;
+        line-height: 1.3;
+    }
+    
+    .hero-buttons {
+        margin-top: 1rem;
+    }
+    
+    .hero-buttons .btn {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .carousel-indicators {
+        bottom: 10px;
+    }
+}
+
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
     width: 40px;
@@ -727,25 +1034,116 @@ section {
     position: relative;
 }
 
-section::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 10%;
-    right: 10%;
-    height: 1px;
-    background: linear-gradient(to right, transparent, #8A2BE2, #32CD32, transparent);
-    opacity: 0.5;
+/* Removed section::after rule that was causing decorative border lines */
+
+/* Replace borders with padding for better visual separation */
+.hero-section {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
-/* Special border styling for different section types */
+/* Add padding to carousel content for visual spacing */
+#heroCarousel {
+    border: none !important;
+    padding: 0 !important;
+}
+
+.carousel-inner {
+    border: none !important;
+    padding: 0 !important;
+}
+
+.carousel-item {
+    border: none !important;
+    padding: 0 !important;
+}
+
+/* Add padding to hero slide content for better spacing */
+.hero-slide {
+    border: none !important;
+    padding: 2rem 0 !important;
+}
+
+.hero-overlay {
+    padding: 4rem 0 !important;
+}
+
+/* Add padding to text content within carousel */
+.hero-title {
+    margin-bottom: 1.5rem !important;
+    padding: 0 1rem !important;
+}
+
+.hero-subtitle {
+    margin-bottom: 2rem !important;
+    padding: 0 1rem !important;
+}
+
+.hero-buttons {
+    padding: 0 1rem !important;
+    margin-top: 2rem !important;
+}
+
+/* Add general section spacing to replace borders */
+section {
+    padding: 4rem 0 !important; /* Standard section padding */
+}
+
+section.hero-section {
+    padding: 0 !important; /* Override for hero section */
+}
+
+/* Remove borders from all carousel elements */
+.carousel *,
+.carousel-fade *,
+.hero-slide *,
+.hero-overlay * {
+    border: none !important;
+    outline: none !important;
+}
+
+/* Remove any potential Bootstrap default borders */
+#heroCarousel.carousel,
+.carousel.slide,
+.carousel-fade {
+    border: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Override Bootstrap button borders for carousel controls */
+.carousel-control-prev,
+.carousel-control-next {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Keep carousel indicators functional but remove borders if needed */
+.carousel-indicators [data-bs-target] {
+    border: 2px solid rgba(255, 255, 255, 0.8) !important; /* Keep indicator borders for visibility */
+    background-color: transparent !important;
+}
+
+/* Exception for carousel controls which need their background styling */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-image: inherit !important;
+}
+
+/* Replace section borders with padding for visual separation */
 section.bg-light {
-    border-bottom: 3px solid rgba(138, 43, 226, 0.15);
+    border: none !important;
+    padding: 4rem 0 5rem 0 !important; /* Add extra padding instead of border */
     background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%) !important;
+    margin-bottom: 2rem !important;
 }
 
 section.bg-white {
-    border-bottom: 3px solid rgba(50, 205, 50, 0.1);
+    border: none !important;
+    padding: 4rem 0 5rem 0 !important; /* Add extra padding instead of border */
+    margin-bottom: 2rem !important;
 }
 
 /* What We Offer Section - Enhanced Design */
@@ -1897,11 +2295,13 @@ section.bg-white {
     }
 }
 
-/* Features Section - Why Choose VAATCO Cards */
+/* Features Section - Why Choose VAATCO Cards - Replace border with padding */
 .why-choose-section {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     position: relative;
-    border-bottom: 4px solid #8A2BE2;
+    border: none !important; /* Remove border */
+    padding: 5rem 0 6rem 0 !important; /* Add extra padding instead */
+    margin-bottom: 3rem !important; /* Add margin for separation */
     box-shadow: 0 3px 15px rgba(138, 43, 226, 0.1);
 }
 
@@ -2076,12 +2476,13 @@ section.bg-white {
     background-color: rgba(0, 102, 204, 0.05);
 }
 
-/* Contact Section */
+/* Contact Section - Replace borders with padding */
 .contact-section {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     position: relative;
-    border-top: 4px solid #8A2BE2;
-    border-bottom: 4px solid #32CD32;
+    border: none !important; /* Remove all borders */
+    padding: 6rem 0 6rem 0 !important; /* Add generous padding instead */
+    margin: 3rem 0 !important; /* Add margin for separation */
     box-shadow: 0 3px 15px rgba(138, 43, 226, 0.1), 0 -3px 15px rgba(50, 205, 50, 0.1);
 }
 
@@ -3802,5 +4203,571 @@ footer img:hover {
     .preview-close:active {
         background: rgba(255, 255, 255, 0.3);
         transform: scale(0.95);
+    }
+}
+
+/* ========================================
+   DEALERS SECTION STYLES
+   ======================================== */
+
+.dealers-section {
+    background: var(--bg-section-alt);
+    position: relative;
+    overflow: hidden;
+}
+
+.dealers-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+}
+
+.search-box {
+    background: var(--bg-surface);
+    border-radius: 15px;
+    padding: 8px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.search-box:hover {
+    box-shadow: 0 8px 25px -5px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.search-box .form-control {
+    border: none;
+    background: transparent;
+    font-size: 1.1rem;
+    padding: 12px 16px;
+}
+
+.search-box .form-control:focus {
+    box-shadow: none;
+    background: transparent;
+}
+
+.search-box .input-group-text {
+    background: transparent;
+    border: none;
+    padding: 12px 16px;
+}
+
+.dealer-card {
+    background: var(--bg-surface);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    height: 100%;
+    box-shadow: var(--shadow-sm);
+}
+
+.dealer-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px -10px rgba(0,0,0,0.2);
+    border-color: var(--primary-color);
+}
+
+.dealer-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-accent);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.dealer-card:hover::before {
+    transform: scaleX(1);
+}
+
+.dealer-card-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.dealer-card-header::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 10px solid var(--secondary-color);
+}
+
+.dealer-district {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    display: block;
+    color: #ffffff !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    font-family: 'Arial Black', Arial, sans-serif;
+}
+
+.dealer-card-body {
+    padding: 25px 20px;
+    text-align: center;
+}
+
+.dealer-name {
+    color: var(--text-dark);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.dealer-shop {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+    display: block;
+    font-style: italic;
+}
+
+.dealer-info-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.dealer-info-item i {
+    width: 20px;
+    text-align: center;
+    margin-right: 8px;
+    color: var(--primary-color);
+}
+
+.dealer-contact-btn {
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.dealer-contact-btn:hover {
+    background: linear-gradient(135deg, #128C7E 0%, #075E54 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+    color: white;
+}
+
+.dealer-contact-btn i {
+    margin-right: 6px;
+}
+
+.dealer-location-btn {
+    background:#4da3ff; /* lighter blue */
+    border: none;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight:600;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    transition:background .25s ease, transform .25s ease, box-shadow .25s ease;
+    font-size:.85rem;
+    margin-left:8px;
+    box-shadow:0 4px 10px -4px rgba(77,163,255,.25);
+}
+.dealer-location-btn:hover {
+    background:#82c8ff;
+    transform:translateY(-2px);
+    box-shadow:0 6px 16px -6px rgba(77,163,255,.35);
+    color:#fff;
+}
+
+.dealer-location-btn i {
+    margin-right: 4px;
+}
+
+.loading-spinner {
+    padding: 60px 0;
+}
+
+.no-results {
+    padding: 80px 20px;
+}
+
+.become-dealer-box {
+    background: var(--bg-surface);
+    border-radius: 20px;
+    padding: 40px;
+    border: 2px dashed var(--border-color);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.become-dealer-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(var(--primary-color), 0.02) 10px,
+        rgba(var(--primary-color), 0.02) 20px
+    );
+    animation: float 20s linear infinite;
+}
+
+@keyframes float {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.become-dealer-box:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-5px);
+    box-shadow: var(--shadow);
+}
+
+.become-dealer-box h4 {
+    color: var(--text-dark);
+    position: relative;
+    z-index: 1;
+}
+
+.become-dealer-box p {
+    position: relative;
+    z-index: 1;
+}
+
+.become-dealer-box .btn {
+    position: relative;
+    z-index: 1;
+}
+
+/* Dark theme adjustments for dealers */
+body.theme-dark .dealer-card {
+    background: var(--bg-surface);
+    border-color: var(--border-color);
+}
+
+body.theme-dark .dealer-name {
+    color: var(--text-dark);
+}
+
+body.theme-dark .dealer-shop {
+    color: var(--text-light);
+}
+
+body.theme-dark .dealer-info-item {
+    color: var(--text-light);
+}
+
+body.theme-dark .become-dealer-box {
+    background: var(--bg-surface);
+    border-color: var(--border-color);
+}
+
+body.theme-dark .become-dealer-box h4 {
+    color: var(--text-dark);
+}
+
+body.theme-dark .search-box {
+    background: var(--bg-surface);
+    border-color: var(--border-color);
+}
+
+/* Light theme enhancements for dealers */
+body.theme-light .dealer-card {
+    background: #ffffff;
+    border: 1px solid #e8ecef;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+body.theme-light .dealer-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    border-color: var(--primary-color);
+}
+
+body.theme-light .dealer-card-header {
+    background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+    box-shadow: 0 2px 8px rgba(0,102,204,0.2);
+}
+
+body.theme-light .dealer-district {
+    color: #ffffff !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    font-weight: 800;
+}
+
+body.theme-light .dealer-name {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+body.theme-light .dealer-shop {
+    color: #6c757d;
+}
+
+body.theme-light .dealer-info-item {
+    color: #495057;
+}
+
+body.theme-light .dealer-info-item i {
+    color: #0066cc;
+}
+
+body.theme-light .become-dealer-box {
+    background: #ffffff;
+    border: 2px dashed #dee2e6;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+body.theme-light .become-dealer-box:hover {
+    border-color: #0066cc;
+    box-shadow: 0 6px 20px rgba(0,102,204,0.1);
+}
+
+body.theme-light .become-dealer-box h4 {
+    color: #2c3e50;
+}
+
+body.theme-light .search-box {
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+body.theme-light .search-box:hover {
+    border-color: #0066cc;
+    box-shadow: 0 4px 15px rgba(0,102,204,0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dealer-card-header {
+        padding: 15px;
+    }
+    
+    .dealer-district {
+        font-size: 1.3rem;
+    }
+    
+    .dealer-card-body {
+        padding: 20px 15px;
+    }
+    
+    .become-dealer-box {
+        padding: 30px 20px;
+    }
+    
+    .search-box .form-control {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .dealer-contact-btn,
+    .dealer-location-btn {
+        width: 100%;
+        justify-content: center;
+        margin: 5px 0;
+    }
+    
+    .dealer-location-btn {
+        margin-left: 0;
+    }
+}
+
+/* ========================================
+   Dealer Preview Section Styles 
+   ======================================== */
+
+.dealer-preview-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    height: 100%;
+    box-shadow: var(--shadow-sm);
+}
+
+.dealer-preview-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow);
+    border-color: var(--primary-color);
+}
+
+.dealer-preview-header i {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+}
+
+.dealer-preview-header h5 {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin: 0;
+}
+
+.dealers-preview {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.dealer-mini-card {
+    background: rgba(76, 175, 80, 0.05);
+    border: 1px solid rgba(76, 175, 80, 0.2);
+    border-radius: 10px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.dealer-mini-card:hover {
+    background: rgba(76, 175, 80, 0.1);
+    transform: translateY(-2px);
+}
+
+.dealer-mini-district {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    min-width: 80px;
+    text-align: center;
+}
+
+.dealer-mini-info strong {
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.dealers-cta {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 3rem 2rem;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.dealers-cta::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    transform: rotate(45deg);
+    pointer-events: none;
+}
+
+.dealers-cta h4 {
+    color: white;
+    font-weight: 600;
+}
+
+.dealers-cta p {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.dealers-main-btn {
+    background: white;
+    color: var(--primary-color);
+    border: none;
+    padding: 1rem 2.5rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.dealers-main-btn:hover {
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    text-decoration: none;
+}
+
+.dealers-main-btn:active {
+    transform: translateY(0);
+}
+
+/* Dark theme adjustments for dealer preview */
+body.theme-dark .dealer-preview-card {
+    background: var(--bg-surface-dark);
+    border-color: var(--border-color-dark);
+}
+
+body.theme-dark .dealers-preview {
+    background: var(--bg-surface-dark);
+    border-color: var(--border-color-dark);
+}
+
+body.theme-dark .dealer-mini-card {
+    background: rgba(76, 175, 80, 0.1);
+    border-color: rgba(76, 175, 80, 0.3);
+}
+
+/* Responsive design for dealer preview */
+@media (max-width: 768px) {
+    .dealers-cta {
+        padding: 2rem 1.5rem;
+    }
+    
+    .dealers-main-btn {
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+    }
+    
+    .dealer-preview-card {
+        padding: 1.5rem 1rem;
+    }
+    
+    .dealers-preview {
+        padding: 1.5rem;
     }
 }

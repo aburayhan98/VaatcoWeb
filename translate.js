@@ -68,6 +68,22 @@
   'blog.title':'সর্বশেষ অন্তর্দৃষ্টি: ভ্যাটকো ব্লগ','blog.lead':'অ্যাকুয়াকালচার ও এগ্রো ভিত্তিক ঔষধে সর্বশেষ প্রবণতা ও শ্রেষ্ঠ চর্চায় আপডেট থাকুন।','blog.post1.title':'অ্যাকুয়াকালচারে জিওলাইটের ৫টি উপকারিতা','blog.post1.text':'জিওলাইট কিভাবে পানি গুণমান রক্ষা, টক্সিন শোষণ এবং মাছ বৃদ্ধিতে সহায়তা করে জানুন।','blog.post2.title':'ইউক্কা কিভাবে পুকুরের পানি গুণমান উন্নত করে','blog.post2.text':'অ্যামোনিয়া কমাতে ও দুর্গন্ধ হ্রাসে ইউক্কা এক্সট্রাক্টের প্রাকৃতিক শক্তি জানুন।','blog.readMore':'আরও আর্টিকেল পড়ুন',
   // Dealers
   'dealers.title':'আমাদের ডিলার খুঁজুন: আপনার স্থানীয় ভ্যাটকো অংশীদার','dealers.lead':'নিকটস্থ অনুমোদিত ডিলার সহজেই খুঁজুন। আমাদের নেটওয়ার্ক সারা বাংলাদেশে মানসম্পন্ন পণ্য সরবরাহ নিশ্চিত করে।','dealers.table.district':'জেলা','dealers.table.dealer':'ডিলারের নাম','dealers.table.contact':'যোগাযোগ','dealers.become':'ডিস্ট্রিবিউটর হোন',
+  // Dealers dedicated page
+  'dealersPage.title':'আমাদের ডিলার খুঁজুন','dealersPage.lead':'বাংলাদেশ জুড়ে আমাদের অনুমোদিত ডিলারদের সাথে সংযোগ করুন। আমাদের বিস্তৃত নেটওয়ার্ক প্রিমিয়াম অ্যাকুয়াকালচার ও ভেটেরিনারি পণ্য সহজলভ্য করে।',
+  'dealersPage.searchPh':'জেলা, ডিলার নাম, দোকান বা লোকেশন দিয়ে খুঁজুন...',
+  'dealersPage.showingPrefix':'মোট',
+  'dealersPage.showingMiddle':'এর মধ্যে',
+  'dealersPage.showingSuffix':'টি ডিলার প্রদর্শিত হচ্ছে',
+  'dealersPage.noResultsTitle':'কোন ডিলার পাওয়া যায়নি',
+  'dealersPage.noResultsText':'আপনার সার্চ শর্ত পরিবর্তন করুন অথবা সব ডিলার দেখুন',
+  'dealersPage.showAllBtn':'সব ডিলার দেখুন',
+  'dealersPage.loading':'ডিলার লোড হচ্ছে...',
+  // Dealer map toast
+  'dealer.toast.title':'নোটিস:',
+  'dealer.toast.message':'মানচিত্রের অবস্থান আনুমানিক বা অনুপলব্ধ হতে পারে। সঠিক ঠিকানা নিশ্চিত করতে অনুগ্রহ করে ডিলারের সাথে যোগাযোগ করুন।',
+  'dealer.toast.cancel':'বাতিল',
+  'dealer.toast.continue':'মানচিত্রে যান',
+  'dealer.mapBtn':'মানচিত্রে দেখুন',
   // Contact
   'contact.title':'যোগাযোগ করুন: ভ্যাটকোর সাথে যোগাযোগ','contact.subtitle':'প্রশ্ন বা সহায়তা দরকার? আমাদের টিম প্রস্তুত আছেন।','contact.form.title':'আমাদের বার্তা পাঠান','contact.form.lead':'নীচের ফর্ম পূরণ করুন, আমরা দ্রুত উত্তর দেব। তাৎক্ষণিক সহায়তার জন্য কল বা হোয়াটসঅ্যাপ ব্যবহার করুন।','contact.form.fullNameLabel':'পূর্ণ নাম','contact.form.fullNamePh':'আপনার পূর্ণ নাম লিখুন','contact.form.emailLabel':'ইমেইল ঠিকানা','contact.form.emailPh':'আপনার ইমেইল লিখুন','contact.form.phoneLabel':'ফোন নম্বর','contact.form.phonePh':'আপনার ফোন নম্বর লিখুন','contact.form.subjectLabel':'বিষয়','contact.form.subjectPh':'কিসের সম্পর্কে?','contact.form.messageLabel':'বার্তা','contact.form.messagePh':'আমরা কিভাবে সাহায্য করতে পারি...','contact.form.sendBtn':'বার্তা পাঠান',
   'contact.info.title':'যোগাযোগের তথ্য','contact.info.addressLabel':'অফিসের ঠিকানা','contact.info.callLabel':'এখনই কল করুন','contact.info.emailLabel':'ইমেইল','contact.info.callBtn':'কল করুন','contact.info.whatsappBtn':'হোয়াটসঅ্যাপে পাঠান',
