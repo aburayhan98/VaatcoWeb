@@ -12,12 +12,14 @@ const STORAGE_KEYS = {
 const defaultData = {
   gallery: [
     { id: 1, url: '../sticker/sticker1.jpeg', alt: 'Sticker 1' },
-    { id: 2, url: '../sticker/sticker2.jpeg', alt: 'Sticker 2' }
+    { id: 2, url: '../sticker/sticker2.jpeg', alt: 'Sticker 2' },
+    { id: 3, url: 'ProductImage/micro_off_sample_image.jpg', alt: 'Micro Off Product Sample' }
   ],
   products: [
     { 
       id: 1, 
-      name: 'Micro off', 
+      name: 'Micro off',
+      images: ['ProductImage/micro_off_sample_image.jpg'],
       description: `A newly designed powder formula for harmful microorganism
 
 Key Ingredients (Per 100gm):
@@ -42,7 +44,8 @@ Pack Size: 100gm & 50 gm`
     },
     { 
       id: 2, 
-      name: 'Acetaminophen', 
+      name: 'Acetaminophen',
+      images: [],
       description: `Widely used pain reliever and a fever reducer.
 
 Key Ingredients:
@@ -60,7 +63,8 @@ Pack Size: 25 kg`
     },
     { 
       id: 3, 
-      name: 'Ascorbic Acid', 
+      name: 'Ascorbic Acid',
+      images: [],
       description: `Vitamin C, essential for growth and repair of tissues.
 
 Key Ingredients:
@@ -157,7 +161,17 @@ function saveGalleryItem(e) {
   const id = qs('#galleryId').value;
   const url = qs('#galleryUrl').value.trim();
   const alt = qs('#galleryAlt').value.trim();
-  if (!url || !alt) return;
+  
+  if (!alt) {
+    alert('Please provide alt text / description for the image.');
+    return;
+  }
+  
+  if (!url) {
+    alert('Please provide an image URL or upload a file.');
+    return;
+  }
+  
   const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GALLERY) || '[]');
   if (id) {
     const idx = list.findIndex(i => i.id == id);
@@ -197,33 +211,77 @@ function saveProduct(e) {
   const id = document.getElementById('productId').value;
   const name = document.getElementById('productName').value.trim();
   const description = document.getElementById('productDescription').value.trim();
+  const imagesText = document.getElementById('productImages').value.trim();
 
   if(!name || !description) {
     alert('Please fill in both Product Name and Description fields.');
     return;
   }
 
+  // Convert images text to array (split by lines and filter empty ones)
+  const images = imagesText ? imagesText.split('\n').map(img => img.trim()).filter(img => img) : [];
+
   const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
-  if (id) {
+  
+  if (id && id.trim() !== '') {
+    // Edit existing product
     const idx = list.findIndex(i => i.id == id);
-    if (idx > -1) list[idx] = { 
-      ...list[idx], 
-      name, 
-      description
-    };
+    if (idx > -1) {
+      list[idx] = { 
+        id: list[idx].id, // Keep the same ID
+        name, 
+        description,
+        images
+      };
+    } else {
+      alert('Product not found for editing.');
+      return;
+    }
   } else {
-    list.push({ 
+    // Add new product
+    const newProduct = { 
       id: generateId(list), 
       name, 
-      description
-    });
+      description,
+      images
+    };
+    list.push(newProduct);
   }
+  
   localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(list));
   loadProducts();
   bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
-  document.getElementById('productForm').reset();
-  document.getElementById('productId').value='';
+  
+  // Reset form properly
+  if (typeof window.resetProductForm === 'function') {
+    window.resetProductForm();
+  } else {
+    // Fallback reset
+    document.getElementById('productForm').reset();
+    document.getElementById('productId').value = '';
+  }
   renderStats();
+}
+
+// Reset product form function
+function resetProductForm() {
+  document.getElementById('productForm').reset();
+  document.getElementById('productId').value = '';
+  document.getElementById('productImages').value = '';
+  
+  // Reset image selection if functions exist
+  if (typeof window.selectedProductImages !== 'undefined') {
+    window.selectedProductImages = [];
+  }
+  if (typeof window.updateSelectedImagesDisplay === 'function') {
+    window.updateSelectedImagesDisplay();
+  }
+  
+  // Reset modal title
+  const modalTitle = document.getElementById('productModalTitle');
+  if (modalTitle) {
+    modalTitle.textContent = 'Add Product';
+  }
 }
 
 // Dealers CRUD
@@ -355,6 +413,24 @@ function attachDelegates() {
       const item = list.find(i => i.id == id);
       if (item) {
         let html = `<h4 class="mb-3">${item.name||''}</h4>`;
+        
+        // Display product images if available
+        if (item.images && item.images.length > 0) {
+          html += `<div class="product-images mb-3">`;
+          item.images.forEach((imagePath, index) => {
+            html += `
+              <div class="product-image-container mb-2">
+                <img src="${imagePath}" alt="${item.name} - Image ${index + 1}" 
+                     class="product-image img-fluid" 
+                     style="max-width: 200px; height: auto; border-radius: 8px; cursor: pointer;"
+                     onclick="openImageModal('${imagePath}', '${item.name}')"
+                     onerror="this.style.display='none'">
+              </div>
+            `;
+          });
+          html += `</div>`;
+        }
+        
         if (item.description) {
           // Display description with proper formatting
           const formattedDescription = item.description.replace(/\n/g, '<br>');
@@ -391,9 +467,24 @@ function attachDelegates() {
       const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
       const item = list.find(i => i.id == id);
       if (item) {
+        // Set modal title for editing
+        const modalTitle = document.getElementById('productModalTitle');
+        if (modalTitle) {
+          modalTitle.textContent = 'Edit Product';
+        }
+        
+        // Populate form fields
         qs('#productId').value = item.id;
         qs('#productName').value = item.name;
         qs('#productDescription').value = item.description || '';
+        qs('#productImages').value = item.images ? item.images.join('\n') : '';
+        
+        // Update the selected images display if the function exists
+        if (typeof window.updateSelectedImagesDisplay === 'function') {
+          window.selectedProductImages = item.images || [];
+          window.updateSelectedImagesDisplay();
+        }
+        
         new bootstrap.Modal(document.getElementById('productModal')).show();
       }
     }
