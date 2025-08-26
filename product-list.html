@@ -543,6 +543,61 @@
         .navbar {
             transition: transform 0.3s ease-in-out;
         }
+        
+        /* Product Image Styles */
+        .product-images-container {
+            border-top: 1px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+            padding: 20px 0;
+            margin: 20px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .product-image-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .product-detail-image {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .product-detail-image:hover {
+            border-color: #3498db;
+            transform: scale(1.05);
+            box-shadow: 0 4px 16px rgba(52,152,219,0.3);
+        }
+        
+        /* Image placeholder styling */
+        .product-image-wrapper .border {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 2px dashed #dee2e6 !important;
+        }
+        
+        .product-image-wrapper .text-muted i {
+            color: #6c757d;
+        }
+        
+        /* Mobile responsive images */
+        @media (max-width: 768px) {
+            .product-detail-image {
+                max-width: 150px !important;
+                max-height: 150px !important;
+            }
+            
+            .product-images-container {
+                text-align: center;
+            }
+            
+            .product-image-wrapper {
+                margin-right: 10px !important;
+                margin-bottom: 15px !important;
+            }
+        }
     </style>
 </head>
 
@@ -770,7 +825,8 @@ Dosage & Administration:
 
 Origin: Germany
 
-Pack Size: 100gm & 50 gm`
+Pack Size: 100gm & 50 gm`,
+                    images: ["ProductImage/micro_off_sample_image.jpg"]
                 },
                 {
                     name: "Acetaminophen",
@@ -787,7 +843,8 @@ Dosage & Administration:
 
 Origin: Bangladesh
 
-Pack Size: 25 kg`
+Pack Size: 25 kg`,
+                    images: []
                 },
                 {
                     name: "Ascorbic Acid",
@@ -804,7 +861,8 @@ Dosage & Administration:
 
 Origin: Bangladesh
 
-Pack Size: 25 kg`
+Pack Size: 25 kg`,
+                    images: []
                 }
             ];
         }
@@ -843,6 +901,7 @@ Pack Size: 25 kg`
                 html += `
                     <div class="product-item" data-product-idx="${originalIdx}">
                         <div class="d-flex justify-content-between align-items-start">
+                            
                             <div class="flex-grow-1">
                                 <div class="product-name">${product.name}</div>
                                 ${preview ? `<div class="product-preview">${preview}</div>` : ''}
@@ -897,6 +956,29 @@ Pack Size: 25 kg`
             
             let html = `<div class="product-details-content">`;
             html += `<h4 class="mb-3 text-primary"><i class="fas fa-box me-2"></i>${product.name}</h4>`;
+            
+            // Display product images directly under the name
+            if (product.images && product.images.length > 0) {
+                html += `<div class="product-images-container mb-4">`;
+                product.images.forEach((image, index) => {
+                    if (image && image.trim() !== '') {
+                        html += `
+                            <div class="product-image-wrapper d-inline-block me-3 mb-3">
+                                <img src="${image}" alt="${product.name} - Image ${index + 1}" 
+                                     class="product-detail-image img-thumbnail" 
+                                     style="max-width: 200px; max-height: 200px; object-fit: cover; cursor: pointer;"
+                                     onclick="openImageModal('${image}', '${product.name}')"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <div class="text-center text-muted p-2 border rounded" style="display: none; max-width: 200px;">
+                                    <i class="fas fa-image fa-2x mb-2"></i>
+                                    <p class="mb-0 small">Image not available</p>
+                                </div>
+                            </div>`;
+                    }
+                });
+                html += `</div>`;
+            }
+            
             if (product.description) {
                 // Display description with proper formatting (convert line breaks to HTML)
                 const formattedDescription = product.description.replace(/\n/g, '<br>');
@@ -907,6 +989,37 @@ Pack Size: 25 kg`
             document.getElementById('productDetailsBody').innerHTML = html;
             var modal = new bootstrap.Modal(document.getElementById('productDetailsModal'));
             modal.show();
+        }
+
+        // Function to open image in a larger modal
+        function openImageModal(imageSrc, productName) {
+            // Create or update image modal
+            let imageModal = document.getElementById('productImageModal');
+            if (!imageModal) {
+                imageModal = document.createElement('div');
+                imageModal.id = 'productImageModal';
+                imageModal.className = 'modal fade';
+                imageModal.innerHTML = `
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Product Image</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <img id="modalImage" src="" alt="" class="img-fluid rounded">
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(imageModal);
+            }
+            
+            document.getElementById('modalImage').src = imageSrc;
+            document.getElementById('modalImage').alt = productName;
+            document.querySelector('#productImageModal .modal-title').textContent = productName;
+            
+            new bootstrap.Modal(imageModal).show();
         }
 
         // Render on page load
