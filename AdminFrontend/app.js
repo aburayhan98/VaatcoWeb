@@ -595,8 +595,48 @@ async function deleteGalleryItem(id) {
 }
 
 // Products CRUD with API Integration
+// Products CRUD with API Integration
 async function loadProducts() {
-  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || "[]");
+  try {
+    showLoading("Loading products...");
+
+    // Fetch from API
+    const response = await makeAuthenticatedRequest("/products");
+    const result = await response.json();
+
+    if (result.status && result.data) {
+      // Transform API data to match existing structure
+      const list = result.data.map((item) => ({
+        id: item._id,
+        name: item.name,
+        description: item.description,
+        images: item.images || [],
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      }));
+
+      // Save to localStorage as cache
+      localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(list));
+
+      // Render products table
+      renderProductsTable(list);
+      showToast("Products loaded successfully!", "success");
+    } else {
+      throw new Error(result.message || "Failed to load products");
+    }
+  } catch (error) {
+    console.error("Error loading products:", error);
+    // Fallback to localStorage
+    const cachedList = JSON.parse(
+      localStorage.getItem(STORAGE_KEYS.PRODUCTS) || "[]"
+    );
+    renderProductsTable(cachedList);
+    showToast("Using cached product data. Check your connection.", "warning");
+  } finally {
+    hideLoading();
+  }
+}
+function renderProductsTable(list) {
   const tbody = document.querySelector("#productsTable tbody");
   if (!tbody) return;
 
@@ -608,19 +648,22 @@ async function loadProducts() {
       <td>
         <button class="btn btn-sm btn-outline-info me-1 view-details" data-id="${
           item.id
-        }"><i class="fas fa-eye"></i> View Details</button>
+        }">
+          <i class="fas fa-eye"></i> View Details
+        </button>
         <button class="btn btn-sm btn-outline-primary me-1 edit" data-id="${
           item.id
-        }"><i class="fas fa-pen"></i></button>
-        <button class="btn btn-sm btn-outline-danger del" data-id="${
-          item.id
-        }"><i class="fas fa-trash"></i></button>
+        }">
+          <i class="fas fa-pen"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-danger del" data-id="${item.id}">
+          <i class="fas fa-trash"></i>
+        </button>
       </td>
     `;
     tbody.appendChild(tr);
   });
 }
-
 async function saveProduct(e) {
   e.preventDefault();
   const id = document.getElementById("productId").value;
@@ -651,38 +694,38 @@ async function saveProduct(e) {
 
     const productData = { name, description, images };
 
-    // For now, save to localStorage (later integrate with API)
-    const list = JSON.parse(
-      localStorage.getItem(STORAGE_KEYS.PRODUCTS) || "[]"
-    );
-
     if (id && id.trim() !== "") {
-      // Edit existing product
-      const idx = list.findIndex((i) => i.id == id);
-      if (idx > -1) {
-        list[idx] = {
-          id: list[idx].id, // Keep the same ID
-          name,
-          description,
-          images,
-        };
+      // Edit existing product - API call
+      const response = await makeAuthenticatedRequest(`/products/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(productData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.status) {
+        showToast("Product updated successfully!", "success");
       } else {
-        showToast("Product not found for editing.", "error");
-        return;
+        throw new Error(result.message || "Failed to update product");
       }
     } else {
-      // Add new product
-      const newProduct = {
-        id: generateId(list),
-        name,
-        description,
-        images,
-      };
-      list.push(newProduct);
+      // Add new product - API call
+      const response = await makeAuthenticatedRequest("/products", {
+        method: "POST",
+        body: JSON.stringify(productData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.status) {
+        showToast("Product created successfully!", "success");
+      } else {
+        throw new Error(result.message || "Failed to create product");
+      }
     }
 
-    localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(list));
-    loadProducts();
+    // Reload products and close modal
+    await loadProducts();
     bootstrap.Modal.getInstance(document.getElementById("productModal")).hide();
 
     // Reset form properly
@@ -694,11 +737,9 @@ async function saveProduct(e) {
       document.getElementById("productId").value = "";
     }
     renderStats();
-
-    showToast("Product saved successfully!", "success");
   } catch (error) {
     console.error("Error saving product:", error);
-    showToast("Failed to save product. Please try again.", "error");
+    showToast("Failed to save product: " + error.message, "error");
   } finally {
     hideLoading();
   }
@@ -722,6 +763,86 @@ function resetProductForm() {
   const modalTitle = document.getElementById("productModalTitle");
   if (modalTitle) {
     modalTitle.textContent = "Add Product";
+  }
+}
+async function editProduct(id) {
+  try {
+    showLoading("Loading product details...");
+
+    // Get item from localStorage first (cached data)
+    const list = JSON.parse(
+      localStorage.getItem(STORAGE_KEYS.PRODUCTS) || "[]"
+    );
+    const item = list.find((i) => i.id == id);
+
+    if (item) {
+      // Set modal title for editing
+      const modalTitle = document.getElementById("productModalTitle");
+      if (modalTitle) {
+        modalTitle.textContent = "Edit Product";
+      }
+
+      // Populate form fields
+      document.getElementById("productId").value = item.id;
+      document.getElementById("productName").value = item.name;
+      document.getElementById("productDescription").value =
+        item.description || "";
+      document.getElementById("productImages").value = item.images
+        ? item.images.join("\n")
+        : "";
+      console.log("Selected product images:", item.images);
+
+      // FIXED: Properly sync selectedProductImages with existing product images
+      if (typeof window.selectedProductImages !== "undefined") {
+        window.selectedProductImages = item.images || [];
+        console.log(
+          "Selected product images updated:",
+          window.selectedProductImages
+        );
+
+        // Update the visual display
+        if (typeof window.updateSelectedImagesDisplay === "function") {
+          window.updateSelectedImagesDisplay();
+        }
+      }
+
+      new bootstrap.Modal(document.getElementById("productModal")).show();
+      showToast("Product details loaded for editing", "success");
+    } else {
+      showToast("Product not found", "error");
+    }
+  } catch (error) {
+    console.error("Error loading product for edit:", error);
+    showToast("Failed to load product details: " + error.message, "error");
+  } finally {
+    hideLoading();
+  }
+}
+
+async function deleteProduct(id) {
+  try {
+    showLoading("Deleting product...");
+
+    const response = await makeAuthenticatedRequest(`/products/${id}`, {
+      method: "DELETE",
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.status) {
+      showToast("Product deleted successfully!", "success");
+
+      // Reload products and update stats
+      await loadProducts();
+      renderStats();
+    } else {
+      throw new Error(result.message || "Delete failed");
+    }
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    showToast("Failed to delete product: " + error.message, "error");
+  } finally {
+    hideLoading();
   }
 }
 
@@ -999,45 +1120,14 @@ function attachDelegates() {
     // Product edit
     if (e.target.closest("#productsTable .edit")) {
       const id = e.target.closest("button").dataset.id;
-      const list = JSON.parse(
-        localStorage.getItem(STORAGE_KEYS.PRODUCTS) || "[]"
-      );
-      const item = list.find((i) => i.id == id);
-      if (item) {
-        // Set modal title for editing
-        const modalTitle = document.getElementById("productModalTitle");
-        if (modalTitle) {
-          modalTitle.textContent = "Edit Product";
-        }
-
-        // Populate form fields
-        qs("#productId").value = item.id;
-        qs("#productName").value = item.name;
-        qs("#productDescription").value = item.description || "";
-        qs("#productImages").value = item.images ? item.images.join("\n") : "";
-
-        // Update the selected images display if the function exists
-        if (typeof window.updateSelectedImagesDisplay === "function") {
-          window.selectedProductImages = item.images || [];
-          window.updateSelectedImagesDisplay();
-        }
-
-        new bootstrap.Modal(document.getElementById("productModal")).show();
-      }
+      editProduct(id);
     }
 
     // Product delete
     if (e.target.closest("#productsTable .del")) {
       const id = e.target.closest("button").dataset.id;
-      if (!confirm("Delete this product?")) return;
-      let list = JSON.parse(
-        localStorage.getItem(STORAGE_KEYS.PRODUCTS) || "[]"
-      );
-      list = list.filter((i) => i.id != id);
-      localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(list));
-      loadProducts();
-      renderStats();
-      showToast("Product deleted successfully!", "success");
+      if (!confirm("Delete this product permanently?")) return;
+      deleteProduct(id);
     }
 
     // Dealer edit

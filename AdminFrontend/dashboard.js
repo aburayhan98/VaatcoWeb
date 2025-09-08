@@ -54,11 +54,16 @@ function openImageModal(imageSrc, altText) {
 let selectedProductImages = [];
 
 function openGallerySelector() {
-  // Load current product images selection
+  // Load current product images selection from the form field
   const currentImages = document.getElementById("productImages").value;
   selectedProductImages = currentImages
     ? currentImages.split("\n").filter((img) => img.trim())
     : [];
+
+  console.log(
+    "Opening gallery selector with pre-selected images:",
+    selectedProductImages
+  ); // Debug log
 
   loadGallerySelector();
   new bootstrap.Modal(document.getElementById("gallerySelectorModal")).show();
@@ -70,6 +75,8 @@ function loadGallerySelector() {
     localStorage.getItem("vaatco_gallery_items") || "[]"
   );
   console.log("Gallery data loaded:", gallery); // Debug log
+  console.log("Currently selected images:", selectedProductImages); // Debug log
+
   const grid = document.getElementById("gallerySelectorGrid");
   const selectedCount = document.getElementById("selectedCount");
 
@@ -86,7 +93,10 @@ function loadGallerySelector() {
 
   let html = "";
   gallery.forEach((item) => {
+    // Check if this image is already selected (compare URLs)
     const isSelected = selectedProductImages.includes(item.url);
+    console.log(`Image ${item.url} is selected: ${isSelected}`); // Debug log
+
     html += `
       <div class="col-md-3 col-sm-4 col-6 mb-3">
         <div class="gallery-selector-item ${isSelected ? "selected" : ""}" 
@@ -136,6 +146,7 @@ function updateSelectedCount() {
 
 function confirmImageSelection() {
   console.log("Confirming image selection:", selectedProductImages); // Debug log
+
   // Update the hidden field and display
   document.getElementById("productImages").value =
     selectedProductImages.join("\n");
@@ -143,6 +154,7 @@ function confirmImageSelection() {
     "Updated productImages field:",
     document.getElementById("productImages").value
   ); // Debug log
+
   updateSelectedImagesDisplay();
 
   // Close the modal
@@ -154,6 +166,8 @@ function confirmImageSelection() {
 function updateSelectedImagesDisplay() {
   const container = document.getElementById("selectedImagesContainer");
   const images = selectedProductImages;
+
+  console.log("Updating display with images:", images); // Debug log
 
   if (images.length === 0) {
     container.innerHTML =
