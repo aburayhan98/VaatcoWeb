@@ -13,46 +13,6 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="styles.css" />
-    <style>
-      /* Additional styles for user info visibility in light theme */
-      body.theme-light .user-info {
-        background: rgba(0, 0, 0, 0.1) !important;
-      }
-
-      body.theme-light .user-info .fw-semibold {
-        color: var(--color-text) !important;
-      }
-
-      body.theme-light .user-info .text-muted {
-        color: var(--color-text-dim) !important;
-      }
-
-      /* Fix for table header alignment issues */
-      .table th,
-      .table td {
-        vertical-align: middle;
-        border-color: var(--color-border);
-      }
-
-      /* Ensure proper container layout */
-      .table-responsive {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      /* Fix for mobile layout issues */
-      @media (max-width: 767.98px) {
-        .table-responsive {
-          margin: 0;
-          padding: 0;
-        }
-
-        .table {
-          margin-bottom: 0;
-          white-space: nowrap;
-        }
-      }
-    </style>
   </head>
   <body>
     <div id="app" class="d-flex">
@@ -69,23 +29,6 @@
             <i class="fas fa-moon"></i>
           </button>
         </div>
-
-        <!-- User Info Section -->
-        <div
-          class="user-info mb-3 p-2 rounded"
-          style="background: rgba(255, 255, 255, 0.1)"
-        >
-          <div class="d-flex align-items-center">
-            <div class="user-avatar me-2">
-              <i class="fas fa-user-circle fa-2x text-success"></i>
-            </div>
-            <div class="user-details">
-              <div class="fw-semibold text-white" id="userName">Loading...</div>
-              <small class="text-muted" id="userEmail">Loading...</small>
-            </div>
-          </div>
-        </div>
-
         <ul class="nav flex-column" id="navMenu">
           <li class="nav-item mb-2">
             <a
@@ -223,7 +166,6 @@
               <tbody></tbody>
             </table>
           </div>
-
           <!-- Product Details Modal -->
           <div
             class="modal fade"
@@ -322,6 +264,7 @@
       </main>
     </div>
 
+    <!-- All the modals from admin.html will be included here -->
     <!-- Gallery Modal -->
     <div class="modal fade" id="galleryModal" tabindex="-1">
       <div class="modal-dialog">
@@ -346,12 +289,30 @@
                   class="form-control"
                   id="galleryFileUpload"
                   accept="image/*"
-                  required
+                  onchange="handleImageUpload(this)"
                 />
-                <small class="text-muted">
-                  Select an image file to upload. Supported formats: JPG, PNG,
-                  GIF, WebP
-                </small>
+                <small class="text-muted"
+                  >Select an image file to upload. Supported formats: JPG, PNG,
+                  GIF, WebP</small
+                >
+              </div>
+
+              <div class="text-center my-3">
+                <span class="badge bg-secondary">OR</span>
+              </div>
+
+              <!-- Manual URL Option -->
+              <div class="mb-3">
+                <label class="form-label">Image URL / Path</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="galleryUrl"
+                  placeholder="e.g., ProductImage/sample_image.jpg"
+                />
+                <small class="text-muted"
+                  >Enter the image path relative to the website root</small
+                >
               </div>
 
               <div class="mb-3">
@@ -363,56 +324,6 @@
                   required
                   placeholder="Brief description of the image"
                 />
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Sort Order</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="gallerySortOrder"
-                  value="0"
-                  min="0"
-                  step="1"
-                  placeholder="0"
-                />
-                <small class="text-muted">
-                  Higher numbers appear first. Use 0 for default ordering.
-                </small>
-              </div>
-
-              <!-- Gallery Options -->
-              <div class="row mb-3">
-                <div class="col-6">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="galleryIsFeatured"
-                    />
-                    <label class="form-check-label" for="galleryIsFeatured">
-                      <i class="fas fa-star text-warning me-1"></i>Featured
-                    </label>
-                    <small class="form-text text-muted d-block">
-                      Featured images appear prominently
-                    </small>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="galleryIsActive"
-                      checked
-                    />
-                    <label class="form-check-label" for="galleryIsActive">
-                      <i class="fas fa-eye text-success me-1"></i>Active
-                    </label>
-                    <small class="form-text text-muted d-block">
-                      Active images are visible to users
-                    </small>
-                  </div>
-                </div>
               </div>
 
               <!-- Image Preview -->
@@ -441,14 +352,7 @@
               >
                 Cancel
               </button>
-              <button
-                onclick="handleImageUpload"
-                id="saveGalleryButton"
-                type="submit"
-                class="btn btn-primary"
-              >
-                <i class="fas fa-upload me-1"></i>Upload
-              </button>
+              <button type="submit" class="btn btn-primary">Save</button>
             </div>
           </form>
         </div>
@@ -774,10 +678,315 @@
       </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="auth.js"></script>
-    <script src="dashboard.js"></script>
+    <script>
+      // Check authentication on page load
+      const STORAGE_KEY = "vaatco_admin_auth";
+
+      if (localStorage.getItem(STORAGE_KEY) !== "true") {
+        // Not authenticated, redirect to login page
+        window.location.href = "login.html";
+      }
+
+      // Update last updated time
+      document.getElementById("lastUpdated").textContent =
+        new Date().toLocaleString();
+
+      // Image modal function
+      function openImageModal(imageSrc, altText) {
+        const modal = document.getElementById("imageModal");
+        const img = document.getElementById("imageModalImg");
+        const title = document.getElementById("imageModalTitle");
+
+        img.src = imageSrc;
+        img.alt = altText;
+        title.textContent = altText || "Product Image";
+
+        new bootstrap.Modal(modal).show();
+      }
+
+      // Gallery selector functions
+      let selectedProductImages = [];
+
+      function openGallerySelector() {
+        // Load current product images selection
+        const currentImages = document.getElementById("productImages").value;
+        selectedProductImages = currentImages
+          ? currentImages.split("\n").filter((img) => img.trim())
+          : [];
+
+        loadGallerySelector();
+        new bootstrap.Modal(
+          document.getElementById("gallerySelectorModal")
+        ).show();
+      }
+
+      function loadGallerySelector() {
+        // Use the same storage key as in app.js
+        const gallery = JSON.parse(
+          localStorage.getItem("vaatco_gallery_items") || "[]"
+        );
+        console.log("Gallery data loaded:", gallery); // Debug log
+        const grid = document.getElementById("gallerySelectorGrid");
+        const selectedCount = document.getElementById("selectedCount");
+
+        if (gallery.length === 0) {
+          grid.innerHTML = `
+          <div class="col-12 text-center text-muted py-4">
+            <i class="fas fa-images fa-3x mb-3"></i>
+            <p>No images in gallery. Upload some images first.</p>
+          </div>
+        `;
+          selectedCount.textContent = "0 selected";
+          return;
+        }
+
+        let html = "";
+        gallery.forEach((item) => {
+          const isSelected = selectedProductImages.includes(item.url);
+          html += `
+          <div class="col-md-3 col-sm-4 col-6 mb-3">
+            <div class="gallery-selector-item ${isSelected ? "selected" : ""}" 
+                 data-url="${item.url}" 
+                 onclick="toggleImageSelection('${item.url}', this)">
+              <div class="position-relative">
+                <img src="${item.url}" alt="${item.alt}" 
+                     class="img-fluid rounded shadow-sm" 
+                     style="width: 100%; height: 120px; object-fit: cover; cursor: pointer;"
+                     onerror="this.parentElement.innerHTML='<div class=\\'d-flex align-items-center justify-content-center bg-light rounded\\' style=\\'height:120px\\'><i class=\\'fas fa-image-broken text-muted\\'></i></div>'">
+                <div class="selection-overlay">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+              </div>
+              <small class="text-muted mt-1 d-block text-truncate">${
+                item.alt
+              }</small>
+            </div>
+          </div>
+        `;
+        });
+
+        grid.innerHTML = html;
+        updateSelectedCount();
+      }
+
+      function toggleImageSelection(imageUrl, element) {
+        const index = selectedProductImages.indexOf(imageUrl);
+
+        if (index === -1) {
+          selectedProductImages.push(imageUrl);
+          element.classList.add("selected");
+        } else {
+          selectedProductImages.splice(index, 1);
+          element.classList.remove("selected");
+        }
+
+        updateSelectedCount();
+      }
+
+      function updateSelectedCount() {
+        const selectedCount = document.getElementById("selectedCount");
+        selectedCount.textContent = `${selectedProductImages.length} selected`;
+      }
+
+      function confirmImageSelection() {
+        console.log("Confirming image selection:", selectedProductImages); // Debug log
+        // Update the hidden field and display
+        document.getElementById("productImages").value =
+          selectedProductImages.join("\n");
+        console.log(
+          "Updated productImages field:",
+          document.getElementById("productImages").value
+        ); // Debug log
+        updateSelectedImagesDisplay();
+
+        // Close the modal
+        bootstrap.Modal.getInstance(
+          document.getElementById("gallerySelectorModal")
+        ).hide();
+      }
+
+      function updateSelectedImagesDisplay() {
+        const container = document.getElementById("selectedImagesContainer");
+        const images = selectedProductImages;
+
+        if (images.length === 0) {
+          container.innerHTML =
+            '<small class="text-muted w-100">No images selected. Click "Browse Gallery" to select images.</small>';
+          return;
+        }
+
+        let html = "";
+        images.forEach((imageUrl, index) => {
+          html += `
+          <div class="selected-image-item position-relative me-2 mb-2">
+            <img src="${imageUrl}" alt="Selected image ${index + 1}" 
+                 class="rounded shadow-sm" 
+                 style="width: 60px; height: 60px; object-fit: cover; cursor: pointer;"
+                 onclick="openImageModal('${imageUrl}', 'Product Image ${
+            index + 1
+          }')"
+                 onerror="this.style.display='none'">
+            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 rounded-circle p-1" 
+                    style="width: 20px; height: 20px; font-size: 10px; transform: translate(25%, -25%);"
+                    onclick="removeSelectedImage(${index})"
+                    title="Remove image">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        `;
+        });
+
+        container.innerHTML = html;
+      }
+
+      function removeSelectedImage(index) {
+        const currentImages = document
+          .getElementById("productImages")
+          .value.split("\n")
+          .filter((img) => img.trim());
+        currentImages.splice(index, 1);
+        document.getElementById("productImages").value =
+          currentImages.join("\n");
+        selectedProductImages = currentImages;
+        updateSelectedImagesDisplay();
+      }
+
+      function closeGallerySelector() {
+        bootstrap.Modal.getInstance(
+          document.getElementById("gallerySelectorModal")
+        ).hide();
+      }
+
+      // Make functions globally accessible
+      window.openGallerySelector = openGallerySelector;
+      window.updateSelectedImagesDisplay = updateSelectedImagesDisplay;
+      window.selectedProductImages = selectedProductImages;
+
+      // Reset product form function (accessible from app.js)
+      window.resetProductForm = function () {
+        document.getElementById("productForm").reset();
+        document.getElementById("productId").value = "";
+        document.getElementById("productImages").value = "";
+
+        // Reset image selection
+        selectedProductImages = [];
+        window.selectedProductImages = selectedProductImages;
+        updateSelectedImagesDisplay();
+
+        // Reset modal title
+        const modalTitle = document.getElementById("productModalTitle");
+        if (modalTitle) {
+          modalTitle.textContent = "Add Product";
+        }
+      };
+
+      // Prepare form for adding new product
+      window.prepareAddProduct = function () {
+        window.resetProductForm();
+      };
+
+      // Handle image upload for gallery
+      function handleImageUpload(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        // Validate file type
+        const validTypes = [
+          "image/jpeg",
+          "image/jpg",
+          "image/png",
+          "image/gif",
+          "image/webp",
+        ];
+        if (!validTypes.includes(file.type)) {
+          alert("Please select a valid image file (JPG, PNG, GIF, or WebP)");
+          input.value = "";
+          return;
+        }
+
+        // Validate file size (max 5MB)
+        const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+        if (file.size > maxSize) {
+          alert("Image file size should be less than 5MB");
+          input.value = "";
+          return;
+        }
+
+        // Create a simulated upload (in real app, you'd upload to server)
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          // For demo purposes, we'll create a local path
+          // In real implementation, you'd get this from your upload endpoint
+          const fileName = file.name;
+          const imagePath = `ProductImage/${fileName}`;
+
+          // Set the URL field
+          document.getElementById("galleryUrl").value = imagePath;
+
+          // Set alt text if empty
+          const altField = document.getElementById("galleryAlt");
+          if (!altField.value) {
+            altField.value = fileName
+              .replace(/\.[^/.]+$/, "")
+              .replace(/[_-]/g, " ");
+          }
+
+          // Show preview
+          showImagePreview(e.target.result);
+
+          // Show a note about the simulated upload
+          showUploadNote(fileName);
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function showImagePreview(src) {
+        const container = document.getElementById("imagePreviewContainer");
+        const preview = document.getElementById("imagePreview");
+
+        preview.src = src;
+        container.style.display = "block";
+      }
+
+      function showUploadNote(fileName) {
+        // Create a temporary note about the upload simulation
+        const existingNote = document.querySelector(".upload-simulation-note");
+        if (existingNote) existingNote.remove();
+
+        const note = document.createElement("div");
+        note.className = "alert alert-info upload-simulation-note mt-2";
+        note.innerHTML = `
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>Simulation:</strong> File "${fileName}" would be uploaded to ProductImage/ folder. 
+        In a real application, this would be handled by your backend server.
+      `;
+
+        document.getElementById("imagePreviewContainer").appendChild(note);
+      }
+
+      // Reset gallery form when modal is closed
+      document
+        .getElementById("galleryModal")
+        .addEventListener("hidden.bs.modal", function () {
+          document.getElementById("galleryForm").reset();
+          document.getElementById("galleryFileUpload").value = "";
+          document.getElementById("imagePreviewContainer").style.display =
+            "none";
+          const note = document.querySelector(".upload-simulation-note");
+          if (note) note.remove();
+        });
+
+      // Logout functionality
+      document
+        .getElementById("logoutBtn")
+        .addEventListener("click", function () {
+          if (confirm("Are you sure you want to logout?")) {
+            localStorage.removeItem(STORAGE_KEY);
+            window.location.href = "login.html";
+          }
+        });
+    </script>
     <script src="app.js"></script>
   </body>
 </html>

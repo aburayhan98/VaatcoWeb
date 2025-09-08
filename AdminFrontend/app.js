@@ -1,25 +1,41 @@
-// Simple Admin Panel (Front-end only demo)
-// Storage keys
+// Simple Admin Panel with API Integration
+// Storage keys (keeping localStorage for backward compatibility and caching)
 const STORAGE_KEYS = {
-  AUTH: 'vaatco_admin_auth',
-  GALLERY: 'vaatco_gallery_items',
-  PRODUCTS: 'vaatco_products',
-  DEALERS: 'vaatco_dealers',
-  BLOG: 'vaatco_blog_posts'
+  AUTH: "vaatco_admin_auth",
+  GALLERY: "vaatco_gallery_items",
+  PRODUCTS: "vaatco_products",
+  DEALERS: "vaatco_dealers",
+  BLOG: "vaatco_blog_posts",
 };
 
-// Default demo data (can be removed later)
+// API Configuration
+const API_CONFIG = {
+  BASE_URL: "https://api.vaatcobd.com/api",
+  ENDPOINTS: {
+    LOGIN: "/admin/login",
+    GALLERY: "/admin/gallery",
+    PRODUCTS: "/admin/products",
+    DEALERS: "/admin/dealers",
+    BLOG: "/admin/blog",
+  },
+};
+
+// Default demo data (fallback if API is not available)
 const defaultData = {
   gallery: [
-    { id: 1, url: '../sticker/sticker1.jpeg', alt: 'Sticker 1' },
-    { id: 2, url: '../sticker/sticker2.jpeg', alt: 'Sticker 2' },
-    { id: 3, url: 'ProductImage/micro_off_sample_image.jpg', alt: 'Micro Off Product Sample' }
+    { id: 1, url: "../sticker/sticker1.jpeg", alt: "Sticker 1" },
+    { id: 2, url: "../sticker/sticker2.jpeg", alt: "Sticker 2" },
+    {
+      id: 3,
+      url: "ProductImage/micro_off_sample_image.jpg",
+      alt: "Micro Off Product Sample",
+    },
   ],
   products: [
-    { 
-      id: 1, 
-      name: 'Micro off',
-      images: ['ProductImage/micro_off_sample_image.jpg'],
+    {
+      id: 1,
+      name: "Micro off",
+      images: ["ProductImage/micro_off_sample_image.jpg"],
       description: `A newly designed powder formula for harmful microorganism
 
 Key Ingredients (Per 100gm):
@@ -40,11 +56,11 @@ Dosage & Administration:
 
 Origin: Germany
 
-Pack Size: 100gm & 50 gm`
+Pack Size: 100gm & 50 gm`,
     },
-    { 
-      id: 2, 
-      name: 'Acetaminophen',
+    {
+      id: 2,
+      name: "Acetaminophen",
       images: [],
       description: `Widely used pain reliever and a fever reducer.
 
@@ -59,11 +75,11 @@ Dosage & Administration:
 
 Origin: Bangladesh
 
-Pack Size: 25 kg`
+Pack Size: 25 kg`,
     },
-    { 
-      id: 3, 
-      name: 'Ascorbic Acid',
+    {
+      id: 3,
+      name: "Ascorbic Acid",
       images: [],
       description: `Vitamin C, essential for growth and repair of tissues.
 
@@ -78,342 +94,850 @@ Dosage & Administration:
 
 Origin: Bangladesh
 
-Pack Size: 25 kg`
-    }
+Pack Size: 25 kg`,
+    },
   ],
   dealers: [
-    { id: 1, district: 'Dhaka', name: 'Green Farms Supply', shop: 'Green Farms Supply Store', location: 'Dhanmondi, Dhaka', contact: '+88017XXXXXXX' },
-    { id: 2, district: 'Chittagong', name: 'Aqua Plus Solutions', shop: 'Aqua Plus Store', location: 'Agrabad, Chittagong', contact: '+88019XXXXXXX' }
+    {
+      id: 1,
+      district: "Dhaka",
+      name: "Green Farms Supply",
+      shop: "Green Farms Supply Store",
+      location: "Dhanmondi, Dhaka",
+      contact: "+88017XXXXXXX",
+    },
+    {
+      id: 2,
+      district: "Chittagong",
+      name: "Aqua Plus Solutions",
+      shop: "Aqua Plus Store",
+      location: "Agrabad, Chittagong",
+      contact: "+88019XXXXXXX",
+    },
   ],
   blog: [
-    { id:1, title:'5 Benefits of Zeolite in Aquaculture', summary:'How Zeolite improves water quality and pond health for better growth.' },
-    { id:2, title:'How Yucca Improves Pond Water Quality', summary:'Natural reduction of ammonia and odors in aquaculture systems.' }
-  ]
+    {
+      id: 1,
+      title: "5 Benefits of Zeolite in Aquaculture",
+      summary:
+        "How Zeolite improves water quality and pond health for better growth.",
+    },
+    {
+      id: 2,
+      title: "How Yucca Improves Pond Water Quality",
+      summary: "Natural reduction of ammonia and odors in aquaculture systems.",
+    },
+  ],
 };
 
-function initStorage() {
-  if (!localStorage.getItem(STORAGE_KEYS.GALLERY)) localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(defaultData.gallery));
-  if (!localStorage.getItem(STORAGE_KEYS.PRODUCTS)) localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(defaultData.products));
-  if (!localStorage.getItem(STORAGE_KEYS.DEALERS)) localStorage.setItem(STORAGE_KEYS.DEALERS, JSON.stringify(defaultData.dealers));
-  if (!localStorage.getItem(STORAGE_KEYS.BLOG)) localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(defaultData.blog));
-}
-
-// Auth (simple demo - replace with real backend later)
-const DEMO_USER = { username: 'admin', password: 'admin123' };
-
-function login(username, password) {
-  if (username === DEMO_USER.username && password === DEMO_USER.password) {
-    localStorage.setItem(STORAGE_KEYS.AUTH, 'true');
-    return true;
+// API Helper Functions
+async function makeAuthenticatedRequest(endpoint, options = {}) {
+  if (!window.authManager) {
+    throw new Error("AuthManager not available");
   }
-  return false;
+
+  const url = `${API_CONFIG.BASE_URL}${endpoint}`;
+
+  try {
+    return await window.authManager.makeAuthenticatedRequest(url, options);
+  } catch (error) {
+    console.error("API request failed:", error);
+    throw error;
+  }
 }
 
-function isAuthenticated() { return localStorage.getItem(STORAGE_KEYS.AUTH) === 'true'; }
-function logout() { 
-  localStorage.removeItem(STORAGE_KEYS.AUTH); 
-  // Also clear any cached data if needed
-  console.log('User logged out');
+// Enhanced Storage Functions with API Integration
+function initStorage() {
+  // Initialize localStorage with default data if empty
+  if (!localStorage.getItem(STORAGE_KEYS.GALLERY)) {
+    localStorage.setItem(
+      STORAGE_KEYS.GALLERY,
+      JSON.stringify(defaultData.gallery)
+    );
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.PRODUCTS)) {
+    localStorage.setItem(
+      STORAGE_KEYS.PRODUCTS,
+      JSON.stringify(defaultData.products)
+    );
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.DEALERS)) {
+    localStorage.setItem(
+      STORAGE_KEYS.DEALERS,
+      JSON.stringify(defaultData.dealers)
+    );
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.BLOG)) {
+    localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(defaultData.blog));
+  }
+}
+
+// Authentication check (now integrated with AuthManager)
+function isAuthenticated() {
+  return window.authManager ? window.authManager.isAuthenticated() : false;
+}
+
+function logout() {
+  if (window.authManager) {
+    window.authManager.logout();
+  } else {
+    localStorage.removeItem(STORAGE_KEYS.AUTH);
+    window.location.href = "login.html";
+  }
 }
 
 // Utility
-function generateId(items) { return items.length ? Math.max(...items.map(i => i.id)) + 1 : 1; }
-function qs(sel) { return document.querySelector(sel); }
-function ce(tag, cls) { const el = document.createElement(tag); if (cls) el.className = cls; return el; }
+function generateId(items) {
+  return items.length ? Math.max(...items.map((i) => i.id)) + 1 : 1;
+}
+function qs(sel) {
+  return document.querySelector(sel);
+}
+function ce(tag, cls) {
+  const el = document.createElement(tag);
+  if (cls) el.className = cls;
+  return el;
+}
+
+// Show loading spinner
+function showLoading(message = "Loading...") {
+  // Implementation for loading spinner
+  console.log(message);
+}
+
+function hideLoading() {
+  // Implementation to hide loading spinner
+  console.log("Loading hidden");
+}
+
+// Show toast notification
+function showToast(message, type = "info") {
+  // Create a simple toast notification
+  const toast = document.createElement("div");
+  toast.className = `alert alert-${type} position-fixed top-0 end-0 m-3`;
+  toast.style.zIndex = "9999";
+  toast.innerHTML = `
+    <i class="fas fa-${
+      type === "success"
+        ? "check-circle"
+        : type === "error"
+        ? "exclamation-triangle"
+        : "info-circle"
+    } me-2"></i>
+    ${message}
+  `;
+
+  document.body.appendChild(toast);
+
+  // Auto remove after 5 seconds
+  setTimeout(() => {
+    if (toast.parentNode) {
+      toast.parentNode.removeChild(toast);
+    }
+  }, 2000);
+}
 
 // Render Dashboard Stats
 function renderStats() {
-  const statsRow = qs('#statsRow');
+  const statsRow = qs("#statsRow");
   if (!statsRow) return;
-  const gallery = JSON.parse(localStorage.getItem(STORAGE_KEYS.GALLERY) || '[]');
-  const products = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
-  const dealers = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || '[]');
-  const blog = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]');
-  statsRow.innerHTML = '';
+
+  const gallery = JSON.parse(
+    localStorage.getItem(STORAGE_KEYS.GALLERY) || "[]"
+  );
+  const products = JSON.parse(
+    localStorage.getItem(STORAGE_KEYS.PRODUCTS) || "[]"
+  );
+  const dealers = JSON.parse(
+    localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]"
+  );
+  const blog = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || "[]");
+
+  statsRow.innerHTML = "";
   const tiles = [
-    { icon: 'fa-image', label: 'Gallery Items', value: gallery.length },
-    { icon: 'fa-box', label: 'Products', value: products.length },
-    { icon: 'fa-store', label: 'Dealers', value: dealers.length },
-    { icon: 'fa-blog', label: 'Blog Posts', value: blog.length }
+    { icon: "fa-image", label: "Gallery Items", value: gallery.length },
+    { icon: "fa-box", label: "Products", value: products.length },
+    { icon: "fa-store", label: "Dealers", value: dealers.length },
+    { icon: "fa-blog", label: "Blog Posts", value: blog.length },
   ];
-  tiles.forEach(t => {
-    const col = ce('div', 'col-md-4 mb-3');
+
+  tiles.forEach((t) => {
+    const col = ce("div", "col-md-4 mb-3");
     col.innerHTML = `<div class="stat-tile card-hover"><div class="icon"><i class="fas ${t.icon}"></i></div><div><h6>${t.label}</h6><p class="value">${t.value}</p></div></div>`;
     statsRow.appendChild(col);
   });
 }
 
-// Gallery CRUD
-function loadGallery() {
-  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GALLERY) || '[]');
-  const grid = qs('#galleryGrid');
+// Gallery CRUD with API Integration
+
+async function loadGallery() {
+  const grid = qs("#galleryGrid");
   if (!grid) return;
-  grid.innerHTML = '';
-  list.forEach(item => {
-    const col = ce('div', 'col-sm-6 col-md-4 col-lg-3 mb-3');
-    col.innerHTML = `<div class="gallery-card card-hover"><img src="${item.url}" alt="${item.alt}" class="thumb"/><div class="actions"><button class="edit" data-id="${item.id}" title="Edit"><i class="fas fa-pen"></i></button><button class="del" data-id="${item.id}" title="Delete"><i class="fas fa-trash"></i></button></div><small class="d-block mt-1 text-muted text-truncate" title="${item.alt}">${item.alt}</small></div>`;
+
+  try {
+    showLoading("Loading gallery...");
+
+    // Fetch from API
+    const response = await makeAuthenticatedRequest("/gallery");
+    const result = await response.json();
+
+    if (result.status && result.data) {
+      // Transform API data to match existing structure
+      const list = result.data.map((item) => ({
+        id: item._id,
+        url: item.image.url,
+        alt: `Gallery Image - ${item.createdAt}`,
+        isActive: item.isActive,
+        isFeatured: item.isFeatured,
+        sortOrder: item.sortOrder,
+        uploadedBy: item.uploadedBy.name,
+        usageCount: item.usageCount,
+        createdAt: item.createdAt,
+      }));
+
+      // Save to localStorage as cache
+      localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(list));
+
+      // Render gallery
+      renderGalleryGrid(list);
+      showToast("Gallery loaded successfully!", "success");
+    } else {
+      throw new Error(result.message || "Failed to load gallery");
+    }
+  } catch (error) {
+    console.error("Error loading gallery:", error);
+    // Fallback to localStorage
+    const cachedList = JSON.parse(
+      localStorage.getItem(STORAGE_KEYS.GALLERY) || "[]"
+    );
+    renderGalleryGrid(cachedList);
+    showToast("Using cached gallery data. Check your connection.", "warning");
+  } finally {
+    hideLoading();
+  }
+}
+
+function renderGalleryGrid(list) {
+  const grid = qs("#galleryGrid");
+  if (!grid) return;
+
+  grid.innerHTML = "";
+  list.forEach((item) => {
+    const col = ce("div", "col-sm-6 col-md-4 col-lg-3 mb-3");
+    const featuredBadge = item.isFeatured
+      ? '<span class="badge bg-warning position-absolute top-0 start-0 m-1">Featured</span>'
+      : "";
+    const activeBadge = item.isActive
+      ? ""
+      : '<span class="badge bg-secondary position-absolute top-0 end-0 m-1">Inactive</span>';
+
+    col.innerHTML = `
+      <div class="gallery-card card-hover position-relative">
+        ${featuredBadge}
+        ${activeBadge}
+        <img src="${item.url}" alt="${item.alt}" class="thumb"/>
+        <div class="actions">
+          <button class="edit" data-id="${item.id}" title="Edit">
+            <i class="fas fa-pen"></i>
+          </button>
+          <button class="del" data-id="${item.id}" title="Delete">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+        <small class="d-block mt-1 text-muted text-truncate" title="${
+          item.alt
+        }">
+          ${item.alt}
+        </small>
+        <div class="small text-muted mt-1">
+          <i class="fas fa-user me-1"></i>${item.uploadedBy || "Unknown"}
+          <span class="ms-2"><i class="fas fa-eye me-1"></i>${
+            item.usageCount || 0
+          }</span>
+        </div>
+      </div>
+    `;
     grid.appendChild(col);
   });
 }
+// Add this function to reset the gallery form properly
+function resetGalleryForm() {
+  qs("#galleryForm").reset();
+  qs("#galleryId").value = "";
+  qs("#gallerySortOrder").value = "0"; // NEW: Reset sort order to default
 
-function saveGalleryItem(e) {
+  // Reset checkboxes to default state
+  if (qs("#galleryIsFeatured")) qs("#galleryIsFeatured").checked = false;
+  if (qs("#galleryIsActive")) qs("#galleryIsActive").checked = true;
+
+  // Make file upload required again
+  const fileInput = qs("#galleryFileUpload");
+  if (fileInput) {
+    fileInput.setAttribute("required", "");
+  }
+
+  // Reset modal title
+  const modalTitle = qs("#galleryModal .modal-title");
+  if (modalTitle) {
+    modalTitle.textContent = "Add / Edit Gallery Image";
+  }
+
+  // Hide preview
+  const previewContainer = qs("#imagePreviewContainer");
+  if (previewContainer) {
+    previewContainer.style.display = "none";
+  }
+
+  // Remove any upload notes
+  const note = document.querySelector(".upload-simulation-note");
+  if (note) note.remove();
+}
+// Updated saveGalleryItem function to handle both create and update
+async function saveGalleryItem(e) {
   e.preventDefault();
-  const id = qs('#galleryId').value;
-  const url = qs('#galleryUrl').value.trim();
-  const alt = qs('#galleryAlt').value.trim();
-  
+  const id = qs("#galleryId").value;
+  const fileInput = qs("#galleryFileUpload");
+  const alt = qs("#galleryAlt").value.trim();
+  const sortOrder = parseInt(qs("#gallerySortOrder").value) || 0; // NEW: Get sort order
+  const isFeatured = qs("#galleryIsFeatured")?.checked || false;
+  const isActive = qs("#galleryIsActive")?.checked !== false;
+
   if (!alt) {
-    alert('Please provide alt text / description for the image.');
+    showToast("Please provide alt text / description for the image.", "error");
     return;
   }
-  
-  if (!url) {
-    alert('Please provide an image URL or upload a file.');
-    return;
+
+  try {
+    if (id) {
+      // Update existing item
+      const updateData = {
+        alt,
+        isFeatured,
+        isActive,
+      };
+
+      // If a new file is selected, we need to handle file upload differently
+      if (fileInput.files && fileInput.files.length > 0) {
+        // For updates with new image, you might want to handle this differently
+        // depending on your backend API design
+        showToast(
+          "To change the image, please delete this item and create a new one.",
+          "info"
+        );
+        return;
+      }
+
+      await updateGalleryItem(id, updateData);
+    } else {
+      // Create new item (existing logic)
+      showLoading("Saving gallery item...");
+
+      if (!fileInput.files || fileInput.files.length === 0) {
+        showToast("Please select a file to upload.", "error");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("image", fileInput.files[0]);
+      formData.append("alt", alt);
+      formData.append("sortOrder", sortOrder); // NEW: Include sort order
+      formData.append("isFeatured", isFeatured);
+      formData.append("isActive", isActive);
+
+      const response = await fetch(`${API_CONFIG.BASE_URL}/gallery/upload`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${window.authManager.getToken()}`,
+        },
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.status) {
+        showToast("Image uploaded successfully!", "success");
+
+        await loadGallery();
+        bootstrap.Modal.getInstance(
+          document.getElementById("galleryModal")
+        ).hide();
+        resetGalleryForm();
+        renderStats();
+      } else {
+        throw new Error(result.message || "Upload failed");
+      }
+    }
+  } catch (error) {
+    console.error("Error saving gallery item:", error);
+    showToast("Failed to save gallery item: " + error.message, "error");
+  } finally {
+    hideLoading();
   }
-  
-  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GALLERY) || '[]');
-  if (id) {
-    const idx = list.findIndex(i => i.id == id);
-    if (idx > -1) list[idx] = { ...list[idx], url, alt };
-  } else {
-    list.push({ id: generateId(list), url, alt });
+}
+async function editGalleryItem(id) {
+  try {
+    showLoading("Loading image details...");
+
+    // Get item from localStorage first (cached data)
+    const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GALLERY) || "[]");
+    const item = list.find((i) => i.id == id);
+
+    if (item) {
+      // Populate the form with existing data
+      qs("#galleryId").value = item.id;
+      qs("#galleryAlt").value = item.alt || "";
+      qs("#gallerySortOrder").value = item.sortOrder || 0; // NEW: Set sort order
+
+      // Set checkboxes
+      if (qs("#galleryIsFeatured")) {
+        qs("#galleryIsFeatured").checked = item.isFeatured || false;
+      }
+      if (qs("#galleryIsActive")) {
+        qs("#galleryIsActive").checked = item.isActive !== false; // default to true
+      }
+
+      // Show preview of existing image
+      showImagePreview(item.url);
+
+      // Update modal title
+      const modalTitle = qs("#galleryModal .modal-title");
+      if (modalTitle) {
+        modalTitle.textContent = "Edit Gallery Image";
+      }
+
+      // Make file upload optional for editing
+      const fileInput = qs("#galleryFileUpload");
+      if (fileInput) {
+        fileInput.removeAttribute("required");
+      }
+
+      // Show the modal
+      new bootstrap.Modal(document.getElementById("galleryModal")).show();
+
+      showToast("Image details loaded for editing", "success");
+    } else {
+      showToast("Image not found", "error");
+    }
+  } catch (error) {
+    console.error("Error loading image for edit:", error);
+    showToast("Failed to load image details: " + error.message, "error");
+  } finally {
+    hideLoading();
   }
-  localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(list));
-  loadGallery();
-  bootstrap.Modal.getInstance(document.getElementById('galleryModal')).hide();
-  qs('#galleryForm').reset();
-  qs('#galleryId').value='';
-  renderStats();
+}
+async function updateGalleryItem(id, data) {
+  try {
+    showLoading("Updating image...");
+
+    const response = await fetch(`${API_CONFIG.BASE_URL}/gallery/${id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${window.authManager.getToken()}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.status) {
+      showToast("Image updated successfully!", "success");
+
+      // Reload gallery and close modal
+      await loadGallery();
+      bootstrap.Modal.getInstance(
+        document.getElementById("galleryModal")
+      ).hide();
+      resetGalleryForm();
+      renderStats();
+
+      return true;
+    } else {
+      throw new Error(result.message || "Update failed");
+    }
+  } catch (error) {
+    console.error("Error updating gallery item:", error);
+    showToast("Failed to update image: " + error.message, "error");
+    return false;
+  } finally {
+    hideLoading();
+  }
+}
+async function deleteGalleryItem(id) {
+  try {
+    showLoading("Deleting image...");
+
+    const response = await fetch(`${API_CONFIG.BASE_URL}/gallery/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${window.authManager.getToken()}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.status) {
+      showToast("Image deleted successfully!", "success");
+
+      // Reload gallery and update stats
+      await loadGallery();
+      renderStats();
+    } else {
+      throw new Error(result.message || "Delete failed");
+    }
+  } catch (error) {
+    console.error("Error deleting gallery item:", error);
+    showToast("Failed to delete image: " + error.message, "error");
+  } finally {
+    hideLoading();
+  }
 }
 
-// Products CRUD (updated to match sample product list schema)
-function loadProducts() {
-  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
-  const tbody = document.querySelector('#productsTable tbody');
+// Products CRUD with API Integration
+async function loadProducts() {
+  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || "[]");
+  const tbody = document.querySelector("#productsTable tbody");
   if (!tbody) return;
-  tbody.innerHTML = '';
-  list.forEach(item => {
-    const tr = document.createElement('tr');
+
+  tbody.innerHTML = "";
+  list.forEach((item) => {
+    const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td class="fw-semibold">${item.name||''}</td>
+      <td class="fw-semibold">${item.name || ""}</td>
       <td>
-        <button class="btn btn-sm btn-outline-info me-1 view-details" data-id="${item.id}"><i class="fas fa-eye"></i> View Details</button>
-        <button class="btn btn-sm btn-outline-primary me-1 edit" data-id="${item.id}"><i class="fas fa-pen"></i></button>
-        <button class="btn btn-sm btn-outline-danger del" data-id="${item.id}"><i class="fas fa-trash"></i></button>
+        <button class="btn btn-sm btn-outline-info me-1 view-details" data-id="${
+          item.id
+        }"><i class="fas fa-eye"></i> View Details</button>
+        <button class="btn btn-sm btn-outline-primary me-1 edit" data-id="${
+          item.id
+        }"><i class="fas fa-pen"></i></button>
+        <button class="btn btn-sm btn-outline-danger del" data-id="${
+          item.id
+        }"><i class="fas fa-trash"></i></button>
       </td>
     `;
     tbody.appendChild(tr);
   });
 }
-function saveProduct(e) {
-  e.preventDefault();
-  const id = document.getElementById('productId').value;
-  const name = document.getElementById('productName').value.trim();
-  const description = document.getElementById('productDescription').value.trim();
-  const imagesText = document.getElementById('productImages').value.trim();
 
-  if(!name || !description) {
-    alert('Please fill in both Product Name and Description fields.');
+async function saveProduct(e) {
+  e.preventDefault();
+  const id = document.getElementById("productId").value;
+  const name = document.getElementById("productName").value.trim();
+  const description = document
+    .getElementById("productDescription")
+    .value.trim();
+  const imagesText = document.getElementById("productImages").value.trim();
+
+  if (!name || !description) {
+    showToast(
+      "Please fill in both Product Name and Description fields.",
+      "error"
+    );
     return;
   }
 
   // Convert images text to array (split by lines and filter empty ones)
-  const images = imagesText ? imagesText.split('\n').map(img => img.trim()).filter(img => img) : [];
+  const images = imagesText
+    ? imagesText
+        .split("\n")
+        .map((img) => img.trim())
+        .filter((img) => img)
+    : [];
 
-  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
-  
-  if (id && id.trim() !== '') {
-    // Edit existing product
-    const idx = list.findIndex(i => i.id == id);
-    if (idx > -1) {
-      list[idx] = { 
-        id: list[idx].id, // Keep the same ID
-        name, 
-        description,
-        images
-      };
+  try {
+    showLoading("Saving product...");
+
+    const productData = { name, description, images };
+
+    // For now, save to localStorage (later integrate with API)
+    const list = JSON.parse(
+      localStorage.getItem(STORAGE_KEYS.PRODUCTS) || "[]"
+    );
+
+    if (id && id.trim() !== "") {
+      // Edit existing product
+      const idx = list.findIndex((i) => i.id == id);
+      if (idx > -1) {
+        list[idx] = {
+          id: list[idx].id, // Keep the same ID
+          name,
+          description,
+          images,
+        };
+      } else {
+        showToast("Product not found for editing.", "error");
+        return;
+      }
     } else {
-      alert('Product not found for editing.');
-      return;
+      // Add new product
+      const newProduct = {
+        id: generateId(list),
+        name,
+        description,
+        images,
+      };
+      list.push(newProduct);
     }
-  } else {
-    // Add new product
-    const newProduct = { 
-      id: generateId(list), 
-      name, 
-      description,
-      images
-    };
-    list.push(newProduct);
+
+    localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(list));
+    loadProducts();
+    bootstrap.Modal.getInstance(document.getElementById("productModal")).hide();
+
+    // Reset form properly
+    if (typeof window.resetProductForm === "function") {
+      window.resetProductForm();
+    } else {
+      // Fallback reset
+      document.getElementById("productForm").reset();
+      document.getElementById("productId").value = "";
+    }
+    renderStats();
+
+    showToast("Product saved successfully!", "success");
+  } catch (error) {
+    console.error("Error saving product:", error);
+    showToast("Failed to save product. Please try again.", "error");
+  } finally {
+    hideLoading();
   }
-  
-  localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(list));
-  loadProducts();
-  bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
-  
-  // Reset form properly
-  if (typeof window.resetProductForm === 'function') {
-    window.resetProductForm();
-  } else {
-    // Fallback reset
-    document.getElementById('productForm').reset();
-    document.getElementById('productId').value = '';
-  }
-  renderStats();
 }
 
 // Reset product form function
 function resetProductForm() {
-  document.getElementById('productForm').reset();
-  document.getElementById('productId').value = '';
-  document.getElementById('productImages').value = '';
-  
+  document.getElementById("productForm").reset();
+  document.getElementById("productId").value = "";
+  document.getElementById("productImages").value = "";
+
   // Reset image selection if functions exist
-  if (typeof window.selectedProductImages !== 'undefined') {
+  if (typeof window.selectedProductImages !== "undefined") {
     window.selectedProductImages = [];
   }
-  if (typeof window.updateSelectedImagesDisplay === 'function') {
+  if (typeof window.updateSelectedImagesDisplay === "function") {
     window.updateSelectedImagesDisplay();
   }
-  
+
   // Reset modal title
-  const modalTitle = document.getElementById('productModalTitle');
+  const modalTitle = document.getElementById("productModalTitle");
   if (modalTitle) {
-    modalTitle.textContent = 'Add Product';
+    modalTitle.textContent = "Add Product";
   }
 }
 
-// Dealers CRUD
-function loadDealers() {
-  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || '[]');
-  const tbody = qs('#dealersTable tbody');
+// Dealers CRUD with API Integration
+async function loadDealers() {
+  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]");
+  const tbody = qs("#dealersTable tbody");
   if (!tbody) return;
-  tbody.innerHTML = '';
-  list.forEach(item => {
-    const tr = ce('tr');
-    const shortMap = item.map ? (item.map.length > 28 ? item.map.slice(0,25)+'...' : item.map) : '';
-    tr.innerHTML = `<td>${item.district || ''}</td><td>${item.name || ''}</td><td>${item.shop || ''}</td><td>${item.location || ''}</td><td>${shortMap}</td><td>${item.contact || ''}</td><td><button class="btn btn-sm btn-outline-primary me-1 edit" data-id="${item.id}"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-outline-danger del" data-id="${item.id}"><i class="fas fa-trash"></i></button></td>`;
+
+  tbody.innerHTML = "";
+  list.forEach((item) => {
+    const tr = ce("tr");
+    const shortMap = item.map
+      ? item.map.length > 28
+        ? item.map.slice(0, 25) + "..."
+        : item.map
+      : "";
+    tr.innerHTML = `<td>${item.district || ""}</td><td>${
+      item.name || ""
+    }</td><td>${item.shop || ""}</td><td>${
+      item.location || ""
+    }</td><td>${shortMap}</td><td>${
+      item.contact || ""
+    }</td><td><button class="btn btn-sm btn-outline-primary me-1 edit" data-id="${
+      item.id
+    }"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-outline-danger del" data-id="${
+      item.id
+    }"><i class="fas fa-trash"></i></button></td>`;
     tbody.appendChild(tr);
   });
 }
 
-// Blog CRUD
-function loadBlog(){
-  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]');
-  const tbody = document.querySelector('#blogTable tbody');
-  if(!tbody) return;
-  tbody.innerHTML='';
-  list.forEach(post=>{
-    const tr = document.createElement('tr');
+async function saveDealer(e) {
+  e.preventDefault();
+  const id = qs("#dealerId").value;
+  const district = qs("#dealerDistrict").value.trim();
+  const name = qs("#dealerName").value.trim();
+  const shop = qs("#dealerShop").value.trim();
+  const location = qs("#dealerLocation").value.trim();
+  const map = (qs("#dealerMap")?.value || "").trim();
+  const contact = qs("#dealerContact").value.trim();
+
+  if (!district || !name || !shop || !location || !contact) {
+    showToast("Please fill in all required fields.", "error");
+    return;
+  }
+
+  try {
+    showLoading("Saving dealer...");
+
+    const dealerData = { district, name, shop, location, map, contact };
+
+    // For now, save to localStorage (later integrate with API)
+    const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]");
+    if (id) {
+      const idx = list.findIndex((i) => i.id == id);
+      if (idx > -1)
+        list[idx] = {
+          ...list[idx],
+          district,
+          name,
+          shop,
+          location,
+          map,
+          contact,
+        };
+    } else {
+      list.push({
+        id: generateId(list),
+        district,
+        name,
+        shop,
+        location,
+        map,
+        contact,
+      });
+    }
+    localStorage.setItem(STORAGE_KEYS.DEALERS, JSON.stringify(list));
+    loadDealers();
+    bootstrap.Modal.getInstance(document.getElementById("dealerModal")).hide();
+    qs("#dealerForm").reset();
+    qs("#dealerId").value = "";
+    renderStats();
+
+    showToast("Dealer saved successfully!", "success");
+  } catch (error) {
+    console.error("Error saving dealer:", error);
+    showToast("Failed to save dealer. Please try again.", "error");
+  } finally {
+    hideLoading();
+  }
+}
+
+// Blog CRUD with API Integration
+async function loadBlog() {
+  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || "[]");
+  const tbody = document.querySelector("#blogTable tbody");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+  list.forEach((post) => {
+    const tr = document.createElement("tr");
     tr.innerHTML = `<td>${post.title}</td><td>${post.summary}</td><td style="width:120px;"><button class='btn btn-sm btn-outline-primary me-1 edit' data-id='${post.id}'><i class='fas fa-pen'></i></button><button class='btn btn-sm btn-outline-danger del' data-id='${post.id}'><i class='fas fa-trash'></i></button></td>`;
     tbody.appendChild(tr);
   });
 }
-function saveBlog(e){
-  e.preventDefault();
-  const id = document.getElementById('blogId').value;
-  const title = document.getElementById('blogTitle').value.trim();
-  const summary = document.getElementById('blogSummary').value.trim();
-  if(!title || !summary) return;
-  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]');
-  if(id){
-    const idx = list.findIndex(p=>p.id==id);
-    if(idx>-1) list[idx] = { ...list[idx], title, summary };
-  } else {
-    list.push({ id: generateId(list), title, summary });
-  }
-  localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(list));
-  loadBlog();
-  bootstrap.Modal.getInstance(document.getElementById('blogModal')).hide();
-  document.getElementById('blogForm').reset();
-  document.getElementById('blogId').value='';
-  renderStats();
-}
 
-function saveDealer(e) {
+async function saveBlog(e) {
   e.preventDefault();
-  const id = qs('#dealerId').value;
-  const district = qs('#dealerDistrict').value.trim();
-  const name = qs('#dealerName').value.trim();
-  const shop = qs('#dealerShop').value.trim();
-  const location = qs('#dealerLocation').value.trim();
-  const map = (qs('#dealerMap')?.value || '').trim();
-  const contact = qs('#dealerContact').value.trim();
-  if (!district || !name || !shop || !location || !contact) return;
-  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || '[]');
-  if (id) {
-    const idx = list.findIndex(i => i.id == id);
-    if (idx > -1) list[idx] = { ...list[idx], district, name, shop, location, map, contact };
-  } else {
-    list.push({ id: generateId(list), district, name, shop, location, map, contact });
+  const id = document.getElementById("blogId").value;
+  const title = document.getElementById("blogTitle").value.trim();
+  const summary = document.getElementById("blogSummary").value.trim();
+
+  if (!title || !summary) {
+    showToast("Please fill in both title and summary fields.", "error");
+    return;
   }
-  localStorage.setItem(STORAGE_KEYS.DEALERS, JSON.stringify(list));
-  loadDealers();
-  bootstrap.Modal.getInstance(document.getElementById('dealerModal')).hide();
-  qs('#dealerForm').reset();
-  qs('#dealerId').value='';
-  renderStats();
+
+  try {
+    showLoading("Saving blog post...");
+
+    const blogData = { title, summary };
+
+    // For now, save to localStorage (later integrate with API)
+    const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || "[]");
+    if (id) {
+      const idx = list.findIndex((p) => p.id == id);
+      if (idx > -1) list[idx] = { ...list[idx], title, summary };
+    } else {
+      list.push({ id: generateId(list), title, summary });
+    }
+    localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(list));
+    loadBlog();
+    bootstrap.Modal.getInstance(document.getElementById("blogModal")).hide();
+    document.getElementById("blogForm").reset();
+    document.getElementById("blogId").value = "";
+    renderStats();
+
+    showToast("Blog post saved successfully!", "success");
+  } catch (error) {
+    console.error("Error saving blog post:", error);
+    showToast("Failed to save blog post. Please try again.", "error");
+  } finally {
+    hideLoading();
+  }
 }
 
 // Search / Filter
-function setupSearchFiltering(){
+function setupSearchFiltering() {
   // Create search bars dynamically above each table/section
-  const productsSection = document.querySelector('#products .table-responsive');
-  if(productsSection && !document.getElementById('productSearchBox')){
-    const div = document.createElement('div');
-    div.className='mb-2';
+  const productsSection = document.querySelector("#products .table-responsive");
+  if (productsSection && !document.getElementById("productSearchBox")) {
+    const div = document.createElement("div");
+    div.className = "mb-2";
     div.innerHTML = `<input id="productSearchBox" type="text" class="form-control form-control-sm" placeholder="Search products..." />`;
     productsSection.parentElement.insertBefore(div, productsSection);
-    document.getElementById('productSearchBox').addEventListener('input', function(){
-      filterTable('#productsTable tbody', this.value);
-    });
+    document
+      .getElementById("productSearchBox")
+      .addEventListener("input", function () {
+        filterTable("#productsTable tbody", this.value);
+      });
   }
-  const dealersSection = document.querySelector('#dealers .table-responsive');
-  if(dealersSection && !document.getElementById('dealerSearchBox')){
-    const div = document.createElement('div');
-    div.className='mb-2';
+
+  const dealersSection = document.querySelector("#dealers .table-responsive");
+  if (dealersSection && !document.getElementById("dealerSearchBox")) {
+    const div = document.createElement("div");
+    div.className = "mb-2";
     div.innerHTML = `<input id="dealerSearchBox" type="text" class="form-control form-control-sm" placeholder="Search dealers..." />`;
     dealersSection.parentElement.insertBefore(div, dealersSection);
-    document.getElementById('dealerSearchBox').addEventListener('input', function(){
-      filterTable('#dealersTable tbody', this.value);
-    });
-  }
-  const gallerySection = document.querySelector('#gallery .row');
-  if(gallerySection && !document.getElementById('gallerySearchBox')){
-    const input = document.createElement('input');
-    input.id='gallerySearchBox';
-    input.type='text';
-    input.className='form-control form-control-sm mb-3';
-    input.placeholder='Search gallery images...';
-    gallerySection.parentElement.insertBefore(input, gallerySection);
-    input.addEventListener('input', function(){
-      const term = this.value.toLowerCase();
-      document.querySelectorAll('#galleryGrid .gallery-card').forEach(card=>{
-        const alt = card.querySelector('img').alt.toLowerCase();
-        card.style.display = alt.includes(term)?'block':'none';
+    document
+      .getElementById("dealerSearchBox")
+      .addEventListener("input", function () {
+        filterTable("#dealersTable tbody", this.value);
       });
+  }
+
+  const gallerySection = document.querySelector("#gallery .row");
+  if (gallerySection && !document.getElementById("gallerySearchBox")) {
+    const input = document.createElement("input");
+    input.id = "gallerySearchBox";
+    input.type = "text";
+    input.className = "form-control form-control-sm mb-3";
+    input.placeholder = "Search gallery images...";
+    gallerySection.parentElement.insertBefore(input, gallerySection);
+    input.addEventListener("input", function () {
+      const term = this.value.toLowerCase();
+      document
+        .querySelectorAll("#galleryGrid .gallery-card")
+        .forEach((card) => {
+          const alt = card.querySelector("img").alt.toLowerCase();
+          card.style.display = alt.includes(term) ? "block" : "none";
+        });
     });
   }
 }
-function filterTable(selector, term){
+
+function filterTable(selector, term) {
   term = term.toLowerCase();
-  document.querySelectorAll(selector+' tr').forEach(tr=>{
-    tr.style.display = tr.innerText.toLowerCase().includes(term)?'':'none';
+  document.querySelectorAll(selector + " tr").forEach((tr) => {
+    tr.style.display = tr.innerText.toLowerCase().includes(term) ? "" : "none";
   });
 }
 
-// Delegated actions
+// Delegated actions with enhanced error handling
 function attachDelegates() {
-  document.body.addEventListener('click', function(e) {
+  document.body.addEventListener("click", function (e) {
     // Product View Details
-    if (e.target.closest('#productsTable .view-details')) {
-      const id = e.target.closest('button').dataset.id;
-      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
-      const item = list.find(i => i.id == id);
+    if (e.target.closest("#productsTable .view-details")) {
+      const id = e.target.closest("button").dataset.id;
+      const list = JSON.parse(
+        localStorage.getItem(STORAGE_KEYS.PRODUCTS) || "[]"
+      );
+      const item = list.find((i) => i.id == id);
       if (item) {
-        let html = `<h4 class="mb-3">${item.name||''}</h4>`;
-        
+        let html = `<h4 class="mb-3">${item.name || ""}</h4>`;
+
         // Display product images if available
         if (item.images && item.images.length > 0) {
           html += `<div class="product-images mb-3">`;
@@ -430,298 +954,381 @@ function attachDelegates() {
           });
           html += `</div>`;
         }
-        
+
         if (item.description) {
           // Display description with proper formatting
-          const formattedDescription = item.description.replace(/\n/g, '<br>');
+          const formattedDescription = item.description.replace(/\n/g, "<br>");
           html += `<div class="product-description">${formattedDescription}</div>`;
         }
-        document.getElementById('adminProductDetailsBody').innerHTML = html;
-        var modal = new bootstrap.Modal(document.getElementById('adminProductDetailsModal'));
+        document.getElementById("adminProductDetailsBody").innerHTML = html;
+        var modal = new bootstrap.Modal(
+          document.getElementById("adminProductDetailsModal")
+        );
         modal.show();
       }
     }
-    if (e.target.closest('#galleryGrid .edit')) {
-      const id = e.target.closest('button').dataset.id;
-      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GALLERY) || '[]');
-      const item = list.find(i => i.id == id);
-      if (item) {
-        qs('#galleryId').value = item.id;
-        qs('#galleryUrl').value = item.url;
-        qs('#galleryAlt').value = item.alt;
-        new bootstrap.Modal(document.getElementById('galleryModal')).show();
-      }
+
+    // Gallery edit
+    if (e.target.closest("#galleryGrid .edit")) {
+      const id = e.target.closest("button").dataset.id;
+      editGalleryItem(id);
     }
-    if (e.target.closest('#galleryGrid .del')) {
-      const id = e.target.closest('button').dataset.id;
-      if (!confirm('Delete this image?')) return;
-      let list = JSON.parse(localStorage.getItem(STORAGE_KEYS.GALLERY) || '[]');
-      list = list.filter(i => i.id != id);
-      localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(list));
-      loadGallery();
-      renderStats();
+    // if (e.target.closest("#galleryGrid .edit")) {
+    //   const id = e.target.closest("button").dataset.id;
+    //   const list = JSON.parse(
+    //     localStorage.getItem(STORAGE_KEYS.GALLERY) || "[]"
+    //   );
+    //   const item = list.find((i) => i.id == id);
+    //   if (item) {
+    //     qs("#galleryId").value = item.id;
+    //     qs("#galleryUrl").value = item.url;
+    //     qs("#galleryAlt").value = item.alt;
+    //     new bootstrap.Modal(document.getElementById("galleryModal")).show();
+    //   }
+    // }
+
+    // Gallery delete
+    // Gallery delete - find this section and replace
+    if (e.target.closest("#galleryGrid .del")) {
+      const id = e.target.closest("button").dataset.id;
+      if (!confirm("Delete this image permanently?")) return;
+
+      deleteGalleryItem(id);
     }
 
-  if (e.target.closest('#productsTable .edit')) {
-      const id = e.target.closest('button').dataset.id;
-      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
-      const item = list.find(i => i.id == id);
+    // Product edit
+    if (e.target.closest("#productsTable .edit")) {
+      const id = e.target.closest("button").dataset.id;
+      const list = JSON.parse(
+        localStorage.getItem(STORAGE_KEYS.PRODUCTS) || "[]"
+      );
+      const item = list.find((i) => i.id == id);
       if (item) {
         // Set modal title for editing
-        const modalTitle = document.getElementById('productModalTitle');
+        const modalTitle = document.getElementById("productModalTitle");
         if (modalTitle) {
-          modalTitle.textContent = 'Edit Product';
+          modalTitle.textContent = "Edit Product";
         }
-        
+
         // Populate form fields
-        qs('#productId').value = item.id;
-        qs('#productName').value = item.name;
-        qs('#productDescription').value = item.description || '';
-        qs('#productImages').value = item.images ? item.images.join('\n') : '';
-        
+        qs("#productId").value = item.id;
+        qs("#productName").value = item.name;
+        qs("#productDescription").value = item.description || "";
+        qs("#productImages").value = item.images ? item.images.join("\n") : "";
+
         // Update the selected images display if the function exists
-        if (typeof window.updateSelectedImagesDisplay === 'function') {
+        if (typeof window.updateSelectedImagesDisplay === "function") {
           window.selectedProductImages = item.images || [];
           window.updateSelectedImagesDisplay();
         }
-        
-        new bootstrap.Modal(document.getElementById('productModal')).show();
+
+        new bootstrap.Modal(document.getElementById("productModal")).show();
       }
     }
-    if (e.target.closest('#productsTable .del')) {
-      const id = e.target.closest('button').dataset.id;
-      if (!confirm('Delete this product?')) return;
-      let list = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
-      list = list.filter(i => i.id != id);
+
+    // Product delete
+    if (e.target.closest("#productsTable .del")) {
+      const id = e.target.closest("button").dataset.id;
+      if (!confirm("Delete this product?")) return;
+      let list = JSON.parse(
+        localStorage.getItem(STORAGE_KEYS.PRODUCTS) || "[]"
+      );
+      list = list.filter((i) => i.id != id);
       localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(list));
       loadProducts();
       renderStats();
+      showToast("Product deleted successfully!", "success");
     }
 
-  if (e.target.closest('#dealersTable .edit')) {
-      const id = e.target.closest('button').dataset.id;
-      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || '[]');
-      const item = list.find(i => i.id == id);
+    // Dealer edit
+    if (e.target.closest("#dealersTable .edit")) {
+      const id = e.target.closest("button").dataset.id;
+      const list = JSON.parse(
+        localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]"
+      );
+      const item = list.find((i) => i.id == id);
       if (item) {
-        qs('#dealerId').value = item.id;
-        qs('#dealerDistrict').value = item.district || '';
-        qs('#dealerName').value = item.name || '';
-        qs('#dealerShop').value = item.shop || '';
-        qs('#dealerLocation').value = item.location || '';
-    const mapInput = qs('#dealerMap'); if(mapInput) mapInput.value = item.map || '';
-    qs('#dealerContact').value = item.contact || '';
-        new bootstrap.Modal(document.getElementById('dealerModal')).show();
+        qs("#dealerId").value = item.id;
+        qs("#dealerDistrict").value = item.district || "";
+        qs("#dealerName").value = item.name || "";
+        qs("#dealerShop").value = item.shop || "";
+        qs("#dealerLocation").value = item.location || "";
+        const mapInput = qs("#dealerMap");
+        if (mapInput) mapInput.value = item.map || "";
+        qs("#dealerContact").value = item.contact || "";
+        new bootstrap.Modal(document.getElementById("dealerModal")).show();
       }
     }
-    if (e.target.closest('#dealersTable .del')) {
-      const id = e.target.closest('button').dataset.id;
-      if (!confirm('Delete this dealer?')) return;
-      let list = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || '[]');
-      list = list.filter(i => i.id != id);
+
+    // Dealer delete
+    if (e.target.closest("#dealersTable .del")) {
+      const id = e.target.closest("button").dataset.id;
+      if (!confirm("Delete this dealer?")) return;
+      let list = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]");
+      list = list.filter((i) => i.id != id);
       localStorage.setItem(STORAGE_KEYS.DEALERS, JSON.stringify(list));
       loadDealers();
       renderStats();
+      showToast("Dealer deleted successfully!", "success");
     }
-    if (e.target.closest('#blogTable .edit')) {
-      const id = e.target.closest('button').dataset.id;
-      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]');
-      const item = list.find(i=> i.id==id);
-      if(item){
-        document.getElementById('blogId').value = item.id;
-        document.getElementById('blogTitle').value = item.title;
-        document.getElementById('blogSummary').value = item.summary;
-        new bootstrap.Modal(document.getElementById('blogModal')).show();
+
+    // Blog edit
+    if (e.target.closest("#blogTable .edit")) {
+      const id = e.target.closest("button").dataset.id;
+      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || "[]");
+      const item = list.find((i) => i.id == id);
+      if (item) {
+        document.getElementById("blogId").value = item.id;
+        document.getElementById("blogTitle").value = item.title;
+        document.getElementById("blogSummary").value = item.summary;
+        new bootstrap.Modal(document.getElementById("blogModal")).show();
       }
     }
-    if (e.target.closest('#blogTable .del')) {
-      const id = e.target.closest('button').dataset.id;
-      if(!confirm('Delete this blog post?')) return;
-      let list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]');
-      list = list.filter(i=> i.id != id);
+
+    // Blog delete
+    if (e.target.closest("#blogTable .del")) {
+      const id = e.target.closest("button").dataset.id;
+      if (!confirm("Delete this blog post?")) return;
+      let list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || "[]");
+      list = list.filter((i) => i.id != id);
       localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(list));
       loadBlog();
       renderStats();
+      showToast("Blog post deleted successfully!", "success");
     }
   });
 }
 
 // Navigation between sections
 function setupNav() {
-  const navLinks = document.querySelectorAll('#navMenu .nav-link');
-  navLinks.forEach(link => {
-    link.addEventListener('click', function(e){
+  const navLinks = document.querySelectorAll("#navMenu .nav-link");
+  navLinks.forEach((link) => {
+    link.addEventListener("click", function (e) {
       e.preventDefault();
       const section = this.dataset.section;
-      document.querySelectorAll('.panel-section').forEach(sec => sec.classList.add('d-none'));
-      document.getElementById(section).classList.remove('d-none');
-      navLinks.forEach(l => l.classList.remove('active'));
-      this.classList.add('active');
-      if (section === 'gallery') loadGallery();
-      if (section === 'products') loadProducts();
-      if (section === 'dealers') loadDealers();
-  if (section === 'blog') loadBlog();
-      if (section === 'dashboard') renderStats();
+      document
+        .querySelectorAll(".panel-section")
+        .forEach((sec) => sec.classList.add("d-none"));
+      document.getElementById(section).classList.remove("d-none");
+      navLinks.forEach((l) => l.classList.remove("active"));
+      this.classList.add("active");
+
+      if (section === "gallery") loadGallery();
+      if (section === "products") loadProducts();
+      if (section === "dealers") loadDealers();
+      if (section === "blog") loadBlog();
+      if (section === "dashboard") renderStats();
     });
   });
 }
 
 // Forms submission
 function setupForms() {
-  const galleryForm = document.getElementById('galleryForm');
-  if (galleryForm) galleryForm.addEventListener('submit', saveGalleryItem);
-  const productForm = document.getElementById('productForm');
-  if (productForm) productForm.addEventListener('submit', saveProduct);
-  const dealerForm = document.getElementById('dealerForm');
-  if (dealerForm) dealerForm.addEventListener('submit', saveDealer);
-  const blogForm = document.getElementById('blogForm');
-  if (blogForm) blogForm.addEventListener('submit', saveBlog);
+  const galleryForm = document.getElementById("galleryForm");
+  if (galleryForm) galleryForm.addEventListener("submit", saveGalleryItem);
+
+  const productForm = document.getElementById("productForm");
+  if (productForm) productForm.addEventListener("submit", saveProduct);
+
+  const dealerForm = document.getElementById("dealerForm");
+  if (dealerForm) dealerForm.addEventListener("submit", saveDealer);
+
+  const blogForm = document.getElementById("blogForm");
+  if (blogForm) blogForm.addEventListener("submit", saveBlog);
 }
 
-// Auth handling
+// Enhanced Auth handling with AuthManager integration
 function setupAuth() {
-  const authView = document.getElementById('authView');
-  const panelView = document.getElementById('panelView');
-  const loginForm = document.getElementById('loginForm');
-  const logoutBtn = document.getElementById('logoutBtn');
-  
-  console.log('Setting up auth...', { authView, panelView, loginForm, logoutBtn });
-  
-  if (loginForm) {
-    loginForm.addEventListener('submit', function(e){
-      e.preventDefault();
-      const u = document.getElementById('username').value.trim();
-      const p = document.getElementById('password').value.trim();
-      if (login(u,p)) {
-        console.log('Login successful');
-        authView.classList.add('d-none');
-        panelView.classList.remove('d-none');
-        renderStats();
-      } else {
-        alert('Invalid credentials. Use username: admin, password: admin123');
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", function () {
+      if (confirm("Are you sure you want to logout?")) {
+        logout();
       }
     });
   }
-  
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', function(){
-      console.log('Logout clicked');
-      logout();
-      location.reload();
-    });
+
+  // Check authentication status
+  if (!isAuthenticated()) {
+    console.log("User not authenticated, redirecting to login");
+    window.location.href = "login.html";
+    return;
   }
-  
-  // Show appropriate view based on authentication status
-  const isAuth = isAuthenticated();
-  console.log('Auth status:', isAuth);
-  
-  if (isAuth) {
-    if (authView) authView.classList.add('d-none');
-    if (panelView) panelView.classList.remove('d-none');
-    renderStats();
-  } else {
-    if (authView) authView.classList.remove('d-none');
-    if (panelView) panelView.classList.add('d-none');
-  }
+
+  console.log("User authenticated, loading dashboard");
 }
 
 // Theme toggle
-function setupThemeToggle(){
-  const btn = document.getElementById('themeToggle');
-  const mobileBtn = document.getElementById('mobileThemeToggle');
+function setupThemeToggle() {
+  const btn = document.getElementById("themeToggle");
+  const mobileBtn = document.getElementById("mobileThemeToggle");
   const buttons = [btn, mobileBtn].filter(Boolean);
-  if(!buttons.length) return;
-  const saved = localStorage.getItem('vaatco_theme');
-  if(saved === 'light') document.body.classList.add('theme-light');
+  if (!buttons.length) return;
+
+  const saved = localStorage.getItem("vaatco_theme");
+  if (saved === "light") document.body.classList.add("theme-light");
   updateThemeIcons();
-  buttons.forEach(b=>{
-    b.addEventListener('click', ()=>{
-      document.body.classList.toggle('theme-light');
-      const mode = document.body.classList.contains('theme-light') ? 'light':'dark';
-      localStorage.setItem('vaatco_theme', mode);
+
+  buttons.forEach((b) => {
+    b.addEventListener("click", () => {
+      document.body.classList.toggle("theme-light");
+      const mode = document.body.classList.contains("theme-light")
+        ? "light"
+        : "dark";
+      localStorage.setItem("vaatco_theme", mode);
       updateThemeIcons();
     });
   });
-  function updateThemeIcons(){
-    buttons.forEach(b=>{
-      const i = b.querySelector('i');
-      if(!i) return;
-      if(document.body.classList.contains('theme-light')){
-        i.classList.remove('fa-moon');
-        i.classList.add('fa-sun');
+
+  function updateThemeIcons() {
+    buttons.forEach((b) => {
+      const i = b.querySelector("i");
+      if (!i) return;
+      if (document.body.classList.contains("theme-light")) {
+        i.classList.remove("fa-moon");
+        i.classList.add("fa-sun");
       } else {
-        i.classList.remove('fa-sun');
-        i.classList.add('fa-moon');
+        i.classList.remove("fa-sun");
+        i.classList.add("fa-moon");
       }
     });
   }
 }
 
 // Viewport height fix
-function applyViewportHeightFix(){
+function applyViewportHeightFix() {
   const vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--vh', `${vh}px`);
+  document.documentElement.style.setProperty("--vh", `${vh}px`);
 }
-window.addEventListener('resize', applyViewportHeightFix);
-window.addEventListener('orientationchange', ()=>{
+
+window.addEventListener("resize", applyViewportHeightFix);
+window.addEventListener("orientationchange", () => {
   applyViewportHeightFix();
   // Close sidebar on rotation for safety
-  const sidebar = document.querySelector('.sidebar');
-  const toggleBtn = document.getElementById('sidebarToggle');
-  if(sidebar && sidebar.classList.contains('open')){
-    sidebar.classList.remove('open');
-    document.body.classList.remove('sidebar-open');
-    if(toggleBtn) toggleBtn.setAttribute('aria-expanded','false');
+  const sidebar = document.querySelector(".sidebar");
+  const toggleBtn = document.getElementById("sidebarToggle");
+  if (sidebar && sidebar.classList.contains("open")) {
+    sidebar.classList.remove("open");
+    document.body.classList.remove("sidebar-open");
+    if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "false");
   }
 });
 
 // Public export helpers (to be used on public pages)
-function getGalleryItems() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.GALLERY) || '[]'); }
-function getProducts() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]'); }
-function getDealers() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || '[]'); }
-function getBlogPosts() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || '[]'); }
+function getGalleryItems() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEYS.GALLERY) || "[]");
+}
+function getProducts() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || "[]");
+}
+function getDealers() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]");
+}
+function getBlogPosts() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || "[]");
+}
 
 // Admin helper functions
 function forceLogout() {
   logout();
-  location.reload();
 }
 
 function checkAuthStatus() {
-  console.log('Authenticated:', isAuthenticated());
-  console.log('Auth token:', localStorage.getItem(STORAGE_KEYS.AUTH));
+  console.log("Authenticated:", isAuthenticated());
+  if (window.authManager) {
+    console.log("Current user:", window.authManager.getCurrentUser());
+  }
+}
+async function makeAuthenticatedRequest(endpoint, options = {}) {
+  if (!window.authManager) {
+    throw new Error("AuthManager not available");
+  }
+
+  const url = `${API_CONFIG.BASE_URL}${endpoint}`;
+
+  try {
+    // Don't set Content-Type for FormData - browser handles it
+    const headers = {
+      Authorization: `Bearer ${window.authManager.getToken()}`,
+      ...options.headers,
+    };
+
+    // Only set Content-Type if not FormData
+    if (!(options.body instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+    }
+
+    const mergedOptions = {
+      ...options,
+      headers,
+    };
+
+    return await window.authManager.makeAuthenticatedRequest(
+      url,
+      mergedOptions
+    );
+  } catch (error) {
+    console.error("API request failed:", error);
+    throw error;
+  }
 }
 
+// Global exports
 window.VAATCO_DATA = { getGalleryItems, getProducts, getDealers, getBlogPosts };
-window.VAATCO_ADMIN = { forceLogout, checkAuthStatus, login, logout, isAuthenticated };
+window.VAATCO_ADMIN = { forceLogout, checkAuthStatus, logout, isAuthenticated };
 
-// Init
-window.addEventListener('DOMContentLoaded', function(){
+// Enhanced initialization
+window.addEventListener("DOMContentLoaded", function () {
   applyViewportHeightFix();
   initStorage();
-  setupAuth();
+
+  // Wait for AuthManager to be available
+  if (window.authManager) {
+    setupAuth();
+  } else {
+    // Fallback check
+    setTimeout(() => {
+      setupAuth();
+    }, 100);
+  }
+
   setupNav();
   setupForms();
   attachDelegates();
   renderStats();
   setupSearchFiltering();
   setupThemeToggle();
+
   // Mobile sidebar toggle
-  const toggleBtn = document.getElementById('sidebarToggle');
-  const sidebar = document.querySelector('.sidebar');
-  if(toggleBtn && sidebar){
-    toggleBtn.addEventListener('click', ()=>{
-      const open = sidebar.classList.toggle('open');
-      document.body.classList.toggle('sidebar-open', open);
-      toggleBtn.setAttribute('aria-expanded', open ? 'true':'false');
+  const toggleBtn = document.getElementById("sidebarToggle");
+  const sidebar = document.querySelector(".sidebar");
+  if (toggleBtn && sidebar) {
+    toggleBtn.addEventListener("click", () => {
+      const open = sidebar.classList.toggle("open");
+      document.body.classList.toggle("sidebar-open", open);
+      toggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
     });
-    document.body.addEventListener('click', (e)=>{
-      if(document.body.classList.contains('sidebar-open')){
-        if(!sidebar.contains(e.target) && e.target!==toggleBtn && !toggleBtn.contains(e.target)){
-          sidebar.classList.remove('open');
-          document.body.classList.remove('sidebar-open');
-          toggleBtn.setAttribute('aria-expanded','false');
+
+    document.body.addEventListener(
+      "click",
+      (e) => {
+        if (document.body.classList.contains("sidebar-open")) {
+          if (
+            !sidebar.contains(e.target) &&
+            e.target !== toggleBtn &&
+            !toggleBtn.contains(e.target)
+          ) {
+            sidebar.classList.remove("open");
+            document.body.classList.remove("sidebar-open");
+            toggleBtn.setAttribute("aria-expanded", "false");
+          }
         }
-      }
-    }, true);
+      },
+      true
+    );
   }
+
+  console.log("Admin panel initialized with API integration");
 });
+window.resetGalleryForm = resetGalleryForm;
