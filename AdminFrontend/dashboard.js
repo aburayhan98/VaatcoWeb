@@ -377,6 +377,154 @@ function handleImageUpload(input) {
   };
   reader.readAsDataURL(file);
 }
+
+// blog related
+// Blog image selection variables
+let selectedBlogImages = [];
+let blogImageSelectionType = "featured"; // 'featured' or 'additional'
+
+function openBlogImageSelector(type) {
+  blogImageSelectionType = type;
+  selectedBlogImages = [];
+
+  if (type === "featured") {
+    // For featured image, get current value
+    const currentImage = document.getElementById("blogFeaturedImage").value;
+    if (currentImage) {
+      selectedBlogImages = [currentImage];
+    }
+  } else {
+    // For additional images, get current values
+    const currentImages = document.getElementById("blogImages").value;
+    selectedBlogImages = currentImages
+      ? currentImages.split("\n").filter((img) => img.trim())
+      : [];
+  }
+
+  loadBlogImageSelector();
+  new bootstrap.Modal(document.getElementById("blogImageSelectorModal")).show();
+}
+
+function loadBlogImageSelector() {
+  const gallery = JSON.parse(
+    localStorage.getItem("vaatco_gallery_items") || "[]"
+  );
+  const grid = document.getElementById("blogImageSelectorGrid");
+  const selectedCount = document.getElementById("selectedBlogCount");
+
+  if (gallery.length === 0) {
+    grid.innerHTML = `
+      <div class="col-12 text-center text-muted py-4">
+        <i class="fas fa-images fa-3x mb-3"></i>
+        <p>No images in gallery. Upload some images first.</p>
+      </div>
+    `;
+    selectedCount.textContent = "0 selected";
+    return;
+  }
+
+  let html = "";
+  gallery.forEach((item) => {
+    const isSelected = selectedBlogImages.includes(item.url);
+
+    html += `
+      <div class="col-md-3 col-sm-4 col-6 mb-3">
+        <div class="gallery-selector-item ${isSelected ? "selected" : ""}" 
+             data-url="${item.url}" 
+             onclick="toggleBlogImageSelection('${item.url}', this)">
+          <div class="position-relative">
+            <img src="${item.url}" alt="${item.alt}" 
+                 class="img-fluid rounded shadow-sm" 
+                 style="width: 100%; height: 120px; object-fit: cover; cursor: pointer;"
+                 onerror="this.parentElement.innerHTML='<div class=\\'d-flex align-items-center justify-content-center bg-light rounded\\' style=\\'height:120px\\'><i class=\\'fas fa-image-broken text-muted\\'></i></div>'">
+            <div class="selection-overlay">
+              <i class="fas fa-check-circle"></i>
+            </div>
+          </div>
+          <small class="text-muted mt-1 d-block text-truncate">${
+            item.alt
+          }</small>
+        </div>
+      </div>
+    `;
+  });
+
+  grid.innerHTML = html;
+  updateBlogSelectedCount();
+}
+
+function toggleBlogImageSelection(imageUrl, element) {
+  const index = selectedBlogImages.indexOf(imageUrl);
+
+  if (blogImageSelectionType === "featured") {
+    // For featured image, only allow one selection
+    selectedBlogImages = [imageUrl];
+    // Remove selected class from all items
+    document
+      .querySelectorAll("#blogImageSelectorGrid .gallery-selector-item")
+      .forEach((item) => {
+        item.classList.remove("selected");
+      });
+    // Add selected class to current item
+    element.classList.add("selected");
+  } else {
+    // For additional images, allow multiple selections
+    if (index === -1) {
+      selectedBlogImages.push(imageUrl);
+      element.classList.add("selected");
+    } else {
+      selectedBlogImages.splice(index, 1);
+      element.classList.remove("selected");
+    }
+  }
+
+  updateBlogSelectedCount();
+}
+
+function updateBlogSelectedCount() {
+  const selectedCount = document.getElementById("selectedBlogCount");
+  if (selectedCount) {
+    const countText =
+      blogImageSelectionType === "featured"
+        ? selectedBlogImages.length > 0
+          ? "1 selected"
+          : "0 selected"
+        : `${selectedBlogImages.length} selected`;
+    selectedCount.textContent = countText;
+  }
+}
+
+function confirmBlogImageSelection() {
+  if (blogImageSelectionType === "featured") {
+    // Set featured image
+    document.getElementById("blogFeaturedImage").value =
+      selectedBlogImages[0] || "";
+  } else {
+    // Set additional images
+    document.getElementById("blogImages").value = selectedBlogImages.join("\n");
+  }
+
+  // Close the modal
+  bootstrap.Modal.getInstance(
+    document.getElementById("blogImageSelectorModal")
+  ).hide();
+}
+
+function closeBlogImageSelector() {
+  bootstrap.Modal.getInstance(
+    document.getElementById("blogImageSelectorModal")
+  ).hide();
+}
+
+// Make blog functions globally accessible
+window.openBlogImageSelector = openBlogImageSelector;
+window.toggleBlogImageSelection = toggleBlogImageSelection;
+window.confirmBlogImageSelection = confirmBlogImageSelection;
+window.closeBlogImageSelector = closeBlogImageSelector;
+window.resetBlogForm = resetBlogForm;
+window.editBlog = editBlog;
+window.deleteBlog = deleteBlog;
+
 // Make functions globally accessible
 window.openGallerySelector = openGallerySelector;
 window.updateSelectedImagesDisplay = updateSelectedImagesDisplay;

@@ -187,7 +187,7 @@
           <div class="carousel-item active">
             <div
               class="hero-slide"
-              style="background-image: url('vaatco-backgroundSel1.jpeg')"
+              style="background-image: url('slider.webp')"
             >
               <div class="hero-overlay">
                 <div class="container">
@@ -380,7 +380,7 @@
             <div class="about-content">
               <div class="about-badge">
                 <i class="fas fa-seedling"></i>
-                <span data-i18n="about.since">Since 2024</span>
+                <span data-i18n="about.since">Since 2025</span>
               </div>
               <h2 class="about-title mb-4" data-i18n="about.title">
                 About VAATCO: Pioneering Sustainable Solutions
@@ -407,7 +407,7 @@
                       >Quality Assured</strong
                     >
                     <p data-i18n="about.features.quality.text">
-                      ISO certified products with rigorous testing
+                      High quality products with rigorous testing
                     </p>
                   </div>
                 </div>
@@ -907,6 +907,7 @@
     <!-- Gallery Section -->
     <section id="gallery" class="py-5 bg-light">
       <div class="container">
+        <!-- Title Row (this will be preserved) -->
         <div class="row justify-content-center mb-5">
           <div class="col-lg-8 text-center">
             <h2 class="gallery-title mb-3" data-i18n="gallery.title">
@@ -919,78 +920,13 @@
           </div>
         </div>
 
-        <div class="row">
-          <!-- Gallery Image 1 -->
-          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="gallery-item">
-              <div class="gallery-image-wrapper">
-                <img
-                  src="sticker/sticker1.jpeg"
-                  alt="Gallery Image 1"
-                  class="img-fluid gallery-image"
-                  onclick="openImagePreview(this)"
-                />
-                <div class="gallery-overlay">
-                  <i class="fas fa-search-plus fa-2x text-white"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Gallery Image 2 -->
-          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="gallery-item">
-              <div class="gallery-image-wrapper">
-                <img
-                  src="sticker/sticker2.jpeg"
-                  alt="Gallery Image 2"
-                  class="img-fluid gallery-image"
-                  onclick="openImagePreview(this)"
-                />
-                <div class="gallery-overlay">
-                  <i class="fas fa-search-plus fa-2x text-white"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Gallery Image 3 -->
-          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="gallery-item">
-              <div class="gallery-image-wrapper">
-                <img
-                  src="sticker/sticker3.jpeg"
-                  alt="Gallery Image 3"
-                  class="img-fluid gallery-image"
-                  onclick="openImagePreview(this)"
-                />
-                <div class="gallery-overlay">
-                  <i class="fas fa-search-plus fa-2x text-white"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Gallery Image 4 -->
-          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="gallery-item">
-              <div class="gallery-image-wrapper">
-                <img
-                  src="sticker/sticker4.jpeg"
-                  alt="Gallery Image 4"
-                  class="img-fluid gallery-image"
-                  onclick="openImagePreview(this)"
-                />
-                <div class="gallery-overlay">
-                  <i class="fas fa-search-plus fa-2x text-white"></i>
-                </div>
-              </div>
-            </div>
-          </div>
+        <!-- Images Row (this will be dynamically updated) -->
+        <div class="row gallery-images-row">
+          <!-- Dynamic gallery content will be inserted here -->
+          <!-- The script will replace only this row's content -->
         </div>
       </div>
     </section>
-
     <!-- Image Preview Overlay -->
     <div id="imagePreviewOverlay" class="image-preview-overlay">
       <div class="preview-container">

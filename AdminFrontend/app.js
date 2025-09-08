@@ -847,149 +847,824 @@ async function deleteProduct(id) {
 }
 
 // Dealers CRUD with API Integration
+const BANGLADESH_DISTRICTS = [
+  "Dhaka",
+  "Chittagong",
+  "Rajshahi",
+  "Khulna",
+  "Barisal",
+  "Sylhet",
+  "Rangpur",
+  "Mymensingh",
+  "Comilla",
+  "Faridpur",
+  "Gazipur",
+  "Gopalganj",
+  "Jamalpur",
+  "Kishoreganj",
+  "Madaripur",
+  "Manikganj",
+  "Munshiganj",
+  "Narayanganj",
+  "Narsingdi",
+  "Netrokona",
+  "Rajbari",
+  "Shariatpur",
+  "Sherpur",
+  "Tangail",
+  "Brahmanbaria",
+  "Chandpur",
+  "Feni",
+  "Lakshmipur",
+  "Noakhali",
+  "Cox's Bazar",
+  "Bandarban",
+  "Khagrachhari",
+  "Rangamati",
+  "Habiganj",
+  "Moulvibazar",
+  "Sunamganj",
+  "Bogra",
+  "Joypurhat",
+  "Naogaon",
+  "Natore",
+  "Nawabganj",
+  "Pabna",
+  "Sirajganj",
+  "Bagerhat",
+  "Chuadanga",
+  "Jessore",
+  "Jhenaidah",
+  "Kushtia",
+  "Magura",
+  "Meherpur",
+  "Narail",
+  "Satkhira",
+  "Barguna",
+  "Bhola",
+  "Jhalokati",
+  "Patuakhali",
+  "Pirojpur",
+  "Dinajpur",
+  "Gaibandha",
+  "Kurigram",
+  "Lalmonirhat",
+  "Nilphamari",
+  "Panchagarh",
+  "Thakurgaon",
+];
+
+// Populate district dropdown
+function populateDistrictDropdown() {
+  const districtSelect = document.getElementById("dealerDistrict");
+  if (districtSelect) {
+    // Clear existing options
+    districtSelect.innerHTML = '<option value="">Select District</option>';
+
+    // Add all districts
+    BANGLADESH_DISTRICTS.forEach((district) => {
+      const option = document.createElement("option");
+      option.value = district;
+      option.textContent = district;
+      districtSelect.appendChild(option);
+    });
+  }
+}
+
 async function loadDealers() {
-  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]");
-  const tbody = qs("#dealersTable tbody");
+  try {
+    showLoading("Loading dealers...");
+
+    // Fetch from API
+    const response = await makeAuthenticatedRequest("/dealers");
+    const result = await response.json();
+
+    if (result.status && result.data) {
+      // Transform API data
+      const list = result.data.map((item) => ({
+        id: item._id,
+        name: item.name,
+        shopName: item.shopName,
+        ownerName: item.ownerName || "",
+        email: item.email || "",
+        phone: item.phone,
+        location: item.location || "",
+        district: item.district || "",
+        socialMedia: item.socialMedia || {},
+        rating: item.rating || 0,
+        isActive: item.isActive,
+        isVerified: item.isVerified,
+        isFeatured: item.isFeatured,
+        notes: item.notes || "",
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      }));
+
+      // Save to localStorage as cache
+      localStorage.setItem(STORAGE_KEYS.DEALERS, JSON.stringify(list));
+
+      // Render dealers table
+      renderDealersTable(list);
+      showToast("Dealers loaded successfully!", "success");
+    } else {
+      throw new Error(result.message || "Failed to load dealers");
+    }
+  } catch (error) {
+    console.error("Error loading dealers:", error);
+    // Fallback to localStorage
+    const cachedList = JSON.parse(
+      localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]"
+    );
+    renderDealersTable(cachedList);
+    showToast("Using cached dealer data. Check your connection.", "warning");
+  } finally {
+    hideLoading();
+  }
+}
+
+function renderDealersTable(list) {
+  const tbody = document.querySelector("#dealersTable tbody");
   if (!tbody) return;
 
   tbody.innerHTML = "";
   list.forEach((item) => {
-    const tr = ce("tr");
-    const shortMap = item.map
-      ? item.map.length > 28
-        ? item.map.slice(0, 25) + "..."
-        : item.map
+    const tr = document.createElement("tr");
+
+    // Status badges
+    const statusBadges = [];
+    if (item.isFeatured)
+      statusBadges.push('<span class="badge bg-warning me-1">Featured</span>');
+    if (item.isVerified)
+      statusBadges.push('<span class="badge bg-success me-1">Verified</span>');
+    if (!item.isActive)
+      statusBadges.push(
+        '<span class="badge bg-secondary me-1">Inactive</span>'
+      );
+
+    const rating = item.rating
+      ? `<div class="text-warning small">${"★".repeat(
+          Math.floor(item.rating)
+        )} (${item.rating})</div>`
       : "";
-    tr.innerHTML = `<td>${item.district || ""}</td><td>${
-      item.name || ""
-    }</td><td>${item.shop || ""}</td><td>${
-      item.location || ""
-    }</td><td>${shortMap}</td><td>${
-      item.contact || ""
-    }</td><td><button class="btn btn-sm btn-outline-primary me-1 edit" data-id="${
-      item.id
-    }"><i class="fas fa-pen"></i></button><button class="btn btn-sm btn-outline-danger del" data-id="${
-      item.id
-    }"><i class="fas fa-trash"></i></button></td>`;
+
+    tr.innerHTML = `
+      <td>${item.district || "N/A"}</td>
+      <td>
+        <div class="fw-semibold">${item.name || ""}</div>
+        <small class="text-muted">${item.shopName || ""}</small>
+      </td>
+      <td>
+        <div>${item.ownerName || "N/A"}</div>
+        ${rating}
+      </td>
+      <td>
+        <div>${item.phone || ""}</div>
+        <small class="text-muted">${item.email || ""}</small>
+      </td>
+      <td>
+        <div>${item.location || ""}</div>
+        ${statusBadges.join("")}
+      </td>
+      <td style="width: 140px">
+        <button class="btn btn-sm btn-outline-primary me-1 edit" data-id="${
+          item.id
+        }" title="Edit">
+          <i class="fas fa-pen"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-danger del" data-id="${
+          item.id
+        }" title="Delete">
+          <i class="fas fa-trash"></i>
+        </button>
+      </td>
+    `;
     tbody.appendChild(tr);
   });
 }
 
 async function saveDealer(e) {
   e.preventDefault();
-  const id = qs("#dealerId").value;
-  const district = qs("#dealerDistrict").value.trim();
-  const name = qs("#dealerName").value.trim();
-  const shop = qs("#dealerShop").value.trim();
-  const location = qs("#dealerLocation").value.trim();
-  const map = (qs("#dealerMap")?.value || "").trim();
-  const contact = qs("#dealerContact").value.trim();
 
-  if (!district || !name || !shop || !location || !contact) {
-    showToast("Please fill in all required fields.", "error");
+  // Get form values
+  const id = document.getElementById("dealerId").value;
+  const district = document.getElementById("dealerDistrict").value.trim();
+  const name = document.getElementById("dealerName").value.trim();
+  const shopName = document.getElementById("dealerShopName").value.trim();
+  const ownerName = document.getElementById("dealerOwnerName").value.trim();
+  const email = document.getElementById("dealerEmail").value.trim();
+  const phone = document.getElementById("dealerPhone").value.trim();
+  const location = document.getElementById("dealerLocation").value.trim();
+  const notes = document.getElementById("dealerNotes").value.trim();
+
+  // Social media fields
+  const facebook = document.getElementById("dealerFacebook").value.trim();
+  const website = document.getElementById("dealerWebsite").value.trim();
+  const youtube = document.getElementById("dealerYoutube").value.trim();
+
+  // Checkboxes
+  const isActive = document.getElementById("dealerIsActive").checked;
+  const isVerified = document.getElementById("dealerIsVerified").checked;
+  const isFeatured = document.getElementById("dealerIsFeatured").checked;
+
+  // Rating
+  const rating = parseFloat(document.getElementById("dealerRating").value) || 0;
+
+  // Validation
+  if (!name || !shopName || !phone || !district) {
+    showToast(
+      "Please fill in required fields: District, Dealer Name, Shop Name, and Phone.",
+      "error"
+    );
+    return;
+  }
+
+  // Email validation if provided
+  if (email && !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+    showToast("Please provide a valid email address.", "error");
     return;
   }
 
   try {
     showLoading("Saving dealer...");
 
-    const dealerData = { district, name, shop, location, map, contact };
+    const dealerData = {
+      district,
+      name,
+      shopName,
+      ownerName: ownerName || undefined,
+      email: email || undefined,
+      phone,
+      location: location || undefined,
+      socialMedia: {
+        facebook: facebook || undefined,
+        website: website || undefined,
+        youtube: youtube || undefined,
+      },
+      rating,
+      isActive,
+      isVerified,
+      isFeatured,
+      notes: notes || undefined,
+    };
 
-    // For now, save to localStorage (later integrate with API)
-    const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]");
-    if (id) {
-      const idx = list.findIndex((i) => i.id == id);
-      if (idx > -1)
-        list[idx] = {
-          ...list[idx],
-          district,
-          name,
-          shop,
-          location,
-          map,
-          contact,
-        };
-    } else {
-      list.push({
-        id: generateId(list),
-        district,
-        name,
-        shop,
-        location,
-        map,
-        contact,
+    // Remove undefined values and empty objects
+    Object.keys(dealerData).forEach((key) => {
+      if (
+        dealerData[key] === undefined ||
+        (typeof dealerData[key] === "object" &&
+          Object.values(dealerData[key]).every((v) => v === undefined))
+      ) {
+        delete dealerData[key];
+      }
+    });
+
+    if (id && id.trim() !== "") {
+      // Edit existing dealer - API call
+      const response = await makeAuthenticatedRequest(`/dealers/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(dealerData),
       });
-    }
-    localStorage.setItem(STORAGE_KEYS.DEALERS, JSON.stringify(list));
-    loadDealers();
-    bootstrap.Modal.getInstance(document.getElementById("dealerModal")).hide();
-    qs("#dealerForm").reset();
-    qs("#dealerId").value = "";
-    renderStats();
 
-    showToast("Dealer saved successfully!", "success");
+      const result = await response.json();
+
+      if (response.ok && result.status) {
+        showToast("Dealer updated successfully!", "success");
+      } else {
+        throw new Error(result.message || "Failed to update dealer");
+      }
+    } else {
+      // Add new dealer - API call
+      const response = await makeAuthenticatedRequest("/dealers", {
+        method: "POST",
+        body: JSON.stringify(dealerData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.status) {
+        showToast("Dealer created successfully!", "success");
+      } else {
+        throw new Error(result.message || "Failed to create dealer");
+      }
+    }
+
+    // Reload dealers and close modal
+    await loadDealers();
+    bootstrap.Modal.getInstance(document.getElementById("dealerModal")).hide();
+    resetDealerForm();
+    renderStats();
   } catch (error) {
     console.error("Error saving dealer:", error);
-    showToast("Failed to save dealer. Please try again.", "error");
+    showToast("Failed to save dealer: " + error.message, "error");
   } finally {
     hideLoading();
   }
 }
 
+async function editDealer(id) {
+  try {
+    showLoading("Loading dealer details...");
+
+    // Get item from localStorage first (cached data)
+    const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]");
+    const item = list.find((i) => i.id == id);
+
+    if (item) {
+      // Ensure district dropdown is populated
+      populateDistrictDropdown();
+
+      // Set modal title for editing
+      const modalTitle = document.querySelector("#dealerModal .modal-title");
+      if (modalTitle) {
+        modalTitle.textContent = "Edit Dealer";
+      }
+
+      // Populate form fields
+      document.getElementById("dealerId").value = item.id;
+      document.getElementById("dealerDistrict").value = item.district || "";
+      document.getElementById("dealerName").value = item.name || "";
+      document.getElementById("dealerShopName").value = item.shopName || "";
+      document.getElementById("dealerOwnerName").value = item.ownerName || "";
+      document.getElementById("dealerEmail").value = item.email || "";
+      document.getElementById("dealerPhone").value = item.phone || "";
+      document.getElementById("dealerLocation").value = item.location || "";
+      document.getElementById("dealerNotes").value = item.notes || "";
+
+      // Social media fields
+      document.getElementById("dealerFacebook").value =
+        item.socialMedia?.facebook || "";
+      document.getElementById("dealerWebsite").value =
+        item.socialMedia?.website || "";
+      document.getElementById("dealerYoutube").value =
+        item.socialMedia?.youtube || "";
+
+      // Checkboxes
+      document.getElementById("dealerIsActive").checked =
+        item.isActive !== false;
+      document.getElementById("dealerIsVerified").checked =
+        item.isVerified || false;
+      document.getElementById("dealerIsFeatured").checked =
+        item.isFeatured || false;
+
+      // Rating
+      document.getElementById("dealerRating").value = item.rating || 0;
+
+      new bootstrap.Modal(document.getElementById("dealerModal")).show();
+      showToast("Dealer details loaded for editing", "success");
+    } else {
+      showToast("Dealer not found", "error");
+    }
+  } catch (error) {
+    console.error("Error loading dealer for edit:", error);
+    showToast("Failed to load dealer details: " + error.message, "error");
+  } finally {
+    hideLoading();
+  }
+}
+
+async function deleteDealer(id) {
+  try {
+    showLoading("Deleting dealer...");
+
+    const response = await makeAuthenticatedRequest(`/dealers/${id}`, {
+      method: "DELETE",
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.status) {
+      showToast("Dealer deleted successfully!", "success");
+
+      // Reload dealers and update stats
+      await loadDealers();
+      renderStats();
+    } else {
+      throw new Error(result.message || "Delete failed");
+    }
+  } catch (error) {
+    console.error("Error deleting dealer:", error);
+    showToast("Failed to delete dealer: " + error.message, "error");
+  } finally {
+    hideLoading();
+  }
+}
+
+function resetDealerForm() {
+  document.getElementById("dealerForm").reset();
+  document.getElementById("dealerId").value = "";
+
+  // Reset checkboxes to default state
+  document.getElementById("dealerIsActive").checked = true;
+  document.getElementById("dealerIsVerified").checked = false;
+  document.getElementById("dealerIsFeatured").checked = false;
+
+  // Reset rating
+  document.getElementById("dealerRating").value = "0";
+
+  // Reset district dropdown
+  document.getElementById("dealerDistrict").value = "";
+
+  // Reset modal title
+  const modalTitle = document.querySelector("#dealerModal .modal-title");
+  if (modalTitle) {
+    modalTitle.textContent = "Add / Edit Dealer";
+  }
+}
+
+// Initialize dealer form on page load
+function initializeDealerForm() {
+  populateDistrictDropdown();
+}
 // Blog CRUD with API Integration
 async function loadBlog() {
-  const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || "[]");
+  try {
+    showLoading("Loading blog posts...");
+
+    // Fetch from API
+    const response = await makeAuthenticatedRequest("/blogs");
+    const result = await response.json();
+
+    if (result.status && result.data) {
+      console.log(result.data);
+      // Transform API data
+      const list = result.data.map((item) => ({
+        id: item._id,
+        title: item.title,
+        slug: item.slug,
+        excerpt: item.excerpt,
+        content: item.content,
+        featuredImage: item.featuredImage || "",
+        images: item.images || [],
+        tags: item.tags || [],
+        status: item.status,
+        publishDate: item.publishDate,
+        isFeatured: item.isFeatured,
+        views: item.views || 0,
+        seoTitle: item.seoTitle || "",
+        seoDescription: item.seoDescription || "",
+        seoKeywords: item.seoKeywords || [],
+        author: item.author,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      }));
+
+      // Save to localStorage as cache
+      localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(list));
+
+      // Render blog table
+      renderBlogTable(list);
+      showToast("Blog posts loaded successfully!", "success");
+    } else {
+      throw new Error(result.message || "Failed to load blog posts");
+    }
+  } catch (error) {
+    console.error("Error loading blog posts:", error);
+    // Fallback to localStorage
+    const cachedList = JSON.parse(
+      localStorage.getItem(STORAGE_KEYS.BLOG) || "[]"
+    );
+    renderBlogTable(cachedList);
+    showToast("Using cached blog data. Check your connection.", "warning");
+  } finally {
+    hideLoading();
+  }
+}
+
+async function loadBlog() {
+  try {
+    showLoading("Loading blog posts...");
+
+    // Fetch from API
+    const response = await makeAuthenticatedRequest("/blogs");
+    const result = await response.json();
+
+    if (result.status && result.data) {
+      // Transform API data
+      const list = result.data.map((item) => ({
+        id: item._id,
+        title: item.title,
+        slug: item.slug,
+        excerpt: item.excerpt,
+        content: item.content,
+        featuredImage: item.featuredImage || "",
+        images: item.images || [],
+        tags: item.tags || [],
+        status: item.status,
+        publishDate: item.publishDate,
+        isFeatured: item.isFeatured,
+        views: item.views || 0,
+        seoTitle: item.seoTitle || "",
+        seoDescription: item.seoDescription || "",
+        seoKeywords: item.seoKeywords || [],
+        author: item.author,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      }));
+
+      // Save to localStorage as cache
+      localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(list));
+
+      // Render blog table
+      renderBlogTable(list);
+      showToast("Blog posts loaded successfully!", "success");
+    } else {
+      throw new Error(result.message || "Failed to load blog posts");
+    }
+  } catch (error) {
+    console.error("Error loading blog posts:", error);
+    // Fallback to localStorage
+    const cachedList = JSON.parse(
+      localStorage.getItem(STORAGE_KEYS.BLOG) || "[]"
+    );
+    renderBlogTable(cachedList);
+    showToast("Using cached blog data. Check your connection.", "warning");
+  } finally {
+    hideLoading();
+  }
+}
+
+function renderBlogTable(list) {
   const tbody = document.querySelector("#blogTable tbody");
   if (!tbody) return;
 
   tbody.innerHTML = "";
   list.forEach((post) => {
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${post.title}</td><td>${post.summary}</td><td style="width:120px;"><button class='btn btn-sm btn-outline-primary me-1 edit' data-id='${post.id}'><i class='fas fa-pen'></i></button><button class='btn btn-sm btn-outline-danger del' data-id='${post.id}'><i class='fas fa-trash'></i></button></td>`;
+
+    // Status badge
+    const statusBadge = getStatusBadge(post.status);
+    const featuredBadge = post.isFeatured
+      ? '<span class="badge bg-warning me-1">Featured</span>'
+      : "";
+    const publishDate = post.publishDate
+      ? new Date(post.publishDate).toLocaleDateString()
+      : "Not set";
+
+    tr.innerHTML = `
+      <td>
+        <div class="fw-semibold">${post.title}</div>
+        <small class="text-muted">${post.excerpt || "No excerpt"}</small>
+      </td>
+      <td>
+        <div>${statusBadge} ${featuredBadge}</div>
+        <small class="text-muted">Views: ${post.views}</small>
+      </td>
+      <td>
+        <small>${publishDate}</small>
+      </td>
+      <td style="width: 140px">
+        <button class="btn btn-sm btn-outline-info me-1 view-details" data-id="${
+          post.id
+        }" title="View Details">
+          <i class="fas fa-eye"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-primary me-1 edit" data-id="${
+          post.id
+        }" title="Edit">
+          <i class="fas fa-pen"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-danger del" data-id="${
+          post.id
+        }" title="Delete">
+          <i class="fas fa-trash"></i>
+        </button>
+      </td>
+    `;
     tbody.appendChild(tr);
   });
 }
 
+function getStatusBadge(status) {
+  switch (status) {
+    case "published":
+      return '<span class="badge bg-success">Published</span>';
+    case "draft":
+      return '<span class="badge bg-secondary">Draft</span>';
+    case "archived":
+      return '<span class="badge bg-dark">Archived</span>';
+    default:
+      return '<span class="badge bg-light text-dark">Unknown</span>';
+  }
+}
+
 async function saveBlog(e) {
   e.preventDefault();
+
+  // Get form values
   const id = document.getElementById("blogId").value;
   const title = document.getElementById("blogTitle").value.trim();
-  const summary = document.getElementById("blogSummary").value.trim();
+  const content = document.getElementById("blogContent").value.trim();
+  const featuredImage = document
+    .getElementById("blogFeaturedImage")
+    .value.trim();
+  const tagsText = document.getElementById("blogTags").value.trim();
+  const imagesText = document.getElementById("blogImages").value.trim();
+  const seoTitle = document.getElementById("blogSeoTitle").value.trim();
+  const seoDescription = document
+    .getElementById("blogSeoDescription")
+    .value.trim();
+  const seoKeywordsText = document
+    .getElementById("blogSeoKeywords")
+    .value.trim();
 
-  if (!title || !summary) {
-    showToast("Please fill in both title and summary fields.", "error");
+  // Status and featured
+  const status = document.getElementById("blogStatus").value;
+  const isFeatured = document.getElementById("blogIsFeatured").checked;
+  const publishDate = document.getElementById("blogPublishDate").value;
+
+  // Validation
+  if (!title || !content) {
+    showToast("Please fill in required fields: Title and Content.", "error");
     return;
   }
+
+  // Convert arrays
+  const tags = tagsText
+    ? tagsText
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag)
+    : [];
+  const images = imagesText
+    ? imagesText
+        .split("\n")
+        .map((img) => img.trim())
+        .filter((img) => img)
+    : [];
+  const seoKeywords = seoKeywordsText
+    ? seoKeywordsText
+        .split(",")
+        .map((kw) => kw.trim())
+        .filter((kw) => kw)
+    : [];
 
   try {
     showLoading("Saving blog post...");
 
-    const blogData = { title, summary };
+    const blogData = {
+      title,
+      content,
+      featuredImage: featuredImage || undefined,
+      images,
+      tags,
+      status,
+      publishDate: publishDate || undefined,
+      isFeatured,
+      seoTitle: seoTitle || undefined,
+      seoDescription: seoDescription || undefined,
+      seoKeywords,
+    };
 
-    // For now, save to localStorage (later integrate with API)
-    const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || "[]");
-    if (id) {
-      const idx = list.findIndex((p) => p.id == id);
-      if (idx > -1) list[idx] = { ...list[idx], title, summary };
+    // Remove undefined values
+    Object.keys(blogData).forEach((key) => {
+      if (blogData[key] === undefined) {
+        delete blogData[key];
+      }
+    });
+
+    if (id && id.trim() !== "") {
+      // Edit existing blog post - API call
+      const response = await makeAuthenticatedRequest(`/blogs/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(blogData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.status) {
+        showToast("Blog post updated successfully!", "success");
+      } else {
+        throw new Error(result.message || "Failed to update blog post");
+      }
     } else {
-      list.push({ id: generateId(list), title, summary });
-    }
-    localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(list));
-    loadBlog();
-    bootstrap.Modal.getInstance(document.getElementById("blogModal")).hide();
-    document.getElementById("blogForm").reset();
-    document.getElementById("blogId").value = "";
-    renderStats();
+      // Add new blog post - API call
+      const response = await makeAuthenticatedRequest("/blogs", {
+        method: "POST",
+        body: JSON.stringify(blogData),
+      });
 
-    showToast("Blog post saved successfully!", "success");
+      const result = await response.json();
+
+      if (response.ok && result.status) {
+        showToast("Blog post created successfully!", "success");
+      } else {
+        throw new Error(result.message || "Failed to create blog post");
+      }
+    }
+
+    // Reload blog posts and close modal
+    await loadBlog();
+    bootstrap.Modal.getInstance(document.getElementById("blogModal")).hide();
+    resetBlogForm();
+    renderStats();
   } catch (error) {
     console.error("Error saving blog post:", error);
-    showToast("Failed to save blog post. Please try again.", "error");
+    showToast("Failed to save blog post: " + error.message, "error");
+  } finally {
+    hideLoading();
+  }
+}
+async function editBlog(id) {
+  try {
+    showLoading("Loading blog post details...");
+
+    // Get item from localStorage first (cached data)
+    const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || "[]");
+    const item = list.find((i) => i.id == id);
+
+    if (item) {
+      // Set modal title for editing
+      const modalTitle = document.querySelector("#blogModal .modal-title");
+      if (modalTitle) {
+        modalTitle.textContent = "Edit Blog Post";
+      }
+
+      // Populate form fields
+      document.getElementById("blogId").value = item.id;
+      document.getElementById("blogTitle").value = item.title || "";
+      document.getElementById("blogContent").value = item.content || "";
+      document.getElementById("blogFeaturedImage").value =
+        item.featuredImage || "";
+      document.getElementById("blogTags").value = item.tags
+        ? item.tags.join(", ")
+        : "";
+      document.getElementById("blogImages").value = item.images
+        ? item.images.join("\n")
+        : "";
+      document.getElementById("blogStatus").value = item.status || "draft";
+      document.getElementById("blogIsFeatured").checked =
+        item.isFeatured || false;
+
+      // Handle publish date
+      if (item.publishDate) {
+        const date = new Date(item.publishDate);
+        document.getElementById("blogPublishDate").value = date
+          .toISOString()
+          .slice(0, 16);
+      }
+
+      // SEO fields
+      document.getElementById("blogSeoTitle").value = item.seoTitle || "";
+      document.getElementById("blogSeoDescription").value =
+        item.seoDescription || "";
+      document.getElementById("blogSeoKeywords").value = item.seoKeywords
+        ? item.seoKeywords.join(", ")
+        : "";
+
+      new bootstrap.Modal(document.getElementById("blogModal")).show();
+      showToast("Blog post details loaded for editing", "success");
+    } else {
+      showToast("Blog post not found", "error");
+    }
+  } catch (error) {
+    console.error("Error loading blog post for edit:", error);
+    showToast("Failed to load blog post details: " + error.message, "error");
   } finally {
     hideLoading();
   }
 }
 
+async function deleteBlog(id) {
+  try {
+    showLoading("Deleting blog post...");
+
+    const response = await makeAuthenticatedRequest(`/blogs/${id}`, {
+      method: "DELETE",
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.status) {
+      showToast("Blog post deleted successfully!", "success");
+
+      // Reload blog posts and update stats
+      await loadBlog();
+      renderStats();
+    } else {
+      throw new Error(result.message || "Delete failed");
+    }
+  } catch (error) {
+    console.error("Error deleting blog post:", error);
+    showToast("Failed to delete blog post: " + error.message, "error");
+  } finally {
+    hideLoading();
+  }
+}
+
+function resetBlogForm() {
+  document.getElementById("blogForm").reset();
+  document.getElementById("blogId").value = "";
+
+  // Reset to default values
+  document.getElementById("blogStatus").value = "draft";
+  document.getElementById("blogIsFeatured").checked = false;
+
+  // Reset modal title
+  const modalTitle = document.querySelector("#blogModal .modal-title");
+  if (modalTitle) {
+    modalTitle.textContent = "Add / Edit Blog Post";
+  }
+}
 // Search / Filter
 function setupSearchFiltering() {
   // Create search bars dynamically above each table/section
@@ -1133,58 +1808,27 @@ function attachDelegates() {
     // Dealer edit
     if (e.target.closest("#dealersTable .edit")) {
       const id = e.target.closest("button").dataset.id;
-      const list = JSON.parse(
-        localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]"
-      );
-      const item = list.find((i) => i.id == id);
-      if (item) {
-        qs("#dealerId").value = item.id;
-        qs("#dealerDistrict").value = item.district || "";
-        qs("#dealerName").value = item.name || "";
-        qs("#dealerShop").value = item.shop || "";
-        qs("#dealerLocation").value = item.location || "";
-        const mapInput = qs("#dealerMap");
-        if (mapInput) mapInput.value = item.map || "";
-        qs("#dealerContact").value = item.contact || "";
-        new bootstrap.Modal(document.getElementById("dealerModal")).show();
-      }
+      editDealer(id);
     }
 
     // Dealer delete
     if (e.target.closest("#dealersTable .del")) {
       const id = e.target.closest("button").dataset.id;
-      if (!confirm("Delete this dealer?")) return;
-      let list = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]");
-      list = list.filter((i) => i.id != id);
-      localStorage.setItem(STORAGE_KEYS.DEALERS, JSON.stringify(list));
-      loadDealers();
-      renderStats();
-      showToast("Dealer deleted successfully!", "success");
+      if (!confirm("Delete this dealer permanently?")) return;
+      deleteDealer(id);
     }
 
     // Blog edit
     if (e.target.closest("#blogTable .edit")) {
       const id = e.target.closest("button").dataset.id;
-      const list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || "[]");
-      const item = list.find((i) => i.id == id);
-      if (item) {
-        document.getElementById("blogId").value = item.id;
-        document.getElementById("blogTitle").value = item.title;
-        document.getElementById("blogSummary").value = item.summary;
-        new bootstrap.Modal(document.getElementById("blogModal")).show();
-      }
+      editBlog(id);
     }
 
     // Blog delete
     if (e.target.closest("#blogTable .del")) {
       const id = e.target.closest("button").dataset.id;
-      if (!confirm("Delete this blog post?")) return;
-      let list = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || "[]");
-      list = list.filter((i) => i.id != id);
-      localStorage.setItem(STORAGE_KEYS.BLOG, JSON.stringify(list));
-      loadBlog();
-      renderStats();
-      showToast("Blog post deleted successfully!", "success");
+      if (!confirm("Delete this blog post permanently?")) return;
+      deleteBlog(id);
     }
   });
 }
@@ -1422,3 +2066,8 @@ window.addEventListener("DOMContentLoaded", function () {
   console.log("Admin panel initialized with API integration");
 });
 window.resetGalleryForm = resetGalleryForm;
+window.initializeDealerForm = initializeDealerForm;
+window.populateDistrictDropdown = populateDistrictDropdown;
+window.editDealer = editDealer;
+window.deleteDealer = deleteDealer;
+window.resetBlogForm = resetBlogForm;
