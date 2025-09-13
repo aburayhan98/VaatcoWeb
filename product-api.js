@@ -240,30 +240,30 @@ class ProductManager {
     }
 
     // Additional info
-    html += `
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <p><strong>Product ID:</strong> ${this.escapeHtml(
-                      product._id
-                    )}</p>
-                    ${
-                      product.slug
-                        ? `<p><strong>Slug:</strong> ${this.escapeHtml(
-                            product.slug
-                          )}</p>`
-                        : ""
-                    }
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Status:</strong> <span class="badge ${
-                      product.isActive ? "bg-success" : "bg-secondary"
-                    }">${product.isActive ? "Active" : "Inactive"}</span></p>
-                    <p><strong>Featured:</strong> <span class="badge ${
-                      product.isFeatured ? "bg-primary" : "bg-secondary"
-                    }">${product.isFeatured ? "Yes" : "No"}</span></p>
-                </div>
-            </div>
-        `;
+    // html += `
+    //         <div class="row mt-4">
+    //             <div class="col-md-6">
+    //                 <p><strong>Product ID:</strong> ${this.escapeHtml(
+    //                   product._id
+    //                 )}</p>
+    //                 ${
+    //                   product.slug
+    //                     ? `<p><strong>Slug:</strong> ${this.escapeHtml(
+    //                         product.slug
+    //                       )}</p>`
+    //                     : ""
+    //                 }
+    //             </div>
+    //             <div class="col-md-6">
+    //                 <p><strong>Status:</strong> <span class="badge ${
+    //                   product.isActive ? "bg-success" : "bg-secondary"
+    //                 }">${product.isActive ? "Active" : "Inactive"}</span></p>
+    //                 <p><strong>Featured:</strong> <span class="badge ${
+    //                   product.isFeatured ? "bg-primary" : "bg-secondary"
+    //                 }">${product.isFeatured ? "Yes" : "No"}</span></p>
+    //             </div>
+    //         </div>
+    //     `;
 
     if (product.createdAt) {
       const createdDate = new Date(product.createdAt).toLocaleDateString();
