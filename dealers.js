@@ -120,7 +120,7 @@ async function loadDealersFromAPI(page = 1, keyword = "") {
   try {
     const params = {
       page: page,
-      limit: 12, // Adjust as needed
+      limit: 20, // Adjust as needed
     };
 
     if (keyword) {
