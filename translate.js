@@ -73,7 +73,7 @@
     "about.description":
       "আমাদের অঙ্গীকার হলো অ্যাকুয়াকালচার ও কৃষিতে টেকসই প্রবৃদ্ধি নিশ্চিত করা, কৃষকদের কর্মক্ষম ও নির্ভরযোগ্য পণ্যের মাধ্যমে ক্ষমতায়ন করা।",
     "about.features.quality.title": "গুণগত মান নিশ্চিত",
-    "about.features.quality.text": "কঠোর পরীক্ষার মাধ্যমে আইএসও অনুমোদিত পণ্য",
+    "about.features.quality.text": "গুণগত মান যেখানে পরীক্ষা-নিরীক্ষায় নিশ্চিত",
     "about.features.eco.title": "ইকো-ফ্রেন্ডলি",
     "about.features.eco.text": "পরিবেশ সুরক্ষায় টেকসই সমাধান",
     "about.features.support.title": "এক্সপার্ট সাপোর্ট",
