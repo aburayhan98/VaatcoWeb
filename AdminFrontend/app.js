@@ -888,7 +888,7 @@ const BANGLADESH_DISTRICTS = [
   "Joypurhat",
   "Naogaon",
   "Natore",
-  "Nawabganj",
+  "Chapainawabganj",
   "Pabna",
   "Sirajganj",
   "Bagerhat",
