@@ -214,7 +214,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light shadow-sm fixed-top">
       <div class="container">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="#home">
           <img src="vaatco_logo.jpeg" alt="VAATCO Logo" height="45" />
         </a>
         <button
@@ -231,9 +231,9 @@
           class="btn btn-outline-secondary btn-sm ms-2 order-lg-2"
           type="button"
           aria-label="Toggle language"
-          title="Toggle EN/BN"
+          title="Translate English/Bangla"
         >
-          <span data-lang-label>BN</span>
+          <span class="lang-label" data-lang-label>BN</span>
         </button>
         <button
           class="navbar-toggler"
@@ -249,50 +249,46 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="index.html">
-                <i class="fas fa-home me-1"></i>Home
+              <a class="external-nav-link active" href="/index.html">
+                <i class="fas fa-home me-1"></i
+                ><span data-i18n="nav.home">Home</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.html#about">
-                <i class="fas fa-info-circle me-1"></i>About
+              <a class="nav-link" href="#about">
+                <i class="fas fa-info-circle me-1"></i
+                ><span data-i18n="nav.about">About</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.html#products">
-                <i class="fas fa-fish me-1"></i>Products
+              <a class="external-nav-link" href="./product-list.html">
+                <i class="fas fa-fish me-1"></i
+                ><span data-i18n="nav.products">Products</span>
               </a>
             </li>
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle active"
-                href="dealers.html"
-                id="dealersDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
+
+            <li class="nav-item">
+              <a class="nav-link" href="#services">
+                <i class="fas fa-cogs me-1"></i
+                ><span data-i18n="nav.services">Services</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#management">
+                <i class="fas fa-users me-1"></i
+                ><span data-i18n="nav.team">Team</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="external-nav-link" href="dealers.html">
                 <i class="fas fa-store me-1"></i
                 ><span data-i18n="nav.dealers">Dealers</span>
               </a>
-              <ul class="dropdown-menu" aria-labelledby="dealersDropdown">
-                <li>
-                  <a class="dropdown-item" href="index.html#dealers">
-                    <i class="fas fa-eye me-1"></i>
-                    <span data-i18n="nav.dealersOverview">Dealer Overview</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item active" href="dealers.html">
-                    <i class="fas fa-list-ul me-1"></i>
-                    <span data-i18n="nav.dealersList">Dealer List</span>
-                  </a>
-                </li>
-              </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.html#contact">
-                <i class="fas fa-envelope me-1"></i>Contact
+              <a class="nav-link" href="#contact">
+                <i class="fas fa-envelope me-1"></i
+                ><span data-i18n="nav.contact">Contact</span>
               </a>
             </li>
           </ul>
