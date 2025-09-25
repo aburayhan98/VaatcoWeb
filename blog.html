@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="VAATCO Bangladesh Ltd Blog - Latest insights, trends, and best practices in aquaculture and agriculture"
+    />
+    <meta
+      name="keywords"
+      content="VAATCO, blog, aquaculture insights, agriculture tips, fish farming, veterinary advice, pond management"
+    />
+    <meta name="author" content="VAATCO Bangladesh Ltd" />
+
+    <title>Blog - VAATCO Bangladesh Ltd: Latest Insights & Trends</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="vaatco_logo.jpeg" />
+    <link rel="shortcut icon" type="image/jpeg" href="vaatco_logo.jpeg" />
+    <link rel="apple-touch-icon" href="vaatco_logo.jpeg" />
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+      /* Blog-specific styles */
+      .blog-header {
+        background: linear-gradient(135deg, #0066cc 0%, #32cd32 100%);
+        color: white;
+        padding: 80px 0 60px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .blog-header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 40%;
+        height: 200%;
+        /* background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          transparent 70%
+        ); */
+        transform: rotate(25deg);
+        pointer-events: none;
+      }
+
+      .blog-header h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        color: white !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        margin-bottom: 1rem;
+      }
+
+      .blog-header .lead {
+        font-size: 1.3rem;
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Filters and Search Section */
+      .blog-filters {
+        background: var(--bg-surface);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-color);
+      }
+
+      .blog-search-box .form-control {
+        border-radius: 15px;
+        border: 2px solid #e9ecef;
+        padding: 14px 18px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: var(--bg-body);
+      }
+
+      .blog-search-box .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.15);
+        background: white;
+      }
+
+      .blog-search-box .input-group-text {
+        background: var(--primary-color);
+        border: none;
+        color: white;
+        border-radius: 15px 0 0 15px;
+        padding: 14px 18px;
+      }
+
+      .filter-select {
+        border-radius: 12px;
+        border: 2px solid #e9ecef;
+        padding: 10px 15px;
+        transition: all 0.3s ease;
+        background: var(--bg-body);
+      }
+
+      .filter-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.15);
+      }
+
+      .filter-tag {
+        background: rgba(0, 102, 204, 0.1);
+        color: var(--primary-color);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin: 2px;
+        display: inline-block;
+        border: 1px solid rgba(0, 102, 204, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .filter-tag.active {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .filter-tag:hover {
+        background: var(--primary-color);
+        color: white;
+        cursor: pointer;
+      }
+
+      /* Blog Grid */
+      .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      @media (max-width: 992px) {
+        .blog-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 1.5rem;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .blog-grid {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+      }
+
+      .blog-card {
+        background: var(--bg-surface);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        transition: all 0.4s ease;
+        height: 100%;
+        border: 1px solid var(--border-color);
+        position: relative;
+      }
+
+      .blog-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        border-color: var(--primary-color);
+      }
+
+      .blog-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(135deg, var(--primary-color), #32cd32);
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+      }
+
+      .blog-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .blog-card-image {
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .blog-card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+
+      .blog-card:hover .blog-card-image img {
+        transform: scale(1.05);
+      }
+
+      .blog-card-image::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1));
+      }
+
+      .blog-featured-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: linear-gradient(135deg, #ffd700, #ffa500);
+        color: #333;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        z-index: 2;
+        box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+      }
+
+      .blog-card-content {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        height: calc(100% - 200px);
+      }
+
+      .blog-meta {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        font-size: 0.85rem;
+        color: var(--text-light);
+      }
+
+      .blog-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .blog-meta-item i {
+        color: var(--primary-color);
+        font-size: 0.8rem;
+      }
+
+      .blog-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .blog-card:hover .blog-title {
+        color: var(--primary-color);
+      }
+
+      .blog-excerpt {
+        color: var(--text-light);
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+        flex-grow: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .blog-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .blog-tag {
+        background: rgba(50, 205, 50, 0.1);
+        color: #32cd32;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      .blog-card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .blog-read-btn {
+        background: linear-gradient(135deg, var(--primary-color), #32cd32);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+      }
+
+      .blog-read-btn:hover {
+        background: linear-gradient(135deg, var(--secondary-color), #28a745);
+        color: white;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+      }
+
+      .blog-views {
+        color: var(--text-light);
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      /* Featured Blog Section */
+      .featured-blogs {
+        margin-bottom: 3rem;
+      }
+
+      .featured-blog-card {
+        background: var(--bg-surface);
+        border-radius: 25px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        border: 2px solid transparent;
+        transition: all 0.4s ease;
+        background: linear-gradient(var(--bg-surface), var(--bg-surface))
+            padding-box,
+          linear-gradient(135deg, var(--primary-color), #32cd32) border-box;
+      }
+
+      .featured-blog-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .featured-blog-image {
+        height: 300px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .featured-blog-content {
+        padding: 2rem;
+      }
+
+      .featured-blog-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+      }
+
+      .featured-blog-excerpt {
+        font-size: 1.1rem;
+        color: var(--text-light);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+
+      /* Loading and Empty States */
+      .blog-loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 200px;
+        flex-direction: column;
+      }
+
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .blog-empty {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--text-light);
+      }
+
+      .blog-empty i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: #dee2e6;
+      }
+
+      /* Pagination */
+      .blog-pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 3rem;
+      }
+
+      .pagination .page-link {
+        border-radius: 8px;
+        margin: 0 2px;
+        border: 1px solid #dee2e6;
+        color: var(--primary-color);
+        padding: 0.5rem 0.75rem;
+        transition: all 0.3s ease;
+      }
+
+      .pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, var(--primary-color), #32cd32);
+        border-color: var(--primary-color);
+        color: white;
+      }
+
+      .pagination .page-link:hover {
+        background: rgba(0, 102, 204, 0.1);
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+      }
+
+      /* Results Info */
+      .blog-results-info {
+        background: rgba(0, 102, 204, 0.1);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--primary-color);
+        color: var(--text-dark);
+      }
+
+      /* Back to Home Button */
+      .back-to-home {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: linear-gradient(135deg, var(--primary-color), #32cd32);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+        z-index: 1000;
+      }
+
+      .back-to-home:hover {
+        background: linear-gradient(135deg, var(--secondary-color), #28a745);
+        color: white;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 102, 204, 0.3);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .blog-header h1 {
+          font-size: 2.2rem;
+        }
+
+        .blog-header .lead {
+          font-size: 1.1rem;
+        }
+
+        .blog-filters {
+          padding: 1.5rem;
+        }
+
+        .blog-grid {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+
+        .featured-blog-image {
+          height: 200px;
+        }
+
+        .featured-blog-content {
+          padding: 1.5rem;
+        }
+
+        .featured-blog-title {
+          font-size: 1.4rem;
+        }
+
+        .featured-blog-excerpt {
+          font-size: 1rem;
+        }
+
+        .back-to-home {
+          bottom: 15px;
+          left: 15px;
+          padding: 10px 16px;
+          font-size: 0.9rem;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .blog-filters {
+          padding: 1rem;
+        }
+
+        .blog-card-content {
+          padding: 1.25rem;
+        }
+
+        .filter-select {
+          margin-bottom: 0.75rem;
+          width: 100%;
+        }
+
+        .blog-meta {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.5rem;
+        }
+      }
+
+      /* Dark theme adjustments */
+      body.theme-dark .blog-filters {
+        background: var(--bg-surface);
+        border-color: var(--border-color);
+      }
+
+      body.theme-dark .blog-card {
+        background: var(--bg-surface);
+        border-color: var(--border-color);
+      }
+
+      body.theme-dark .blog-title {
+        color: var(--text-dark);
+      }
+
+      body.theme-dark .blog-excerpt {
+        color: var(--text-light);
+      }
+
+      body.theme-dark .featured-blog-card {
+        background: var(--bg-surface);
+      }
+
+      body.theme-dark .featured-blog-title {
+        color: var(--text-dark);
+      }
+
+      body.theme-dark .blog-results-info {
+        background: rgba(0, 102, 204, 0.15);
+        color: var(--text-dark);
+      }
+
+      body.theme-dark .blog-search-box .form-control,
+      body.theme-dark .filter-select {
+        background: var(--bg-surface);
+        border-color: var(--border-color);
+        color: var(--text-dark);
+      }
+    </style>
+  </head>
+
+  <body class="blog-page">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light shadow-sm fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+          <img src="vaatco_logo.jpeg" alt="VAATCO Logo" height="45" />
+        </a>
+        <button
+          id="themeToggle"
+          class="btn btn-outline-secondary btn-sm ms-2 order-lg-2"
+          type="button"
+          aria-label="Toggle theme"
+          title="Toggle light/dark"
+        >
+          <i class="fas fa-moon"></i>
+        </button>
+        <button
+          id="languageToggle"
+          class="btn btn-outline-secondary btn-sm ms-2 order-lg-2"
+          type="button"
+          aria-label="Toggle language"
+          title="Translate English/Bangla"
+        >
+          <span class="lang-label" data-lang-label>BN</span>
+        </button>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="external-nav-link" href="index.html">
+                <i class="fas fa-home me-1"></i>
+                <span data-i18n="nav.home">Home</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="external-nav-link" href="index.html#about">
+                <i class="fas fa-info-circle me-1"></i>
+                <span data-i18n="nav.about">About</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="external-nav-link" href="product-list.html">
+                <i class="fas fa-fish me-1"></i>
+                <span data-i18n="nav.products">Products</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="external-nav-link" href="index.html#services">
+                <i class="fas fa-cogs me-1"></i>
+                <span data-i18n="nav.services">Services</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="external-nav-link" href="index.html#management">
+                <i class="fas fa-users me-1"></i>
+                <span data-i18n="nav.team">Team</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="external-nav-link" href="dealers.html">
+                <i class="fas fa-store me-1"></i>
+                <span data-i18n="nav.dealers">Dealers</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="blog.html">
+                <i class="fas fa-blog me-1"></i>
+                <span data-i18n="nav.blog">Blog</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="external-nav-link" href="index.html#contact">
+                <i class="fas fa-envelope me-1"></i>
+                <span data-i18n="nav.contact">Contact</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Blog Header -->
+    <section class="blog-header">
+      <div class="container">
+        <div class="row justify-content-center text-center">
+          <div class="col-lg-8">
+            <h1>
+              <i class="fas fa-blog me-3"></i>
+              <span data-i18n="blog.header.title">VAATCO Blog</span>
+            </h1>
+            <p class="lead">
+              <span data-i18n="blog.header.subtitle">
+                Stay informed with the latest trends, insights, and best
+                practices in aquaculture and agriculture from our expert team
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container my-5">
+      <!-- Filters and Search -->
+      <div class="blog-filters">
+        <div class="row align-items-end g-3">
+          <div class="col-lg-6">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-search me-2"></i>Search Blogs
+            </label>
+            <div class="blog-search-box">
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-search"></i>
+                </span>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="blogSearchInput"
+                  placeholder="Search blogs by title or content..."
+                  aria-label="Search blogs"
+                />
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  id="clearSearchBtn"
+                  title="Clear search"
+                >
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-2">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-sort me-2"></i>Sort By
+            </label>
+            <select class="form-select filter-select" id="sortSelect">
+              <option value="publishDate">Latest</option>
+              <option value="title">Title A-Z</option>
+              <option value="views">Most Viewed</option>
+            </select>
+          </div>
+          <div class="col-lg-2">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-filter me-2"></i>Filter
+            </label>
+            <select class="form-select filter-select" id="featuredSelect">
+              <option value="">All Blogs</option>
+              <option value="true">Featured Only</option>
+              <option value="false">Regular Only</option>
+            </select>
+          </div>
+          <div class="col-lg-2">
+            <button
+              class="btn btn-outline-primary w-100"
+              id="refreshBtn"
+              title="Refresh blogs"
+            >
+              <i class="fas fa-refresh me-2"></i>Refresh
+            </button>
+          </div>
+        </div>
+
+        <!-- Tags Filter -->
+        <div class="row mt-3" id="tagsRow" style="display: none">
+          <div class="col-12">
+            <label class="form-label fw-semibold">
+              <i class="fas fa-tags me-2"></i>Filter by Tags
+            </label>
+            <div id="tagsContainer">
+              <!-- Tags will be populated here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Info -->
+      <div id="blogResultsInfo" class="blog-results-info" style="display: none">
+        <i class="fas fa-info-circle me-2"></i>
+        <span id="blogResultsText"></span>
+      </div>
+
+      <!-- Featured Blogs -->
+      <div id="featuredSection" class="featured-blogs" style="display: none">
+        <div class="d-flex align-items-center mb-4">
+          <h2 class="mb-0">
+            <i class="fas fa-star text-warning me-2"></i>
+            Featured Articles
+          </h2>
+          <div class="flex-grow-1 ms-3">
+            <hr
+              class="m-0"
+              style="
+                height: 2px;
+                background: linear-gradient(
+                  135deg,
+                  var(--primary-color),
+                  #32cd32
+                );
+              "
+            />
+          </div>
+        </div>
+        <div id="featuredBlogs" class="row">
+          <!-- Featured blogs will be rendered here -->
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="blogLoadingContainer" class="blog-loading">
+        <div class="loading-spinner"></div>
+        <p class="text-muted">Loading blogs...</p>
+      </div>
+
+      <!-- Blog Grid -->
+      <div id="blogGridContainer" style="display: none">
+        <div class="d-flex align-items-center mb-4">
+          <h2 class="mb-0" id="blogSectionTitle">All Articles</h2>
+          <div class="flex-grow-1 ms-3">
+            <hr
+              class="m-0"
+              style="
+                height: 2px;
+                background: linear-gradient(
+                  135deg,
+                  #32cd32,
+                  var(--primary-color)
+                );
+              "
+            />
+          </div>
+        </div>
+        <div id="blogGrid" class="blog-grid">
+          <!-- Blog cards will be rendered here -->
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="blogEmptyState" class="blog-empty" style="display: none">
+        <i class="fas fa-newspaper"></i>
+        <h4>No blogs found</h4>
+        <p>
+          Try adjusting your search terms or filters, or check back later for
+          new content.
+        </p>
+        <button class="btn btn-primary" onclick="blogManager.clearAllFilters()">
+          <i class="fas fa-refresh me-2"></i>Clear Filters
+        </button>
+      </div>
+
+      <!-- Pagination -->
+      <div
+        id="blogPaginationContainer"
+        class="blog-pagination"
+        style="display: none"
+      >
+        <nav aria-label="Blog pagination">
+          <ul class="pagination" id="blogPaginationList">
+            <!-- Pagination will be rendered here -->
+          </ul>
+        </nav>
+      </div>
+    </main>
+
+    <!-- Back to Home Button -->
+    <a href="index.html" class="back-to-home">
+      <i class="fas fa-home me-2"></i>Back to Home
+    </a>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6">
+            <img
+              src="vaatco_logo.jpeg"
+              alt="VAATCO Logo"
+              height="40"
+              class="mb-3"
+            />
+            <p data-i18n="footer.tagline">
+              VAATCO Bangladesh Ltd - The Wave of The Future
+            </p>
+          </div>
+          <div class="col-lg-6 text-lg-end">
+            <p data-i18n="footer.copyright">
+              &copy; 2025 VAATCO Bangladesh Ltd. All rights reserved.
+            </p>
+            <p data-i18n="footer.love">
+              Made with ❤️ for sustainable aquaculture
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Theme sync script -->
+    <script>
+      (function () {
+        try {
+          const saved = localStorage.getItem("vaatco_public_theme");
+          if (saved === "dark") document.body.classList.add("theme-dark");
+        } catch (e) {}
+      })();
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Translation JS -->
+    <script src="translate.js"></script>
+    <!-- Theme Toggle JS -->
+    <script src="script.js"></script>
+    <!-- Blog Management JS -->
+    <script src="blog-manager.js"></script>
+  </body>
+</html>
