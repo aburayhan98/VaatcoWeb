@@ -928,41 +928,63 @@
           productivity.
         </p>
 
-        <div class="row">
-          <div class="col-lg-6 mb-4">
-            <div class="blog-card">
-              <div class="card-body">
-                <h5 data-i18n="blog.post1.title">
-                  5 Benefits of Zeolite in Aquaculture
-                </h5>
-                <p data-i18n="blog.post1.text">
-                  Learn how Zeolite plays a crucial role in maintaining water
-                  quality, absorbing toxins, and improving overall pond health
-                  for better fish growth.
-                </p>
-              </div>
+        <!-- Featured Blogs Grid -->
+        <div id="featuredBlogsContainer">
+          <!-- Loading State -->
+          <div id="featuredBlogsLoading" class="text-center py-5">
+            <div class="spinner-border text-primary mb-3" role="status">
+              <span class="visually-hidden">Loading...</span>
             </div>
+            <p class="text-muted">Loading latest articles...</p>
           </div>
-          <div class="col-lg-6 mb-4">
-            <div class="blog-card">
-              <div class="card-body">
-                <h5 data-i18n="blog.post2.title">
-                  How Yucca Improves Pond Water Quality
-                </h5>
-                <p data-i18n="blog.post2.text">
-                  Discover the natural power of Yucca extract in reducing
-                  ammonia levels and unpleasant odors, leading to a healthier
-                  aquatic environment.
-                </p>
-              </div>
+
+          <!-- Blogs Grid -->
+          <div id="featuredBlogsGrid" class="row" style="display: none">
+            <!-- Blog cards will be inserted here -->
+          </div>
+
+          <!-- Empty State -->
+          <div
+            id="featuredBlogsEmpty"
+            class="text-center py-5"
+            style="display: none"
+          >
+            <div
+              style="
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border: 2px dashed #dee2e6;
+                border-radius: 15px;
+                padding: 40px 20px;
+              "
+            >
+              <i
+                class="fas fa-newspaper fa-3x text-muted mb-3"
+                style="opacity: 0.6"
+              ></i>
+              <h4 class="text-muted mb-2">No Featured Articles Available</h4>
+              <p class="text-muted mb-3">
+                Featured blog articles are currently not available. Please check
+                back later.
+              </p>
+              <button
+                onclick="loadFeaturedBlogs()"
+                class="btn btn-outline-primary"
+              >
+                <i class="fas fa-refresh me-2"></i>Try Again
+              </button>
             </div>
           </div>
         </div>
 
-        <div class="text-center">
-          <a href="#" class="btn btn-primary" data-i18n="blog.readMore"
-            >Read More Articles</a
+        <!-- View All Blogs Button -->
+        <div class="text-center mt-4">
+          <a
+            href="blog.html"
+            class="btn btn-primary btn-lg"
+            data-i18n="blog.readMore"
           >
+            <i class="fas fa-blog me-2"></i>View All Articles
+          </a>
         </div>
       </div>
     </section>

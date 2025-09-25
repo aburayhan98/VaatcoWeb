@@ -239,3 +239,139 @@ window.addEventListener("online", function () {
 
 // Auto-refresh gallery every 5 minutes (optional)
 // setInterval(refreshGallery, 5 * 60 * 1000);
+
+const FeaturedBlogsAPI = {
+  baseUrl: "https://api.vaatcobd.com/api/public/blogs",
+
+  async getFeaturedBlogs() {
+    try {
+      const params = new URLSearchParams({
+        featured: "true",
+        limit: 9,
+        sortBy: "publishDate",
+        sortOrder: "desc",
+      });
+
+      const response = await fetch(`${this.baseUrl}?${params}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (data.status && data.data && Array.isArray(data.data)) {
+        return data.data;
+      }
+
+      return [];
+    } catch (error) {
+      console.error("Error fetching featured blogs:", error);
+      throw error;
+    }
+  },
+};
+
+// Load featured blogs on page load
+document.addEventListener("DOMContentLoaded", function () {
+  loadFeaturedBlogs();
+});
+
+async function loadFeaturedBlogs() {
+  const loadingEl = document.getElementById("featuredBlogsLoading");
+  const gridEl = document.getElementById("featuredBlogsGrid");
+  const emptyEl = document.getElementById("featuredBlogsEmpty");
+
+  // Show loading state
+  if (loadingEl) loadingEl.style.display = "block";
+  if (gridEl) gridEl.style.display = "none";
+  if (emptyEl) emptyEl.style.display = "none";
+
+  try {
+    const blogs = await FeaturedBlogsAPI.getFeaturedBlogs();
+
+    if (blogs.length > 0) {
+      renderFeaturedBlogs(blogs, gridEl);
+      if (gridEl) gridEl.style.display = "flex";
+    } else {
+      if (emptyEl) emptyEl.style.display = "block";
+    }
+  } catch (error) {
+    console.error("Failed to load featured blogs:", error);
+    if (emptyEl) emptyEl.style.display = "block";
+  } finally {
+    if (loadingEl) loadingEl.style.display = "none";
+  }
+}
+
+function renderFeaturedBlogs(blogs, container) {
+  if (!container) return;
+
+  const html = blogs
+    .map((blog) => {
+      const publishDate = new Date(blog.publishDate).toLocaleDateString(
+        "en-US",
+        {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        }
+      );
+
+      return `
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="featured-blog-card">
+          <div class="featured-blog-image">
+            <img src="${blog.featuredImage}" alt="${escapeHtml(blog.title)}"
+                 onerror="this.src='https://via.placeholder.com/400x200/f8f9fa/6c757d?text=VAATCO+Blog'">
+            ${
+              blog.isFeatured
+                ? '<div class="featured-blog-badge"><i class="fas fa-star me-1"></i>Featured</div>'
+                : ""
+            }
+          </div>
+          <div class="featured-blog-content">
+            <div class="featured-blog-meta">
+              <div class="d-flex align-items-center">
+                <i class="fas fa-calendar"></i>
+                <span>${publishDate}</span>
+              </div>
+              <div class="d-flex align-items-center">
+                <i class="fas fa-user"></i>
+                <span>${escapeHtml(blog.author?.name || "VAATCO Team")}</span>
+              </div>
+              <div class="d-flex align-items-center">
+                <i class="fas fa-clock"></i>
+                <span>${blog.readTime} min</span>
+              </div>
+            </div>
+            <h5 class="featured-blog-title">${escapeHtml(blog.title)}</h5>
+            <p class="featured-blog-excerpt">${escapeHtml(blog.excerpt)}</p>
+            <div class="featured-blog-footer">
+              <a href="blog-detail.html?slug=${
+                blog.slug
+              }" class="featured-blog-read-btn">
+                <i class="fas fa-arrow-right"></i>
+                Read More
+              </a>
+              <div class="featured-blog-views">
+                <i class="fas fa-eye"></i>
+                <span>${blog.views}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    })
+    .join("");
+
+  container.innerHTML = html;
+}
+
+function escapeHtml(text) {
+  if (!text) return "";
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
