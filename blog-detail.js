@@ -26,10 +26,12 @@ class BlogDetailManager {
     this.blogExcerpt = document.getElementById("blogExcerpt");
     this.blogTags = document.getElementById("blogTags");
     this.blogBody = document.getElementById("blogBody");
+    this.blogImagesGallery = document.getElementById("blogImagesGallery");
+    this.blogImagesGrid = document.getElementById("blogImagesGrid");
 
     // Author elements
-    this.authorAvatar = document.getElementById("authorAvatar");
-    this.authorName = document.getElementById("authorName");
+    // this.authorAvatar = document.getElementById("authorAvatar");
+    // this.authorName = document.getElementById("authorName");
 
     // Share buttons
     this.shareFacebook = document.getElementById("shareFacebook");
@@ -110,6 +112,9 @@ class BlogDetailManager {
     // Render main content
     this.renderContent(blog.content);
 
+    // Render blog images gallery
+    this.renderBlogImages(blog.images);
+
     // Render author
     this.renderAuthor(blog.author);
 
@@ -152,10 +157,7 @@ class BlogDetailManager {
         <i class="fas fa-calendar"></i>
         <span>${publishDate}</span>
       </div>
-      <div class="blog-meta-item">
-        <i class="fas fa-user"></i>
-        <span>${this.escapeHtml(blog.author?.name || "VAATCO Team")}</span>
-      </div>
+      
       <div class="blog-meta-item">
         <i class="fas fa-clock"></i>
         <span>${blog.readTime} min read</span>
@@ -182,7 +184,7 @@ class BlogDetailManager {
 
   renderContent(content) {
     // If content is provided, use it; otherwise show a placeholder
-    if (content) {
+    if (content && content.trim()) {
       this.blogBody.innerHTML = this.formatContent(content);
     } else {
       // Fallback content if no detailed content is available
@@ -191,6 +193,43 @@ class BlogDetailManager {
         <p>Currently showing excerpt and metadata from the blog listing. To display full content, ensure your API endpoint returns the complete blog content.</p>
       `;
     }
+  }
+
+  renderBlogImages(images) {
+    if (!images || !Array.isArray(images) || images.length === 0) {
+      this.blogImagesGallery.style.display = "none";
+      return;
+    }
+
+    // Filter out invalid images and limit to reasonable number
+    const validImages = images
+      .filter((img) => img && typeof img === "string" && img.trim())
+      .slice(0, 12); // Limit to 12 images max
+
+    if (validImages.length === 0) {
+      this.blogImagesGallery.style.display = "none";
+      return;
+    }
+
+    const imagesHtml = validImages
+      .map((imageUrl, index) => {
+        const cleanUrl = imageUrl.trim();
+        return `
+        <div class="blog-image-item" onclick="openBlogImageModal('${cleanUrl}', 'Blog Image ${
+          index + 1
+        }')">
+          <img src="${cleanUrl}" alt="Blog Image ${index + 1}" 
+               onerror="this.parentElement.style.display='none'">
+          <div class="blog-image-overlay">
+            <i class="fas fa-search-plus fa-2x text-white"></i>
+          </div>
+        </div>
+      `;
+      })
+      .join("");
+
+    this.blogImagesGrid.innerHTML = imagesHtml;
+    this.blogImagesGallery.style.display = "block";
   }
 
   formatContent(content) {
@@ -209,8 +248,8 @@ class BlogDetailManager {
     const authorName = author?.name || "VAATCO Team";
     const authorInitial = authorName.charAt(0).toUpperCase();
 
-    this.authorAvatar.textContent = authorInitial;
-    this.authorName.textContent = authorName;
+    // this.authorAvatar.textContent = authorInitial;
+    // this.authorName.textContent = authorName;
   }
 
   setupShareButtons() {
@@ -423,4 +462,43 @@ document.addEventListener("DOMContentLoaded", function () {
 // Export for use in other scripts if needed
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { BlogDetailManager };
+}
+
+// Blog Image Modal Functions
+function openBlogImageModal(imageUrl, altText) {
+  const modal = document.getElementById("blogImageModal");
+  const modalImage = document.getElementById("blogModalImage");
+
+  if (modal && modalImage) {
+    modalImage.src = imageUrl;
+    modalImage.alt = altText || "Blog Image";
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+
+    // Close modal when clicking outside the image
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) {
+        closeBlogImageModal();
+      }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        closeBlogImageModal();
+      }
+    });
+  }
+}
+
+function closeBlogImageModal() {
+  const modal = document.getElementById("blogImageModal");
+  if (modal) {
+    modal.style.display = "none";
+    document.body.style.overflow = "";
+
+    // Remove event listeners
+    const newModal = modal.cloneNode(true);
+    modal.parentNode.replaceChild(newModal, modal);
+  }
 }

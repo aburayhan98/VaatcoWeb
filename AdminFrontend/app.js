@@ -11,6 +11,7 @@ const STORAGE_KEYS = {
 // API Configuration
 const API_CONFIG = {
   BASE_URL: "https://api.vaatcobd.com/api",
+  // BASE_URL: "http://localhost:5000/api",
   ENDPOINTS: {
     LOGIN: "/admin/login",
     GALLERY: "/admin/gallery",

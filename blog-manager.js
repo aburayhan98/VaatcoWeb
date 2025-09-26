@@ -259,12 +259,7 @@ class BlogManager {
                 <i class="fas fa-calendar"></i>
                 <span>${publishDate}</span>
               </div>
-              <div class="blog-meta-item">
-                <i class="fas fa-user"></i>
-                <span>${this.escapeHtml(
-                  blog.author?.name || "VAATCO Team"
-                )}</span>
-              </div>
+              
               <div class="blog-meta-item">
                 <i class="fas fa-clock"></i>
                 <span>${blog.readTime} min read</span>
@@ -342,12 +337,7 @@ class BlogManager {
               <i class="fas fa-calendar"></i>
               <span>${publishDate}</span>
             </div>
-            <div class="blog-meta-item">
-              <i class="fas fa-user"></i>
-              <span>${this.escapeHtml(
-                blog.author?.name || "VAATCO Team"
-              )}</span>
-            </div>
+            
             <div class="blog-meta-item">
               <i class="fas fa-clock"></i>
               <span>${blog.readTime} min</span>

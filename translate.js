@@ -65,6 +65,7 @@
     "nav.team": "টিম",
     "nav.dealers": "ডিলার",
     "nav.contact": "যোগাযোগ",
+    "nav.blog": "ব্লগ",
     // About section
     "about.since": "২০২৫ সাল থেকে",
     "about.title": "ভ্যাটকো: টেকসই সমাধানে পথিকৃৎ",
@@ -250,7 +251,7 @@
     if (btn) {
       const span = btn.querySelector("[data-lang-label]");
       if (span) {
-        span.textContent = lang === "bn" ? "EN" : "BN";
+        span.textContent = lang === "bn" ? "English" : "বাংলা";
       }
       btn.setAttribute("aria-pressed", lang === "bn");
     }

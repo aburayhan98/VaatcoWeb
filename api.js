@@ -336,10 +336,7 @@ function renderFeaturedBlogs(blogs, container) {
                 <i class="fas fa-calendar"></i>
                 <span>${publishDate}</span>
               </div>
-              <div class="d-flex align-items-center">
-                <i class="fas fa-user"></i>
-                <span>${escapeHtml(blog.author?.name || "VAATCO Team")}</span>
-              </div>
+              
               <div class="d-flex align-items-center">
                 <i class="fas fa-clock"></i>
                 <span>${blog.readTime} min</span>
