@@ -170,8 +170,10 @@ tbody td { vertical-align:middle; border-color: var(--color-border); }
 .btn-outline-primary:hover { background: var(--color-accent); color:#fff; }
 .btn-outline-danger { --bs-btn-color: var(--color-danger); --bs-btn-border-color: var(--color-danger); }
 .btn-outline-danger:hover { background: var(--color-danger); color:#fff; }
-
-.form-control, .form-select { background: var(--color-bg-alt); border:1px solid var(--color-border); color: var(--color-text); }
+.form-label{
+	color:black!important
+}
+.form-control, .form-select {  border:1px solid var(--color-border); color: var(--color-text); }
 .form-control:focus { border-color: var(--color-accent); box-shadow:0 0 0 3px rgba(var(--color-accent-rgb), .3); }
 
 /* ========== GALLERY GRID ========= */
