@@ -5128,6 +5128,7 @@ body.theme-dark .dealer-mini-card {
   color: var(--primary-color);
   width: 14px;
   text-align: center;
+  margin-right: 0.4rem;
 }
 
 .featured-blog-title {
