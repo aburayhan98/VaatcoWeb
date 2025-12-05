@@ -848,6 +848,12 @@ async function deleteProduct(id) {
 }
 
 // Dealers CRUD with API Integration
+// Dealers pagination state
+let dealersCurrentPage = 1;
+let dealersTotalPages = 1;
+let dealersPerPage = 10;
+let dealersTotalItems = 0;
+
 const BANGLADESH_DISTRICTS = [
   "Dhaka",
   "Chittagong",
@@ -932,12 +938,12 @@ function populateDistrictDropdown() {
   }
 }
 
-async function loadDealers() {
+async function loadDealers(page = 1) {
   try {
     showLoading("Loading dealers...");
 
-    // Fetch from API
-    const response = await makeAuthenticatedRequest("/dealers");
+    // Fetch from API with pagination
+    const response = await makeAuthenticatedRequest(`/dealers?page=${page}&limit=${dealersPerPage}`);
     const result = await response.json();
 
     if (result.status && result.data) {
@@ -961,11 +967,24 @@ async function loadDealers() {
         updatedAt: item.updatedAt,
       }));
 
+      // Update pagination state from API response
+      if (result.meta && result.meta.pagination) {
+        const pagination = result.meta.pagination;
+        dealersCurrentPage = pagination.currentPage || page;
+        dealersTotalItems = pagination.totalItems || list.length;
+        dealersTotalPages = Math.ceil(dealersTotalItems / dealersPerPage) || 1;
+      } else {
+        dealersCurrentPage = page;
+        dealersTotalItems = list.length;
+        dealersTotalPages = 1;
+      }
+
       // Save to localStorage as cache
       localStorage.setItem(STORAGE_KEYS.DEALERS, JSON.stringify(list));
 
-      // Render dealers table
+      // Render dealers table and pagination
       renderDealersTable(list);
+      renderDealersPagination();
       showToast("Dealers loaded successfully!", "success");
     } else {
       throw new Error(result.message || "Failed to load dealers");
@@ -976,7 +995,10 @@ async function loadDealers() {
     const cachedList = JSON.parse(
       localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]"
     );
+    dealersTotalItems = cachedList.length;
+    dealersTotalPages = Math.ceil(cachedList.length / dealersPerPage) || 1;
     renderDealersTable(cachedList);
+    renderDealersPagination();
     showToast("Using cached dealer data. Check your connection.", "warning");
   } finally {
     hideLoading();
@@ -1042,6 +1064,124 @@ function renderDealersTable(list) {
     tbody.appendChild(tr);
   });
 }
+
+// Render dealers pagination controls
+function renderDealersPagination() {
+  // Find or create pagination container
+  let paginationContainer = document.getElementById("dealersPagination");
+
+  if (!paginationContainer) {
+    // Create pagination container after the table
+    const dealersTableWrapper = document.querySelector("#dealers .table-responsive");
+    if (dealersTableWrapper) {
+      paginationContainer = document.createElement("div");
+      paginationContainer.id = "dealersPagination";
+      paginationContainer.className = "d-flex justify-content-between align-items-center mt-3";
+      dealersTableWrapper.parentNode.insertBefore(paginationContainer, dealersTableWrapper.nextSibling);
+    } else {
+      return;
+    }
+  }
+
+  // Hide pagination if only one page
+  if (dealersTotalPages <= 1) {
+    paginationContainer.innerHTML = `
+      <div class="text-muted small">
+        Showing ${dealersTotalItems} dealer${dealersTotalItems !== 1 ? 's' : ''}
+      </div>
+    `;
+    return;
+  }
+
+  // Calculate showing range
+  const startItem = (dealersCurrentPage - 1) * dealersPerPage + 1;
+  const endItem = Math.min(dealersCurrentPage * dealersPerPage, dealersTotalItems);
+
+  let paginationHTML = `
+    <div class="text-muted small">
+      Showing ${startItem}-${endItem} of ${dealersTotalItems} dealers
+    </div>
+    <nav aria-label="Dealers pagination">
+      <ul class="pagination pagination-sm mb-0">
+  `;
+
+  // Previous button
+  if (dealersCurrentPage > 1) {
+    paginationHTML += `
+      <li class="page-item">
+        <button class="page-link" onclick="changeDealersPage(${dealersCurrentPage - 1})">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </li>
+    `;
+  } else {
+    paginationHTML += `
+      <li class="page-item disabled">
+        <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+      </li>
+    `;
+  }
+
+  // Page numbers
+  const startPage = Math.max(1, dealersCurrentPage - 2);
+  const endPage = Math.min(dealersTotalPages, dealersCurrentPage + 2);
+
+  if (startPage > 1) {
+    paginationHTML += `<li class="page-item"><button class="page-link" onclick="changeDealersPage(1)">1</button></li>`;
+    if (startPage > 2) {
+      paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+    }
+  }
+
+  for (let i = startPage; i <= endPage; i++) {
+    if (i === dealersCurrentPage) {
+      paginationHTML += `<li class="page-item active"><span class="page-link">${i}</span></li>`;
+    } else {
+      paginationHTML += `<li class="page-item"><button class="page-link" onclick="changeDealersPage(${i})">${i}</button></li>`;
+    }
+  }
+
+  if (endPage < dealersTotalPages) {
+    if (endPage < dealersTotalPages - 1) {
+      paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+    }
+    paginationHTML += `<li class="page-item"><button class="page-link" onclick="changeDealersPage(${dealersTotalPages})">${dealersTotalPages}</button></li>`;
+  }
+
+  // Next button
+  if (dealersCurrentPage < dealersTotalPages) {
+    paginationHTML += `
+      <li class="page-item">
+        <button class="page-link" onclick="changeDealersPage(${dealersCurrentPage + 1})">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </li>
+    `;
+  } else {
+    paginationHTML += `
+      <li class="page-item disabled">
+        <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+      </li>
+    `;
+  }
+
+  paginationHTML += `
+      </ul>
+    </nav>
+  `;
+
+  paginationContainer.innerHTML = paginationHTML;
+}
+
+// Change dealers page
+function changeDealersPage(page) {
+  if (page < 1 || page > dealersTotalPages || page === dealersCurrentPage) return;
+  dealersCurrentPage = page;
+  loadDealers(page);
+}
+
+// Make pagination function globally accessible
+window.changeDealersPage = changeDealersPage;
 
 async function saveDealer(e) {
   e.preventDefault();
@@ -1150,7 +1290,7 @@ async function saveDealer(e) {
     }
 
     // Reload dealers and close modal
-    await loadDealers();
+    await loadDealers(dealersCurrentPage);
     bootstrap.Modal.getInstance(document.getElementById("dealerModal")).hide();
     resetDealerForm();
     renderStats();
@@ -1237,7 +1377,7 @@ async function deleteDealer(id) {
       showToast("Dealer deleted successfully!", "success");
 
       // Reload dealers and update stats
-      await loadDealers();
+      await loadDealers(dealersCurrentPage);
       renderStats();
     } else {
       throw new Error(result.message || "Delete failed");

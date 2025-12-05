@@ -331,17 +331,8 @@ function generateDealerCard(dealer, isGrouped = false) {
   // Handle different field names from API
   const dealerName = dealer.name || dealer.ownerName || "N/A";
   const shopName = dealer.shop || dealer.shopName || "N/A";
-  const contactNumber = dealer.contact || dealer.phone || "";
   const dealerLocation = dealer.location || "N/A";
   const dealerDistrict = dealer.district || "N/A";
-
-  // Clean phone number for WhatsApp
-  const cleanContact = contactNumber.replace(/\D/g, "");
-  const whatsappLink = cleanContact
-    ? `https://wa.me/88${
-        cleanContact.startsWith("0") ? cleanContact.slice(1) : cleanContact
-      }`
-    : "#";
 
   // Generate map link
   const locationLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -382,21 +373,10 @@ function generateDealerCard(dealer, isGrouped = false) {
                                             <i class="fas fa-map-marker-alt"></i>
                                             <span>${dealerLocation}</span>
                                         </div>
-                                        <div class="dealer-info-item">
-                                            <i class="fas fa-phone"></i>
-                                            <a href="tel:${contactNumber}" class="dealer-phone-link">${contactNumber}</a>
-                                        </div>
                                         <div class="mt-2">
                                             <a href="#" class="dealer-location-btn" data-map-url="${locationLink}">
                                                 <i class="fas fa-map"></i> <span data-i18n="dealer.mapBtn">View on Map</span>
                                             </a>
-                                            ${
-                                              cleanContact
-                                                ? `<a href="${whatsappLink}" target="_blank" class="dealer-contact-btn ms-2">
-                                                <i class="fab fa-whatsapp"></i> WhatsApp
-                                            </a>`
-                                                : ""
-                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -426,7 +406,7 @@ function generateDealerCard(dealer, isGrouped = false) {
                 <div class="dealer-card-body">
                     <div class="dealer-name">${dealerName}</div>
                     <div class="dealer-shop">${shopName}</div>
-                    
+
                     ${
                       dealer.rating
                         ? `<div class="dealer-rating">${"★".repeat(
@@ -434,29 +414,17 @@ function generateDealerCard(dealer, isGrouped = false) {
                           )} (${dealer.rating}/5)</div>`
                         : ""
                     }
-                    
+
                     <div class="dealer-info-item">
                         <i class="fas fa-map-marker-alt"></i>
                         <span>${dealerLocation}</span>
                     </div>
-                    
-                    <div class="dealer-info-item">
-                        <i class="fas fa-phone"></i>
-                        <a href="tel:${contactNumber}" class="dealer-phone-link">${contactNumber}</a>
-                    </div>
-                    
+
                     <div class="mt-3">
                         <a href="#" class="dealer-location-btn" data-map-url="${locationLink}">
                             <i class="fas fa-map"></i>
                             <span data-i18n="dealer.mapBtn">View on Map</span>
                         </a>
-                        ${
-                          cleanContact
-                            ? `<a href="${whatsappLink}" target="_blank" class="dealer-contact-btn ms-2">
-                            <i class="fab fa-whatsapp"></i> WhatsApp
-                        </a>`
-                            : ""
-                        }
                     </div>
                 </div>
             </div>
