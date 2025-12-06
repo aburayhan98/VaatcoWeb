@@ -239,31 +239,82 @@ function showToast(message, type = "info") {
 }
 
 // Render Dashboard Stats
-function renderStats() {
+async function renderStats() {
   const statsRow = qs("#statsRow");
   if (!statsRow) return;
 
-  const gallery = JSON.parse(
-    localStorage.getItem(STORAGE_KEYS.GALLERY) || "[]"
-  );
-  const products = JSON.parse(
-    localStorage.getItem(STORAGE_KEYS.PRODUCTS) || "[]"
-  );
-  const dealers = JSON.parse(
-    localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]"
-  );
-  const blog = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || "[]");
+  // Show loading state
+  statsRow.innerHTML = `
+    <div class="col-12 text-center py-4">
+      <div class="spinner-border spinner-border-sm text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <span class="ms-2 text-muted">Loading stats...</span>
+    </div>
+  `;
 
+  // Initialize counts with fallback to localStorage
+  let galleryCount = JSON.parse(localStorage.getItem(STORAGE_KEYS.GALLERY) || "[]").length;
+  let productsCount = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || "[]").length;
+  let dealersCount = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]").length;
+  let blogCount = JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOG) || "[]").length;
+
+  try {
+    // Fetch counts from API in parallel
+    const [galleryRes, productsRes, dealersRes, blogRes] = await Promise.allSettled([
+      makeAuthenticatedRequest("/gallery"),
+      makeAuthenticatedRequest("/products"),
+      makeAuthenticatedRequest("/dealers"),
+      makeAuthenticatedRequest("/blogs")
+    ]);
+
+    // Process gallery response
+    if (galleryRes.status === "fulfilled") {
+      const data = await galleryRes.value.json();
+      if (data.status && data.data) {
+        galleryCount = data.meta?.pagination?.totalItems || data.data.length;
+      }
+    }
+
+    // Process products response
+    if (productsRes.status === "fulfilled") {
+      const data = await productsRes.value.json();
+      if (data.status && data.data) {
+        productsCount = data.meta?.pagination?.totalItems || data.data.length;
+      }
+    }
+
+    // Process dealers response
+    if (dealersRes.status === "fulfilled") {
+      const data = await dealersRes.value.json();
+      if (data.status && data.data) {
+        dealersCount = data.meta?.pagination?.totalItems || data.data.length;
+      }
+    }
+
+    // Process blog response
+    if (blogRes.status === "fulfilled") {
+      const data = await blogRes.value.json();
+      if (data.status && data.data) {
+        blogCount = data.meta?.pagination?.totalItems || data.data.length;
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching stats:", error);
+    // Continue with localStorage fallback values
+  }
+
+  // Render the tiles
   statsRow.innerHTML = "";
   const tiles = [
-    { icon: "fa-image", label: "Gallery Items", value: gallery.length },
-    { icon: "fa-box", label: "Products", value: products.length },
-    { icon: "fa-store", label: "Dealers", value: dealers.length },
-    { icon: "fa-blog", label: "Blog Posts", value: blog.length },
+    { icon: "fa-image", label: "Gallery Items", value: galleryCount },
+    { icon: "fa-box", label: "Products", value: productsCount },
+    { icon: "fa-store", label: "Dealers", value: dealersCount },
+    { icon: "fa-blog", label: "Blog Posts", value: blogCount },
   ];
 
   tiles.forEach((t) => {
-    const col = ce("div", "col-md-4 mb-3");
+    const col = ce("div", "col-md-3 mb-3");
     col.innerHTML = `<div class="stat-tile card-hover"><div class="icon"><i class="fas ${t.icon}"></i></div><div><h6>${t.label}</h6><p class="value">${t.value}</p></div></div>`;
     statsRow.appendChild(col);
   });
@@ -938,17 +989,20 @@ function populateDistrictDropdown() {
   }
 }
 
+// Store all dealers for client-side pagination
+let allDealersList = [];
+
 async function loadDealers(page = 1) {
   try {
     showLoading("Loading dealers...");
 
-    // Fetch from API with pagination
-    const response = await makeAuthenticatedRequest(`/dealers?page=${page}&limit=${dealersPerPage}`);
+    // Fetch all dealers from API (without pagination params to get all)
+    const response = await makeAuthenticatedRequest("/dealers");
     const result = await response.json();
 
     if (result.status && result.data) {
       // Transform API data
-      const list = result.data.map((item) => ({
+      allDealersList = result.data.map((item) => ({
         id: item._id,
         name: item.name,
         shopName: item.shopName,
@@ -967,23 +1021,21 @@ async function loadDealers(page = 1) {
         updatedAt: item.updatedAt,
       }));
 
-      // Update pagination state from API response
-      if (result.meta && result.meta.pagination) {
-        const pagination = result.meta.pagination;
-        dealersCurrentPage = pagination.currentPage || page;
-        dealersTotalItems = pagination.totalItems || list.length;
-        dealersTotalPages = Math.ceil(dealersTotalItems / dealersPerPage) || 1;
-      } else {
-        dealersCurrentPage = page;
-        dealersTotalItems = list.length;
-        dealersTotalPages = 1;
-      }
-
       // Save to localStorage as cache
-      localStorage.setItem(STORAGE_KEYS.DEALERS, JSON.stringify(list));
+      localStorage.setItem(STORAGE_KEYS.DEALERS, JSON.stringify(allDealersList));
+
+      // Calculate pagination from full list
+      dealersTotalItems = allDealersList.length;
+      dealersTotalPages = Math.ceil(dealersTotalItems / dealersPerPage) || 1;
+      dealersCurrentPage = Math.min(page, dealersTotalPages);
+
+      // Get dealers for current page (client-side pagination)
+      const startIndex = (dealersCurrentPage - 1) * dealersPerPage;
+      const endIndex = startIndex + dealersPerPage;
+      const pageList = allDealersList.slice(startIndex, endIndex);
 
       // Render dealers table and pagination
-      renderDealersTable(list);
+      renderDealersTable(pageList);
       renderDealersPagination();
       showToast("Dealers loaded successfully!", "success");
     } else {
@@ -992,16 +1044,42 @@ async function loadDealers(page = 1) {
   } catch (error) {
     console.error("Error loading dealers:", error);
     // Fallback to localStorage
-    const cachedList = JSON.parse(
+    allDealersList = JSON.parse(
       localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]"
     );
-    dealersTotalItems = cachedList.length;
-    dealersTotalPages = Math.ceil(cachedList.length / dealersPerPage) || 1;
-    renderDealersTable(cachedList);
+    dealersTotalItems = allDealersList.length;
+    dealersTotalPages = Math.ceil(allDealersList.length / dealersPerPage) || 1;
+    dealersCurrentPage = Math.min(page, dealersTotalPages);
+
+    const startIndex = (dealersCurrentPage - 1) * dealersPerPage;
+    const endIndex = startIndex + dealersPerPage;
+    const pageList = allDealersList.slice(startIndex, endIndex);
+
+    renderDealersTable(pageList);
     renderDealersPagination();
     showToast("Using cached dealer data. Check your connection.", "warning");
   } finally {
     hideLoading();
+  }
+}
+
+// Change dealers page (client-side pagination)
+function changeDealersPage(page) {
+  if (page < 1 || page > dealersTotalPages || page === dealersCurrentPage) return;
+  dealersCurrentPage = page;
+
+  // Get dealers for current page from cached list
+  const startIndex = (dealersCurrentPage - 1) * dealersPerPage;
+  const endIndex = startIndex + dealersPerPage;
+  const pageList = allDealersList.slice(startIndex, endIndex);
+
+  renderDealersTable(pageList);
+  renderDealersPagination();
+
+  // Scroll to top of dealers section
+  const dealersSection = document.getElementById("dealers");
+  if (dealersSection) {
+    dealersSection.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 }
 
@@ -1171,13 +1249,6 @@ function renderDealersPagination() {
   `;
 
   paginationContainer.innerHTML = paginationHTML;
-}
-
-// Change dealers page
-function changeDealersPage(page) {
-  if (page < 1 || page > dealersTotalPages || page === dealersCurrentPage) return;
-  dealersCurrentPage = page;
-  loadDealers(page);
 }
 
 // Make pagination function globally accessible
