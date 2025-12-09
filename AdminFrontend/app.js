@@ -738,9 +738,11 @@ function renderProductsTable(list) {
   if (!tbody) return;
 
   tbody.innerHTML = "";
-  list.forEach((item) => {
+  list.forEach((item, index) => {
     const tr = document.createElement("tr");
+    const serialNo = index + 1;
     tr.innerHTML = `
+      <td class="text-center text-muted">${serialNo}</td>
       <td class="fw-semibold">${item.name || ""}</td>
       <td>
         <button class="btn btn-sm btn-outline-info me-1 view-details" data-id="${
@@ -1044,8 +1046,8 @@ async function loadDealers(page = 1) {
   try {
     showLoading("Loading dealers...");
 
-    // Fetch all dealers from API (without pagination params to get all)
-    const response = await makeAuthenticatedRequest("/dealers");
+    // Fetch all dealers from API with high limit to get all records
+    const response = await makeAuthenticatedRequest("/dealers?limit=1000");
     const result = await response.json();
 
     if (result.status && result.data) {
@@ -1136,8 +1138,10 @@ function renderDealersTable(list) {
   if (!tbody) return;
 
   tbody.innerHTML = "";
-  list.forEach((item) => {
+  list.forEach((item, index) => {
     const tr = document.createElement("tr");
+    // Calculate serial number based on current page
+    const serialNo = (dealersCurrentPage - 1) * dealersPerPage + index + 1;
 
     // Status badges
     const statusBadges = [];
@@ -1157,6 +1161,7 @@ function renderDealersTable(list) {
       : "";
 
     tr.innerHTML = `
+      <td class="text-center text-muted">${serialNo}</td>
       <td>${item.district || "N/A"}</td>
       <td>
         <div class="fw-semibold">${item.name || ""}</div>
