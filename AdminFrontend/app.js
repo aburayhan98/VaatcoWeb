@@ -6,7 +6,24 @@ const STORAGE_KEYS = {
   PRODUCTS: "vaatco_products",
   DEALERS: "vaatco_dealers",
   BLOG: "vaatco_blog_posts",
+  STATS_CACHE: "vaatco_stats_cache",
+  CACHE_DIRTY: "vaatco_cache_dirty",
 };
+
+// Mark cache as dirty (call this after any create/update/delete)
+function markCacheDirty() {
+  localStorage.setItem(STORAGE_KEYS.CACHE_DIRTY, "true");
+}
+
+// Check if cache is dirty
+function isCacheDirty() {
+  return localStorage.getItem(STORAGE_KEYS.CACHE_DIRTY) === "true";
+}
+
+// Clear cache dirty flag
+function clearCacheDirty() {
+  localStorage.removeItem(STORAGE_KEYS.CACHE_DIRTY);
+}
 
 // API Configuration
 const API_CONFIG = {
@@ -238,22 +255,35 @@ function showToast(message, type = "info") {
   }, 2000);
 }
 
-// Render Dashboard Stats
-async function renderStats() {
+// Render Dashboard Stats with smart caching
+async function renderStats(forceRefresh = false) {
   const statsRow = qs("#statsRow");
   if (!statsRow) return;
 
-  // Show loading state
-  statsRow.innerHTML = `
-    <div class="col-12 text-center py-4">
-      <div class="spinner-border spinner-border-sm text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-      <span class="ms-2 text-muted">Loading stats...</span>
-    </div>
-  `;
+  // Check if we have cached stats and cache is not dirty
+  const cachedStats = localStorage.getItem(STORAGE_KEYS.STATS_CACHE);
+  const cacheDirty = isCacheDirty();
 
-  // Initialize counts with fallback to localStorage
+  if (cachedStats && !cacheDirty && !forceRefresh) {
+    // Use cached stats immediately (no loading state)
+    const stats = JSON.parse(cachedStats);
+    renderStatsTiles(statsRow, stats);
+    return;
+  }
+
+  // Show loading state only if no cache available
+  if (!cachedStats) {
+    statsRow.innerHTML = `
+      <div class="col-12 text-center py-4">
+        <div class="spinner-border spinner-border-sm text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <span class="ms-2 text-muted">Loading stats...</span>
+      </div>
+    `;
+  }
+
+  // Initialize counts from localStorage
   let galleryCount = JSON.parse(localStorage.getItem(STORAGE_KEYS.GALLERY) || "[]").length;
   let productsCount = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || "[]").length;
   let dealersCount = JSON.parse(localStorage.getItem(STORAGE_KEYS.DEALERS) || "[]").length;
@@ -299,18 +329,30 @@ async function renderStats() {
         blogCount = data.meta?.pagination?.totalItems || data.data.length;
       }
     }
+
+    // Clear dirty flag after successful fetch
+    clearCacheDirty();
   } catch (error) {
     console.error("Error fetching stats:", error);
     // Continue with localStorage fallback values
   }
 
+  // Cache the stats
+  const stats = { galleryCount, productsCount, dealersCount, blogCount };
+  localStorage.setItem(STORAGE_KEYS.STATS_CACHE, JSON.stringify(stats));
+
   // Render the tiles
+  renderStatsTiles(statsRow, stats);
+}
+
+// Helper function to render stats tiles
+function renderStatsTiles(statsRow, stats) {
   statsRow.innerHTML = "";
   const tiles = [
-    { icon: "fa-image", label: "Gallery Items", value: galleryCount },
-    { icon: "fa-box", label: "Products", value: productsCount },
-    { icon: "fa-store", label: "Dealers", value: dealersCount },
-    { icon: "fa-blog", label: "Blog Posts", value: blogCount },
+    { icon: "fa-image", label: "Gallery Items", value: stats.galleryCount },
+    { icon: "fa-box", label: "Products", value: stats.productsCount },
+    { icon: "fa-store", label: "Dealers", value: stats.dealersCount },
+    { icon: "fa-blog", label: "Blog Posts", value: stats.blogCount },
   ];
 
   tiles.forEach((t) => {
@@ -508,13 +550,14 @@ async function saveGalleryItem(e) {
 
       if (response.ok && result.status) {
         showToast("Image uploaded successfully!", "success");
+        markCacheDirty();
 
         await loadGallery();
         bootstrap.Modal.getInstance(
           document.getElementById("galleryModal")
         ).hide();
         resetGalleryForm();
-        renderStats();
+        renderStats(true);
       } else {
         throw new Error(result.message || "Upload failed");
       }
@@ -594,6 +637,7 @@ async function updateGalleryItem(id, data) {
 
     if (response.ok && result.status) {
       showToast("Image updated successfully!", "success");
+      markCacheDirty();
 
       // Reload gallery and close modal
       await loadGallery();
@@ -601,7 +645,7 @@ async function updateGalleryItem(id, data) {
         document.getElementById("galleryModal")
       ).hide();
       resetGalleryForm();
-      renderStats();
+      renderStats(true);
 
       return true;
     } else {
@@ -631,10 +675,11 @@ async function deleteGalleryItem(id) {
 
     if (response.ok && result.status) {
       showToast("Image deleted successfully!", "success");
+      markCacheDirty();
 
       // Reload gallery and update stats
       await loadGallery();
-      renderStats();
+      renderStats(true);
     } else {
       throw new Error(result.message || "Delete failed");
     }
@@ -757,6 +802,7 @@ async function saveProduct(e) {
 
       if (response.ok && result.status) {
         showToast("Product updated successfully!", "success");
+        markCacheDirty();
       } else {
         throw new Error(result.message || "Failed to update product");
       }
@@ -771,6 +817,7 @@ async function saveProduct(e) {
 
       if (response.ok && result.status) {
         showToast("Product created successfully!", "success");
+        markCacheDirty();
       } else {
         throw new Error(result.message || "Failed to create product");
       }
@@ -788,7 +835,7 @@ async function saveProduct(e) {
       document.getElementById("productForm").reset();
       document.getElementById("productId").value = "";
     }
-    renderStats();
+    renderStats(true);
   } catch (error) {
     console.error("Error saving product:", error);
     showToast("Failed to save product: " + error.message, "error");
@@ -883,10 +930,11 @@ async function deleteProduct(id) {
 
     if (response.ok && result.status) {
       showToast("Product deleted successfully!", "success");
+      markCacheDirty();
 
       // Reload products and update stats
       await loadProducts();
-      renderStats();
+      renderStats(true);
     } else {
       throw new Error(result.message || "Delete failed");
     }
@@ -1341,6 +1389,7 @@ async function saveDealer(e) {
 
       if (response.ok && result.status) {
         showToast("Dealer updated successfully!", "success");
+        markCacheDirty();
       } else {
         throw new Error(result.message || "Failed to update dealer");
       }
@@ -1355,6 +1404,7 @@ async function saveDealer(e) {
 
       if (response.ok && result.status) {
         showToast("Dealer created successfully!", "success");
+        markCacheDirty();
       } else {
         throw new Error(result.message || "Failed to create dealer");
       }
@@ -1364,7 +1414,7 @@ async function saveDealer(e) {
     await loadDealers(dealersCurrentPage);
     bootstrap.Modal.getInstance(document.getElementById("dealerModal")).hide();
     resetDealerForm();
-    renderStats();
+    renderStats(true);
   } catch (error) {
     console.error("Error saving dealer:", error);
     showToast("Failed to save dealer: " + error.message, "error");
@@ -1446,10 +1496,11 @@ async function deleteDealer(id) {
 
     if (response.ok && result.status) {
       showToast("Dealer deleted successfully!", "success");
+      markCacheDirty();
 
       // Reload dealers and update stats
       await loadDealers(dealersCurrentPage);
-      renderStats();
+      renderStats(true);
     } else {
       throw new Error(result.message || "Delete failed");
     }
@@ -1745,6 +1796,7 @@ async function saveBlog(e) {
 
       if (response.ok && result.status) {
         showToast("Blog post updated successfully!", "success");
+        markCacheDirty();
       } else {
         throw new Error(result.message || "Failed to update blog post");
       }
@@ -1759,6 +1811,7 @@ async function saveBlog(e) {
 
       if (response.ok && result.status) {
         showToast("Blog post created successfully!", "success");
+        markCacheDirty();
       } else {
         throw new Error(result.message || "Failed to create blog post");
       }
@@ -1768,7 +1821,7 @@ async function saveBlog(e) {
     await loadBlog();
     bootstrap.Modal.getInstance(document.getElementById("blogModal")).hide();
     resetBlogForm();
-    renderStats();
+    renderStats(true);
   } catch (error) {
     console.error("Error saving blog post:", error);
     showToast("Failed to save blog post: " + error.message, "error");
@@ -1848,10 +1901,11 @@ async function deleteBlog(id) {
 
     if (response.ok && result.status) {
       showToast("Blog post deleted successfully!", "success");
+      markCacheDirty();
 
       // Reload blog posts and update stats
       await loadBlog();
-      renderStats();
+      renderStats(true);
     } else {
       throw new Error(result.message || "Delete failed");
     }

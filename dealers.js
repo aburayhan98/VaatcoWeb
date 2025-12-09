@@ -51,11 +51,13 @@ const DealersAPI = {
 };
 
 // Global state
-let currentDealers = [];
+let allDealers = []; // Store all dealers from API
+let currentDealers = []; // Dealers to display (filtered/paginated)
 let currentView = "grid";
 let organizationMode = "mixed";
 let currentPage = 1;
 let totalPages = 1;
+let itemsPerPage = 12; // Items per page for client-side pagination
 let currentSearchKeyword = "";
 let isLoading = false;
 
@@ -110,7 +112,7 @@ function setupEventListeners() {
     });
 }
 
-// Load dealers from API
+// Load all dealers from API (fetch once, paginate client-side)
 async function loadDealersFromAPI(page = 1, keyword = "") {
   if (isLoading) return;
 
@@ -118,27 +120,50 @@ async function loadDealersFromAPI(page = 1, keyword = "") {
   showLoadingState();
 
   try {
-    const params = {
-      page: page,
-      limit: 20, // Adjust as needed
-    };
+    // Only fetch from API if we don't have dealers cached or doing initial load
+    if (allDealers.length === 0 || page === 1 && !keyword) {
+      // Fetch ALL dealers by setting a high limit (no server-side pagination)
+      const params = {
+        limit: 1000, // Fetch all dealers
+      };
 
-    if (keyword) {
-      params.keyword = keyword;
+      const response = await DealersAPI.getDealers(params);
+      allDealers = response.dealers || [];
     }
 
-    const response = await DealersAPI.getDealers(params);
-
-    currentDealers = response.dealers;
-    currentPage = page;
-
-    // Update pagination info from API response
-    if (response.meta && response.meta.pagination) {
-      const pagination = response.meta.pagination;
-      totalPages =
-        Math.ceil(pagination.totalItems / pagination.itemsPerPage) || 1;
-      updatePaginationInfo(pagination);
+    // Apply search filter client-side
+    let filteredDealers = allDealers;
+    if (keyword && keyword.trim()) {
+      const searchTerm = keyword.toLowerCase().trim();
+      filteredDealers = allDealers.filter(dealer => {
+        const name = (dealer.name || dealer.ownerName || "").toLowerCase();
+        const shopName = (dealer.shop || dealer.shopName || "").toLowerCase();
+        const location = (dealer.location || "").toLowerCase();
+        const district = (dealer.district || "").toLowerCase();
+        return name.includes(searchTerm) ||
+               shopName.includes(searchTerm) ||
+               location.includes(searchTerm) ||
+               district.includes(searchTerm);
+      });
     }
+
+    // Calculate pagination client-side
+    const totalItems = filteredDealers.length;
+    totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+    currentPage = Math.min(page, totalPages);
+
+    // Get dealers for current page
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    currentDealers = filteredDealers.slice(startIndex, endIndex);
+
+    // Update pagination info
+    updatePaginationInfo({
+      totalItems: totalItems,
+      itemsPerPage: itemsPerPage,
+      currentPage: currentPage,
+      totalPages: totalPages
+    });
 
     displayDealers(currentDealers);
     updateStats();
@@ -150,6 +175,49 @@ async function loadDealersFromAPI(page = 1, keyword = "") {
     showErrorState();
   } finally {
     isLoading = false;
+  }
+}
+
+// Change page (client-side pagination)
+function changePage(page) {
+  if (page < 1 || page > totalPages || page === currentPage) return;
+
+  // Calculate pagination client-side from cached dealers
+  let filteredDealers = allDealers;
+  if (currentSearchKeyword && currentSearchKeyword.trim()) {
+    const searchTerm = currentSearchKeyword.toLowerCase().trim();
+    filteredDealers = allDealers.filter(dealer => {
+      const name = (dealer.name || dealer.ownerName || "").toLowerCase();
+      const shopName = (dealer.shop || dealer.shopName || "").toLowerCase();
+      const location = (dealer.location || "").toLowerCase();
+      const district = (dealer.district || "").toLowerCase();
+      return name.includes(searchTerm) ||
+             shopName.includes(searchTerm) ||
+             location.includes(searchTerm) ||
+             district.includes(searchTerm);
+    });
+  }
+
+  currentPage = page;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  currentDealers = filteredDealers.slice(startIndex, endIndex);
+
+  // Update pagination info
+  updatePaginationInfo({
+    totalItems: filteredDealers.length,
+    itemsPerPage: itemsPerPage,
+    currentPage: currentPage,
+    totalPages: totalPages
+  });
+
+  displayDealers(currentDealers);
+  updatePaginationControls();
+
+  // Scroll to top of dealers section
+  const dealersSection = document.querySelector(".dealers-section");
+  if (dealersSection) {
+    dealersSection.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 }
 
@@ -485,12 +553,13 @@ function updateStats() {
   const totalCount = document.getElementById("totalCount");
   const totalDealers = document.getElementById("totalDealers");
 
+  // Use allDealers for total count, currentDealers for current page
   if (resultsCount) resultsCount.textContent = currentDealers.length;
-  if (totalCount) totalCount.textContent = currentDealers.length; // This could be total from API
-  if (totalDealers) totalDealers.textContent = currentDealers.length;
+  if (totalCount) totalCount.textContent = allDealers.length;
+  if (totalDealers) totalDealers.textContent = allDealers.length;
 
-  // Update unique districts count
-  const uniqueDistricts = [...new Set(currentDealers.map((d) => d.district))]
+  // Update unique districts count from all dealers
+  const uniqueDistricts = [...new Set(allDealers.map((d) => d.district))]
     .length;
   const totalDistricts = document.getElementById("totalDistricts");
   if (totalDistricts) totalDistricts.textContent = uniqueDistricts;
@@ -591,21 +660,6 @@ function createPaginationContainer() {
   }
 
   return container;
-}
-
-// Change page
-function changePage(page) {
-  if (page < 1 || page > totalPages || page === currentPage || isLoading)
-    return;
-
-  currentPage = page;
-  loadDealersFromAPI(currentPage, currentSearchKeyword);
-
-  // Scroll to top of dealers section
-  const dealersSection = document.querySelector(".dealers-section");
-  if (dealersSection) {
-    dealersSection.scrollIntoView({ behavior: "smooth" });
-  }
 }
 
 // Update pagination info
