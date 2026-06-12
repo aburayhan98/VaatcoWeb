@@ -2,12 +2,7 @@
 
 class AuthManager {
   constructor() {
-    this.API_BASE_URL =
-      window.location.hostname === "localhost" ||
-      window.location.hostname === "127.0.0.1" ||
-      window.location.protocol === "file:"
-        ? "http://localhost:5000/api"
-        : "https://vaatcobd-1e79cdd06ca7.herokuapp.com/api";
+    this.API_BASE_URL = "https://vaatcobd-1e79cdd06ca7.herokuapp.com/api";
     this.TOKEN_COOKIE_NAME = "vaatco_admin_token";
     this.USER_COOKIE_NAME = "vaatco_admin_user";
     this.COOKIE_EXPIRE_DAYS = 30; // 30 days expiration
@@ -18,7 +13,7 @@ class AuthManager {
     const date = new Date();
     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
     const expires = "expires=" + date.toUTCString();
-    document.cookie = `${name}=${value};${expires};path=/;SameSite=Strict;Secure`;
+    document.cookie = `${name}=${encodeURIComponent(value)};${expires};path=/;SameSite=None;Secure`;
   }
 
   getCookie(name) {
