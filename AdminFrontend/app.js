@@ -27,8 +27,12 @@ function clearCacheDirty() {
 
 // API Configuration
 const API_CONFIG = {
-  BASE_URL: "https://api.vaatcobd.com/api",
-  // BASE_URL: "http://localhost:5000/api",
+  BASE_URL:
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1" ||
+    window.location.protocol === "file:"
+      ? "http://localhost:5000/api"
+      : "https://vaatcobd-1e79cdd06ca7.herokuapp.com/api",
   ENDPOINTS: {
     LOGIN: "/admin/login",
     GALLERY: "/admin/gallery",

@@ -5,7 +5,7 @@
 
 // API Configuration
 const DealersAPI = {
-  baseUrl: "https://api.vaatcobd.com/api",
+  baseUrl: "https://vaatcobd-1e79cdd06ca7.herokuapp.com/api",
 
   // Fetch dealers from API with optional search and pagination
   async getDealers(params = {}) {

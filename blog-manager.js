@@ -4,7 +4,7 @@
 
 class BlogManager {
   constructor() {
-    this.apiUrl = "https://api.vaatcobd.com/api/public/blogs";
+    this.apiUrl = "https://vaatcobd-1e79cdd06ca7.herokuapp.com/api/public/blogs";
     this.currentPage = 1;
     this.searchQuery = "";
     this.sortBy = "publishDate";

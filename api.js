@@ -5,7 +5,7 @@
  */
 
 const VaatcoAPI = {
-  baseUrl: "https://api.vaatcobd.com/api",
+  baseUrl: "https://vaatcobd-1e79cdd06ca7.herokuapp.com/api",
 
   // Fetch gallery images from API
   async getGalleryImages() {
@@ -241,7 +241,7 @@ window.addEventListener("online", function () {
 // setInterval(refreshGallery, 5 * 60 * 1000);
 
 const FeaturedBlogsAPI = {
-  baseUrl: "https://api.vaatcobd.com/api/public/blogs",
+  baseUrl: "https://vaatcobd-1e79cdd06ca7.herokuapp.com/api/public/blogs",
 
   async getFeaturedBlogs() {
     try {

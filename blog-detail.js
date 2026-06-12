@@ -4,7 +4,7 @@
 
 class BlogDetailManager {
   constructor() {
-    this.apiUrl = "https://api.vaatcobd.com/api/public/blogs";
+    this.apiUrl = "https://vaatcobd-1e79cdd06ca7.herokuapp.com/api/public/blogs";
     this.blogSlug = this.getSlugFromUrl();
     this.currentBlog = null;
     this.relatedBlogs = [];
