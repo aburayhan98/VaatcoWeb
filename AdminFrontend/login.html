@@ -356,7 +356,9 @@
 
       // Forgot password functionality
       async function sendPasswordResetEmail(email) {
-        const baseUrl = "https://vaatcobd-1e79cdd06ca7.herokuapp.com/api";
+        const baseUrl = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+          ? "http://localhost:5000/api"
+          : "https://vaatcobd-1e79cdd06ca7.herokuapp.com/api";
         try {
           const response = await fetch(
             `${baseUrl}/admin/forgot-password`,

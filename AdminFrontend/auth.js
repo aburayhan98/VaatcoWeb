@@ -1,53 +1,32 @@
 // auth.js - Authentication Utility for VAATCO Admin Panel
+// Uses localStorage only for token storage (no cookies)
 
 class AuthManager {
   constructor() {
-    this.API_BASE_URL = "http://localhost:5000/api";
-    this.TOKEN_COOKIE_NAME = "vaatco_admin_token";
-    this.USER_COOKIE_NAME = "vaatco_admin_user";
-    this.COOKIE_EXPIRE_DAYS = 30; // 30 days expiration
-  }
-
-  // Cookie management utilities
-  setCookie(name, value, days) {
-    const date = new Date();
-    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-    const expires = "expires=" + date.toUTCString();
-    document.cookie = `${name}=${encodeURIComponent(value)};${expires};path=/;SameSite=None;Secure`;
-  }
-
-  getCookie(name) {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(";");
-    for (let i = 0; i < ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) === " ") c = c.substring(1, c.length);
-      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    // Auto-detect API URL based on current hostname
+    const hostname = window.location.hostname;
+    if (hostname === "localhost" || hostname === "127.0.0.1") {
+      this.API_BASE_URL = "http://localhost:5000/api";
+    } else {
+      // Production — use Heroku backend
+      this.API_BASE_URL = "https://vaatcobd-1e79cdd06ca7.herokuapp.com/api";
     }
-    return null;
+    console.log("AuthManager API URL:", this.API_BASE_URL);
   }
 
-  deleteCookie(name) {
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-  }
-
-  // Store authentication data
+  // Store authentication data in localStorage
   setAuthData(token, userData) {
     try {
-      console.log("userData", userData);
-      this.setCookie(this.TOKEN_COOKIE_NAME, token, this.COOKIE_EXPIRE_DAYS);
-      this.setCookie(
-        this.USER_COOKIE_NAME,
-        JSON.stringify(userData),
-        this.COOKIE_EXPIRE_DAYS
-      );
+      if (!token || !userData) {
+        console.error("setAuthData: missing token or userData");
+        return false;
+      }
 
-      // Also store in localStorage as backup
-      localStorage.setItem("vaatco_admin_auth", "true");
       localStorage.setItem("vaatco_admin_token", token);
       localStorage.setItem("vaatco_admin_user", JSON.stringify(userData));
+      localStorage.setItem("vaatco_admin_auth", "true");
 
-      console.log("Auth data stored successfully");
+      console.log("Auth data stored successfully, token length:", token.length);
       return true;
     } catch (error) {
       console.error("Error storing auth data:", error);
@@ -55,20 +34,16 @@ class AuthManager {
     }
   }
 
-  // Get stored token
+  // Get stored token from localStorage
   getToken() {
-    return (
-      this.getCookie(this.TOKEN_COOKIE_NAME) ||
-      localStorage.getItem("vaatco_admin_token")
-    );
+    const token = localStorage.getItem("vaatco_admin_token");
+    return token || null;
   }
 
-  // Get stored user data
+  // Get stored user data from localStorage
   getUserData() {
     try {
-      const userData =
-        this.getCookie(this.USER_COOKIE_NAME) ||
-        localStorage.getItem("vaatco_admin_user");
+      const userData = localStorage.getItem("vaatco_admin_user");
       return userData ? JSON.parse(userData) : null;
     } catch (error) {
       console.error("Error parsing user data:", error);
@@ -85,21 +60,16 @@ class AuthManager {
 
   // Clear authentication data
   clearAuth() {
-    this.deleteCookie(this.TOKEN_COOKIE_NAME);
-    this.deleteCookie(this.USER_COOKIE_NAME);
-
-    // Also clear localStorage
     localStorage.removeItem("vaatco_admin_auth");
     localStorage.removeItem("vaatco_admin_token");
     localStorage.removeItem("vaatco_admin_user");
-
     console.log("Auth data cleared");
   }
 
   // Login function
   async login(email, password) {
     try {
-      console.log("Attempting login...");
+      console.log("Attempting login to:", `${this.API_BASE_URL}/admin/login`);
 
       const response = await fetch(`${this.API_BASE_URL}/admin/login`, {
         method: "POST",
@@ -113,13 +83,17 @@ class AuthManager {
       });
 
       const data = await response.json();
-      console.log("Login response:", data);
+      console.log("Login response status:", response.status);
 
       if (response.ok && data.status === true) {
         // Store authentication data
         const success = this.setAuthData(data.data.token, data.data.admin);
 
         if (success) {
+          // Verify it was stored
+          const storedToken = this.getToken();
+          console.log("Token stored and verified:", !!storedToken, "length:", storedToken?.length);
+
           return {
             success: true,
             message: data.message || "Login successful",
@@ -161,32 +135,6 @@ class AuthManager {
     }
   }
 
-  // Verify token with server (optional - for enhanced security)
-  async verifyToken() {
-    const token = this.getToken();
-    if (!token) return false;
-
-    try {
-      const response = await fetch(`${this.API_BASE_URL}/admin/verify`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        return data.status === true;
-      }
-
-      return false;
-    } catch (error) {
-      console.error("Token verification error:", error);
-      return false;
-    }
-  }
-
   // Get authorization headers for API requests
   getAuthHeaders() {
     const token = this.getToken();
@@ -201,29 +149,45 @@ class AuthManager {
     const token = this.getToken();
 
     if (!token) {
+      console.error("makeAuthenticatedRequest: No token in localStorage!");
       throw new Error("No authentication token found");
     }
 
-    const defaultOptions = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        ...options.headers,
-      },
+    // Build headers — Authorization is always set from localStorage token
+    const headers = {
+      Authorization: `Bearer ${token}`,
     };
 
-    const mergedOptions = { ...defaultOptions, ...options };
+    // Only set Content-Type for non-FormData bodies
+    if (!(options.body instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+    }
+
+    // Merge any additional headers from options (but never overwrite Authorization)
+    if (options.headers) {
+      Object.keys(options.headers).forEach((key) => {
+        if (key.toLowerCase() !== "authorization") {
+          headers[key] = options.headers[key];
+        }
+      });
+    }
+
+    const mergedOptions = {
+      ...options,
+      headers,
+    };
+
+    console.log(`API Request: ${options.method || "GET"} ${url}`);
+    console.log("Token being sent:", token.substring(0, 20) + "...");
 
     try {
       const response = await fetch(url, mergedOptions);
 
-      // If unauthorized, clear auth and redirect to login
       if (response.status === 401) {
-        this.clearAuth();
-        window.location.href = "login.html";
-        throw new Error("Authentication expired");
+        console.warn("401 Unauthorized from:", url);
       }
 
+      // Return response — callers decide how to handle errors
       return response;
     } catch (error) {
       console.error("Authenticated request error:", error);
@@ -236,19 +200,14 @@ class AuthManager {
     const currentPage = window.location.pathname;
     const isLoginPage =
       currentPage.includes("login.html") || currentPage === "/login.html";
-    const isDashboardPage =
-      currentPage.includes("dashboard.html") ||
-      currentPage === "/dashboard.html";
 
     if (this.isAuthenticated()) {
-      // If logged in and on login page, redirect to dashboard
       if (isLoginPage) {
         console.log("User already authenticated, redirecting to dashboard");
         window.location.replace("dashboard.html");
         return;
       }
     } else {
-      // If not logged in and on protected page, redirect to login
       if (!isLoginPage) {
         console.log("User not authenticated, redirecting to login");
         window.location.replace("login.html");
@@ -260,26 +219,11 @@ class AuthManager {
   // Initialize auth checking for the current page
   init() {
     console.log("AuthManager initialized");
+    console.log("Token present:", !!this.getToken());
+    console.log("User present:", !!this.getUserData());
 
     // Set up automatic redirect based on auth status
     this.redirectIfNeeded();
-
-    // Optional: Set up periodic token verification
-    // this.setupTokenVerification();
-  }
-
-  // Setup periodic token verification (optional)
-  setupTokenVerification() {
-    // Verify token every 30 minutes
-    setInterval(async () => {
-      if (this.isAuthenticated()) {
-        const isValid = await this.verifyToken();
-        if (!isValid) {
-          console.log("Token verification failed, logging out");
-          this.logout();
-        }
-      }
-    }, 30 * 60 * 1000); // 30 minutes
   }
 
   // Get current user info

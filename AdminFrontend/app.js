@@ -25,9 +25,11 @@ function clearCacheDirty() {
   localStorage.removeItem(STORAGE_KEYS.CACHE_DIRTY);
 }
 
-// API Configuration
+// API Configuration — auto-detect based on hostname
 const API_CONFIG = {
-  BASE_URL: "http://localhost:5000/api",
+  BASE_URL: (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+    ? "http://localhost:5000/api"
+    : "https://vaatcobd-1e79cdd06ca7.herokuapp.com/api",
   ENDPOINTS: {
     LOGIN: "/admin/login",
     GALLERY: "/admin/gallery",
@@ -153,12 +155,29 @@ async function makeAuthenticatedRequest(endpoint, options = {}) {
     throw new Error("AuthManager not available");
   }
 
+  // Verify token exists before making the request
+  const token = window.authManager.getToken();
+  if (!token) {
+    console.error("No token found in localStorage, redirecting to login");
+    window.location.href = "login.html";
+    throw new Error("Not authenticated");
+  }
+
   const url = `${API_CONFIG.BASE_URL}${endpoint}`;
 
   try {
-    return await window.authManager.makeAuthenticatedRequest(url, options);
+    const response = await window.authManager.makeAuthenticatedRequest(url, options);
+
+    // Handle 401 — token is expired or invalid
+    if (response.status === 401) {
+      console.warn("401 from", endpoint, "— token may be expired");
+      const errorData = await response.clone().json().catch(() => ({}));
+      throw new Error(errorData.message || "Authentication expired. Please login again.");
+    }
+
+    return response;
   } catch (error) {
-    console.error("API request failed:", error);
+    console.error("API request failed:", endpoint, error.message);
     throw error;
   }
 }
@@ -399,12 +418,17 @@ async function loadGallery() {
     }
   } catch (error) {
     console.error("Error loading gallery:", error);
-    // Fallback to localStorage
+    // Fallback to localStorage cache — don't logout
     const cachedList = JSON.parse(
       localStorage.getItem(STORAGE_KEYS.GALLERY) || "[]"
     );
-    renderGalleryGrid(cachedList);
-    showToast("Using cached gallery data. Check your connection.", "warning");
+    if (cachedList.length > 0) {
+      renderGalleryGrid(cachedList);
+      showToast(error.message || "Could not refresh gallery. Showing cached data.", "warning");
+    } else {
+      renderGalleryGrid([]);
+      showToast(error.message || "Failed to load gallery. Please try again.", "error");
+    }
   } finally {
     hideLoading();
   }
@@ -2244,39 +2268,7 @@ function checkAuthStatus() {
     console.log("Current user:", window.authManager.getCurrentUser());
   }
 }
-async function makeAuthenticatedRequest(endpoint, options = {}) {
-  if (!window.authManager) {
-    throw new Error("AuthManager not available");
-  }
-
-  const url = `${API_CONFIG.BASE_URL}${endpoint}`;
-
-  try {
-    // Don't set Content-Type for FormData - browser handles it
-    const headers = {
-      Authorization: `Bearer ${window.authManager.getToken()}`,
-      ...options.headers,
-    };
-
-    // Only set Content-Type if not FormData
-    if (!(options.body instanceof FormData)) {
-      headers["Content-Type"] = "application/json";
-    }
-
-    const mergedOptions = {
-      ...options,
-      headers,
-    };
-
-    return await window.authManager.makeAuthenticatedRequest(
-      url,
-      mergedOptions
-    );
-  } catch (error) {
-    console.error("API request failed:", error);
-    throw error;
-  }
-}
+// makeAuthenticatedRequest is defined at the top of this file (line ~152)
 
 // Global exports
 window.VAATCO_DATA = { getGalleryItems, getProducts, getDealers, getBlogPosts };
