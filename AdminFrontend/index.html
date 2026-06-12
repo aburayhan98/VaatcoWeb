@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VAATCO Admin Portal</title>
+    <style>
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: white;
+        margin: 0;
+        overflow: hidden;
+      }
+      .loader-container {
+        text-align: center;
+        animation: fadeIn 0.5s ease-out;
+      }
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-top: 3px solid #32cd32;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px auto;
+      }
+      h2 {
+        font-weight: 400;
+        margin: 0;
+        letter-spacing: 1px;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="loader-container">
+      <div class="spinner"></div>
+      <h2>Redirecting to Admin Portal...</h2>
+    </div>
+
+    <script>
+      // Automatically route user depending on authentication status
+      try {
+        const authData = localStorage.getItem("vaatco_admin_auth");
+        if (authData) {
+          // Parse data to verify if it has a valid token
+          const parsed = JSON.parse(authData);
+          if (parsed && (parsed.token || parsed.accessToken)) {
+            window.location.replace("dashboard.html");
+          } else {
+            window.location.replace("login.html");
+          }
+        } else {
+          window.location.replace("login.html");
+        }
+      } catch (e) {
+        window.location.replace("login.html");
+      }
+    </script>
+  </body>
+</html>
