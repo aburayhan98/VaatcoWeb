@@ -2,7 +2,7 @@
 
 class AuthManager {
   constructor() {
-    this.API_BASE_URL = "https://vaatcobd-1e79cdd06ca7.herokuapp.com/api";
+    this.API_BASE_URL = "http://localhost:5000/api";
     this.TOKEN_COOKIE_NAME = "vaatco_admin_token";
     this.USER_COOKIE_NAME = "vaatco_admin_user";
     this.COOKIE_EXPIRE_DAYS = 30; // 30 days expiration

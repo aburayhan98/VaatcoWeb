@@ -27,7 +27,7 @@ function clearCacheDirty() {
 
 // API Configuration
 const API_CONFIG = {
-  BASE_URL: "https://vaatcobd-1e79cdd06ca7.herokuapp.com/api",
+  BASE_URL: "http://localhost:5000/api",
   ENDPOINTS: {
     LOGIN: "/admin/login",
     GALLERY: "/admin/gallery",
